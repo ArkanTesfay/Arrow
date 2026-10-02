@@ -1,14 +1,16 @@
-<!-- BEGIN MICROSOFT SECURITY.MD V1.0.0 BLOCK -->
+# Security
 
-## Security
-
-Microsoft takes the security of our software products and services seriously, which
-includes all source code repositories in our GitHub organizations.
+The Vertex team takes security seriously and appreciates responsible disclosure.
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-For security reporting information, locations, contact information, and policies,
-please review the latest guidance for Microsoft repositories at
-[https://aka.ms/SECURITY.md](https://aka.ms/SECURITY.md).
+Instead, report them privately via [GitHub Security Advisories](https://github.com/ArkanTesfay/Arrow/security/advisories/new) for the [Arrow](https://github.com/ArkanTesfay/Arrow) repository.
 
-<!-- END MICROSOFT SECURITY.MD BLOCK -->
+Please include as much of the following information as possible:
+
+- The type of issue and its impact
+- Step-by-step instructions to reproduce the issue
+- Affected version(s) / commit
+- Possible mitigations, if known
+
+We will respond as quickly as possible and keep you informed throughout the process.
