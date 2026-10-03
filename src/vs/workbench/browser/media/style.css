@@ -359,3 +359,93 @@ body {
 	outline: 1px dashed var(--vscode-toolbar-hoverOutline);
 	outline-offset: -1px;
 }
+
+/* ============================================================================
+ * Vertex design system — Phase 1 token layer
+ *
+ * Charcoal + warm gold identity. Colors live in the theme (Dark Modern, see
+ * extensions/theme-defaults/themes/dark_modern.json); this layer owns
+ * geometry, typography, motion and component polish, aligned with the size
+ * token registry (src/vs/platform/theme/common/sizes/baseSizes.ts) and the
+ * Modern UI modules (src/vs/workbench/contrib/modernUI).
+ *
+ *   1. Radius tokens  — Vertex geometry spec (controls 4-6px, surfaces 8-12px)
+ *   2. Typography     — UI font stack + hierarchy accents
+ *   3. Motion         — 120-180ms transitions on interactive chrome
+ *   4. Components     — buttons, inputs, quick input, editor widgets
+ * ============================================================================ */
+
+/* 1. Corner radius ramp — retune the registered size-token defaults. */
+.monaco-workbench {
+	--vscode-cornerRadius-xSmall: 4px;
+	--vscode-cornerRadius-small: 6px;
+	--vscode-cornerRadius-medium: 8px;
+	--vscode-cornerRadius-large: 10px;
+	--vscode-cornerRadius-xLarge: 12px;
+}
+
+/* 2. Typography — distinct UI voice without touching code/terminal fonts. */
+:root {
+	--vertex-font-ui: 'Avenir Next', 'Helvetica Neue', -apple-system, 'Segoe UI', sans-serif;
+	--vertex-motion-fast: 140ms;
+	--vertex-motion-ease: cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+body,
+.monaco-workbench,
+.monaco-workbench .part,
+.monaco-workbench .pane .pane-header,
+.monaco-workbench .monaco-list,
+.monaco-workbench .quick-input-widget {
+	font-family: var(--vertex-font-ui);
+}
+
+/* Section titles: tracked-out labels for a calmer, deliberate hierarchy. */
+.modern-ui.monaco-workbench .pane .pane-header .title,
+.modern-ui.monaco-workbench .composite .title .title-label,
+.modern-ui.monaco-workbench .part > .header .title {
+	letter-spacing: 0.05em;
+}
+
+/* 3. Motion — short, quiet transitions on interactive chrome only. */
+.monaco-workbench .monaco-button,
+.monaco-workbench .monaco-inputbox,
+.monaco-workbench .monaco-select-box,
+.monaco-workbench .checkbox,
+.modern-ui .monaco-list-row,
+.modern-ui .monaco-tabs .tab,
+.modern-ui .monaco-action-bar .action-item .action-label,
+.modern-ui.monaco-workbench .composite .title .tabs-container .tab {
+	transition:
+		background-color var(--vertex-motion-fast) var(--vertex-motion-ease),
+		border-color var(--vertex-motion-fast) var(--vertex-motion-ease),
+		box-shadow var(--vertex-motion-fast) var(--vertex-motion-ease),
+		color var(--vertex-motion-fast) var(--vertex-motion-ease);
+}
+
+/* 4. Components — one consistent control system. */
+
+/* Buttons: medium Vertex radius + semibold label. */
+.modern-ui.monaco-workbench .monaco-button {
+	font-weight: var(--vscode-fontWeight-semiBold, 600);
+	border-radius: var(--vscode-cornerRadius-medium, 8px);
+}
+
+/* Inputs and selects: small Vertex radius via the shared token. */
+.modern-ui.monaco-workbench .monaco-inputbox,
+.modern-ui.monaco-workbench .monaco-select-box {
+	border-radius: var(--vscode-cornerRadius-small, 6px);
+}
+
+/* Quick input (command palette): elevated card with border + deep shadow. */
+.modern-ui.monaco-workbench .quick-input-widget {
+	border: 1px solid var(--vscode-widget-border, transparent);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Editor widgets (suggest, hover) follow the elevated radius tier. */
+.modern-ui.monaco-workbench .editor-widget,
+.modern-ui.monaco-workbench .monaco-editor .suggest-widget,
+.modern-ui.monaco-workbench .monaco-editor .monaco-hover {
+	border-radius: var(--vscode-cornerRadius-large, 10px);
+}

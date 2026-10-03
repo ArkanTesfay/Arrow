@@ -82,7 +82,11 @@
       }
     ],
     "configurationDefaults": {
-      "workbench.colorTheme": "Dark Modern"
+      "workbench.colorTheme": "Dark Modern",
+      "workbench.experimental.modernUI": true,
+      "workbench.activityBar.location": "top",
+      "window.density.layout": "default",
+      "window.commandCenter": true
     }
   },
   "repository": {

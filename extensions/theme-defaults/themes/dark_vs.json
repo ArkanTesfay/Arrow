@@ -3,7 +3,7 @@
 	"name": "Dark (Visual Studio)",
 	"colors": {
 		"checkbox.border": "#6B6B6B",
-		"editor.background": "#1E1E1E",
+		"editor.background": "#22221C",
 		"editor.foreground": "#D4D4D4",
 		"editorGroupHeader.connectedTabsBackground": "#303031",
 		"editor.inactiveSelectionBackground": "#3A3D41",
@@ -16,7 +16,7 @@
 		"sideBarTitle.foreground": "#BBBBBB",
 		"input.placeholderForeground": "#A6A6A6",
 		"menu.background": "#252526",
-		"menu.foreground": "#CCCCCC",
+		"menu.foreground": "#D8D5CA",
 		"menu.separatorBackground": "#454545",
 		"menu.border": "#454545",
 		"menu.selectionBackground": "#0078d4",
@@ -41,8 +41,8 @@
 		"agentsChatInput.focusBorder": "#007ACC",
 		"agentsNewSessionButton.border": "#303031",
 		"surface.border": "#252526",
-		"modernActivityBarItem.activeBackground": "#1E1E1E",
-		"modernActivityBarItem.hoverBackground": "#1E1E1E66",
+		"modernActivityBarItem.activeBackground": "#22221C",
+		"modernActivityBarItem.hoverBackground": "#22221C66",
 		"modernActivityBar.border": "#252526"
 	},
 	"tokenColors": [
@@ -54,7 +54,7 @@
 				"variable.legacy.builtin.python"
 			],
 			"settings": {
-				"foreground": "#F5F3EE"
+				"foreground": "#F2F1EC"
 			}
 		},
 		{
@@ -72,13 +72,13 @@
 		{
 			"scope": "header",
 			"settings": {
-				"foreground": "#F4B942"
+				"foreground": "#D6A62E"
 			}
 		},
 		{
 			"scope": "comment",
 			"settings": {
-				"foreground": "#6E6A62"
+				"foreground": "#6E6B60"
 			}
 		},
 		{
@@ -201,7 +201,7 @@
 		{
 			"scope": "punctuation.definition.quote.begin.markdown",
 			"settings": {
-				"foreground": "#6E6A62"
+				"foreground": "#6E6B60"
 			}
 		},
 		{
@@ -321,7 +321,7 @@
 				"meta.template.expression"
 			],
 			"settings": {
-				"foreground": "#F5F3EE"
+				"foreground": "#F2F1EC"
 			}
 		},
 		{
@@ -405,7 +405,7 @@
 				"storage.modifier.package.java"
 			],
 			"settings": {
-				"foreground": "#F5F3EE"
+				"foreground": "#F2F1EC"
 			}
 		},
 		{
@@ -438,9 +438,9 @@
 		"operator": "#61AFEF",
 		"number": "#D19A66",
 		"string": "#98C379",
-		"string.escape": "#FFD166",
-		"comment": "#6E6A62",
+		"string.escape": "#E5B83E",
+		"comment": "#6E6B60",
 		"regexp": "#61AFEF",
-		"macro": "#F4B942"
+		"macro": "#D6A62E"
 	}
 }

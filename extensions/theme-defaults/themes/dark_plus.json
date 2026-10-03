@@ -106,7 +106,7 @@
 				"variable.other.enummember"
 			],
 			"settings": {
-				"foreground": "#FFD166"
+				"foreground": "#E5B83E"
 			}
 		},
 		{
@@ -192,7 +192,7 @@
 		{
 			"scope": "entity.name.label",
 			"settings": {
-				"foreground": "#A8A29E"
+				"foreground": "#9E9B91"
 			}
 		}
 	],
@@ -217,10 +217,10 @@
 		"operator": "#61AFEF",
 		"number": "#D19A66",
 		"string": "#98C379",
-		"string.escape": "#FFD166",
-		"comment": "#6E6A62",
+		"string.escape": "#E5B83E",
+		"comment": "#6E6B60",
 		"regexp": "#61AFEF",
-		"macro": "#F4B942"
+		"macro": "#D6A62E"
 	},
 	"semanticHighlighting": true
 }
