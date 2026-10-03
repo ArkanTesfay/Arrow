@@ -13,7 +13,7 @@
 > Node runtime service construction is documented separately in [`node/serviceBootstrapping.md`](node/serviceBootstrapping.md).
 > Host startup timings, process-lifetime correlation, and session workload counts are documented in [`PERFORMANCE.md`](PERFORMANCE.md).
 
-> **Status: COMPLETE** (2026-07-01) All waves A–D and gates G-B1, G-C1, G-C2, G-D1 are done. Codex, Claude, and Copilot all use the unified orchestrator path.
+> **Status: COMPLETE** (2026-07-01) All waves A–D and gates G-B1, G-C1, G-C2, G-D1 are done. Codex, Claude, and AI all use the unified orchestrator path.
 >
 > Codex advertises `multipleChats: { fork: true, sideChat: true }`. Model-backed peer, fork, and side-chat parity scenarios run in deterministic replay.
 >
@@ -96,13 +96,13 @@ Agents do **not** maintain the chat catalog, persist membership, know whether a 
 
 ### Orchestrator layer
 
-Shared UI first-progress observations use the capability-gated VS Code-only
+Shared UI first-progress observations use the capability-gated Vertex-only
 `vscode/reportChatUserInteraction` RPC, not the generated chat protocol. The
 handler validates a content-free payload and drains the existing OTel exporter
 before acknowledging. The renderer clock and visibility semantics remain owned
 by the chat UI; see [the OTel contract](OTEL.md#user-perceived-first-progress).
 
-Artifact removal uses the VS Code-only `vscode/removeSessionArtifact` extension RPC with `{ session: string, artifactId: string }` and a void result. Clients gate the optional `removeSessionArtifact(URI, string)` connection method with `supportsAgentHostArtifactRemoval(initializeResult)` (`_meta['vscode.removeSessionArtifact'] === true`). This does not extend the generated AHP protocol.
+Artifact removal uses the Vertex-only `vscode/removeSessionArtifact` extension RPC with `{ session: string, artifactId: string }` and a void result. Clients gate the optional `removeSessionArtifact(URI, string)` connection method with `supportsAgentHostArtifactRemoval(initializeResult)` (`_meta['vscode.removeSessionArtifact'] === true`). This does not extend the generated AHP protocol.
 
 The shared `node/shared/sessionArtifacts.ts` path serializes artifact mutations per session across tools and direct user requests. Each mutation reads the latest collection, awaits ordered catalog synchronization (including the legacy-first `sessionArtifacts` metadata write), then publishes `SessionMetaChanged` merged with the latest independent metadata. Failed local persistence leaves the artifact visible and retryable; failures are logged and propagated without blocking queued additions. Central synchronization uses the usual pending receipts for repair. Independent GitHub associations and unrelated artifacts/references are preserved. No model turn or tool invocation is involved in direct user removal.
 
@@ -151,7 +151,7 @@ The shared `node/shared/sessionArtifacts.ts` path serializes artifact mutations 
 
 ### UI/provider layer (`sessions/services/sessions/common/session.ts:ISessionCapabilities`)
 
-- Protocol `AgentCapabilities` (`multipleChats?: { fork?: boolean }`) flows from `AgentInfo.capabilities` (protocol) through the provider adapter into `ISession.capabilities` (`ISessionCapabilities`), whose `supportsMultipleChats`/`supportsFork` flags derive from the presence of `multipleChats` and `multipleChats.fork`, and from there into VS Code context keys (`sessionContextKeys.ts:SessionSupportsMultipleChatsContext`, `SessionSupportsForkContext`).
+- Protocol `AgentCapabilities` (`multipleChats?: { fork?: boolean }`) flows from `AgentInfo.capabilities` (protocol) through the provider adapter into `ISession.capabilities` (`ISessionCapabilities`), whose `supportsMultipleChats`/`supportsFork` flags derive from the presence of `multipleChats` and `multipleChats.fork`, and from there into Vertex context keys (`sessionContextKeys.ts:SessionSupportsMultipleChatsContext`, `SessionSupportsForkContext`).
 - UI actions read context keys — no provider-id switches.
 
 ---
@@ -164,7 +164,7 @@ Opaque to the host, but not arbitrary for the provider: whatever id the blob car
 
 **I2 — `sessionUri` and `chatChannelUri` are never overloaded.** A session URI (`ahp-copilot://`, `ahp-claude://`, …) identifies a session. A chat channel URI (`ahp-chat://…`) identifies a chat within a session. The two schemes are structurally distinct; `isAhpChatChannel` / `parseDefaultChatUri` / `buildDefaultChatUri` are the only crossing points. Passing a chat URI where a session URI is expected (or vice versa) is a bug.
 
-**I3 — The default chat uses the same explicit backing contract as every chat.** The default chat URI is derived from the AH session URI, but its provider identity is opaque `providerData`. Claude and Copilot mint independent SDK ids, return them from `createChat`, and restore them through `materializeChat`; equality with the AH session id is never assumed and there is no identity-reuse bind fallback. Codex persists its explicit thread mapping. AH never depends on provider identity reuse for ownership or enumeration.
+**I3 — The default chat uses the same explicit backing contract as every chat.** The default chat URI is derived from the AH session URI, but its provider identity is opaque `providerData`. Claude and AI mint independent SDK ids, return them from `createChat`, and restore them through `materializeChat`; equality with the AH session id is never assumed and there is no identity-reuse bind fallback. Codex persists its explicit thread mapping. AH never depends on provider identity reuse for ownership or enumeration.
 
 **I4 — Single catalog path (spawn channel).** Both user-driven chats (`AgentService.createChat` → `addChat`) and harness-spawned chats (`AgentService._onChatSpawned` → `addChat`) go through `AgentHostStateManager.addChat`. `AgentService` installs the spawn-channel listener **before** the `AgentSideEffects` listener through the provider service's synchronous initializer to guarantee the chat exists in the catalog before any turn actions arrive for it (DR1 deterministic sequencing).
 
@@ -200,9 +200,9 @@ Because listing never opens session storage, migrations the provider/session fal
 
 `register` takes the resolved provenance and whether to check tombstones. Explicit `AgentService.createSession` calls skip the tombstone check and clear any tombstone for that session URI; restore and discovery calls atomically decline to register if the session is or concurrently becomes tombstoned. An explicit row is never rewritten by catalog discovery. A migration-time host-owned marker can correct a previously discovered row back to internal provenance.
 
-Providers own discovery lifecycle and push unknown chats with provider-classified provenance through `onDidDiscoverChats`. Claude, Codex, and Copilot classify their unknown native chats as external, except that Copilot keeps an unknown *legacy extension-host* chat internal because it is adoptable in place rather than someone else's session. Agent Service preserves that classification unless the existing host-owned `agentHost.workspaceless` marker proves the session was created by Agent Host; it reads that evidence together with the chat-backing marker before additively registering the event payload. Agent Service always attaches the event listener and queues each provider's external-session discovery through `_runWhenStartupSettled`, so the request waits for both Agent Host startup and the first successful session listing. Providers registered after that barrier opens run their queued work immediately, and a later transition from `none` starts discovery directly. Adopt-in-place legacy migration remains an independent provider-initialization trigger immediately after the discovery listener is attached, and another catalog consumer may also trigger discovery after it enumerates the provider catalog. This keeps `showExternalSessions: none` from initiating native discovery while allowing independently triggered discovery to populate the hidden registry normally. Ordinary list refreshes never enumerate provider catalogs. External discovery has no migration marker or Copilot migrate-legacy gate; only the adoptable legacy extension-host half of Copilot's payload is withheld while migrate-legacy is off. Discovery never prunes a registry row when a provider later omits it and filters subagents and marked internal chat backings.
+Providers own discovery lifecycle and push unknown chats with provider-classified provenance through `onDidDiscoverChats`. Claude, Codex, and AI classify their unknown native chats as external, except that AI keeps an unknown *legacy extension-host* chat internal because it is adoptable in place rather than someone else's session. Agent Service preserves that classification unless the existing host-owned `agentHost.workspaceless` marker proves the session was created by Agent Host; it reads that evidence together with the chat-backing marker before additively registering the event payload. Agent Service always attaches the event listener and queues each provider's external-session discovery through `_runWhenStartupSettled`, so the request waits for both Agent Host startup and the first successful session listing. Providers registered after that barrier opens run their queued work immediately, and a later transition from `none` starts discovery directly. Adopt-in-place legacy migration remains an independent provider-initialization trigger immediately after the discovery listener is attached, and another catalog consumer may also trigger discovery after it enumerates the provider catalog. This keeps `showExternalSessions: none` from initiating native discovery while allowing independently triggered discovery to populate the hidden registry normally. Ordinary list refreshes never enumerate provider catalogs. External discovery has no migration marker or AI migrate-legacy gate; only the adoptable legacy extension-host half of AI's payload is withheld while migrate-legacy is off. Discovery never prunes a registry row when a provider later omits it and filters subagents and marked internal chat backings.
 
-Discovery is registry-first: Agent Service hands each provider an optional `setKnownSessionsFilter` seam that answers, for a whole candidate set in one registry query, which sessions the host already owns. Copilot drops those candidates before any per-session database open and additionally skips adoptable legacy classification work (project/Git resolution) while migrate-legacy is off. Codex also reports changed known metadata so existing rows refresh. Agent Service preserves registered provenance without repeating backing classification; a changed title on an idle, restored external session checks persisted title overrides before updating live state. Tombstoned sessions are absent from the registry and therefore never reported as known, so an explicitly deleted session still reaches `register`, whose atomic tombstone check declines it.
+Discovery is registry-first: Agent Service hands each provider an optional `setKnownSessionsFilter` seam that answers, for a whole candidate set in one registry query, which sessions the host already owns. AI drops those candidates before any per-session database open and additionally skips adoptable legacy classification work (project/Git resolution) while migrate-legacy is off. Codex also reports changed known metadata so existing rows refresh. Agent Service preserves registered provenance without repeating backing classification; a changed title on an idle, restored external session checks persisted title overrides before updating live state. Tombstoned sessions are absent from the registry and therefore never reported as known, so an explicitly deleted session still reaches `register`, whose atomic tombstone check declines it.
 
 Claude retains its memoized initial discovery path. Codex starts continuous discovery only after explicit session creation/restoration activates the provider and its SDK is available locally; ambient listing neither activates Codex nor downloads it. Codex uses the app-server's resolved `codexHome` for recursive session-directory and correlated home-directory invalidation, reads metadata through `thread/list`, and emits only new or changed rows. Refreshes coalesce streaming writes, serialize with migration scans, retain a trailing invalidation, retry failures, and periodically recover missed watcher events. The first catalog read permits native legacy repair; later reads use the state database API without rescanning rollout contents. Watchers and retries end at provider shutdown. Provider session databases do not persist external provenance; legacy `claude.external` and `codex.external` values remain evidence that a chat was known. An empty or absent sidecar remains unknown.
 
@@ -218,9 +218,9 @@ Discovery refreshes list-visible metadata and recency of already-registered sess
 
 Observed native transcripts have a separate, exact-chat lifetime: `IAgent.watchChatHistory` is acquired for a chat subscription and released with its last subscriber. Codex reads persisted turns without resuming or acquiring the writer lock and reports snapshots through `onDidChangeChatHistory`; filesystem invalidations coalesce with a bounded fallback poll. Paginated refreshes read the recent tail with overlap, and unchanged turns retain their mapped identity. Agent Service owns routing and hydration, preserves host-owned turns and drafts, and defers updates across local execution. Passive history replacement uses the existing server-originated truncation/load actions without calling provider truncation or turn execution. The contributed chat session exposes `onDidChangeHistory` so an already-open workbench model updates while preserving unchanged requests and input state. Native clients may persist assistant output only at item/turn boundaries, so this path follows persisted progress rather than unpersisted token deltas.
 
-Provider-private discovery helpers name their concrete source: Claude uses `_listClaudeCodeChats()` / `_emitClaudeCodeChats()`, Codex uses `_listCodexChats()` / `_emitCodexChats()`, and Copilot uses `_discoverCopilotChats()` / `_emitCopilotChats()`. Providers classify known session metadata before emitting; Agent Service still performs the authoritative additive registry write and atomic tombstone check. Copilot treats the existence of a per-session database (under `{userDataPath}/agentSessionData`, never the shared Copilot home) as "known", which also keeps peer-chat backings out of the payload; it additionally drops a chat whose SDK context carries no working directory, because `_doResumeSession` requires one and a discovered chat has no other source for it.
+Provider-private discovery helpers name their concrete source: Claude uses `_listClaudeCodeChats()` / `_emitClaudeCodeChats()`, Codex uses `_listCodexChats()` / `_emitCodexChats()`, and AI uses `_discoverCopilotChats()` / `_emitCopilotChats()`. Providers classify known session metadata before emitting; Agent Service still performs the authoritative additive registry write and atomic tombstone check. AI treats the existence of a per-session database (under `{userDataPath}/agentSessionData`, never the shared AI home) as "known", which also keeps peer-chat backings out of the payload; it additionally drops a chat whose SDK context carries no working directory, because `_doResumeSession` requires one and a discovered chat has no other source for it.
 
-Migration returns known native entries as plain metadata. Discovery classifies unknown entries as external for Claude and Codex; Copilot keeps unknown legacy extension-host chats internal and adoptable. Codex also emits changed known entries for refresh, without changing their registered provenance. Copilot rejects a chat whose session database exists but holds none of the metadata keys `listChatsToMigrate` requires from both paths: an empty database records a chat the host already touched, as asserted by `copilotAgent.test.ts`'s "does not discover an extension-host chat with an empty Agent Host database". Central `agent-host.db` remains the durable provenance authority.
+Migration returns known native entries as plain metadata. Discovery classifies unknown entries as external for Claude and Codex; AI keeps unknown legacy extension-host chats internal and adoptable. Codex also emits changed known entries for refresh, without changing their registered provenance. AI rejects a chat whose session database exists but holds none of the metadata keys `listChatsToMigrate` requires from both paths: an empty database records a chat the host already touched, as asserted by `copilotAgent.test.ts`'s "does not discover an extension-host chat with an empty Agent Host database". Central `agent-host.db` remains the durable provenance authority.
 
 ### Automatic titles
 
@@ -269,7 +269,7 @@ The agent declares these in `getDescriptor().capabilities` (`common/agent.ts:IAg
 
 UI code gates "Add Chat" and "Fork" actions on those context keys. No code inside `AgentService` or `AgentHostStateManager` switches on provider id to gate features. `AgentService.createChat` throws synchronously when `!provider.chats` (the structural guard that replaces a capability check in the orchestrator).
 
-Claude, Copilot, and Codex advertise `multipleChats: { fork: true, sideChat: true }`. Codex side-chat context and restore run in deterministic replay. Subagent E2E and native streaming file-creation coverage remain independently disabled and must not be inferred from its peer-chat/fork/side-chat support.
+Claude, AI, and Codex advertise `multipleChats: { fork: true, sideChat: true }`. Codex side-chat context and restore run in deterministic replay. Subagent E2E and native streaming file-creation coverage remain independently disabled and must not be inferred from its peer-chat/fork/side-chat support.
 
 ---
 
@@ -382,7 +382,7 @@ sequenceDiagram
             AS->>SM: registerRestoredChatSummary(session, chatUri, {title, draft, providerData, resolver})
             Note over SM: Retain summary, draft, providerData, and resolver\n(no ChatState yet)
         end
-    else catalog absent (undefined) — one-time legacy migration (Copilot only)
+    else catalog absent (undefined) — one-time legacy migration (AI only)
         AS->>A: listLegacyChatBackings(configurationResource)
         A-->>AS: {uri, providerData}[]
         loop for each legacy chat
@@ -447,12 +447,12 @@ Claude deliberately has no AH-session container and no membership/role concept o
 
 Every chat operation resolves exactly one backing and routes to exactly one live leaf; there is no default-vs-additional branch and no cascade between chats of the same session. An additional chat's send after restart resumes only that chat's `ClaudeAgentSession`. Capabilities remain `multipleChats: { fork: true }`.
 
-Each additional chat is backed by a fresh top-level SDK session (`sdkSessionId = generateUuid()`) minted in the same global Claude project store that `listSessions` enumerates. `_createChat` therefore returns `backingSession: AgentSession.uri(this.id, sdkSessionId)` so the orchestrator can suppress that backing from the top-level session list (invariant I7); without it the additional chat would leak as a phantom session. The SDK exposes no delete-chat RPC, so `disposeChat` leaves the backing transcript on disk — the orchestrator-owned catalog simply drops the entry so it is never resumed again. (Claude writes no legacy `claude.chats` blob and has no legacy migration: Claude multi-chat shipped only with the orchestrator-owned catalog, so there is nothing to drain. Copilot keeps its own `copilot.chats` migration because `copilot.chats` predates the catalog.)
+Each additional chat is backed by a fresh top-level SDK session (`sdkSessionId = generateUuid()`) minted in the same global Claude project store that `listSessions` enumerates. `_createChat` therefore returns `backingSession: AgentSession.uri(this.id, sdkSessionId)` so the orchestrator can suppress that backing from the top-level session list (invariant I7); without it the additional chat would leak as a phantom session. The SDK exposes no delete-chat RPC, so `disposeChat` leaves the backing transcript on disk — the orchestrator-owned catalog simply drops the entry so it is never resumed again. (Claude writes no legacy `claude.chats` blob and has no legacy migration: Claude multi-chat shipped only with the orchestrator-owned catalog, so there is nothing to drain. AI keeps its own `copilot.chats` migration because `copilot.chats` predates the catalog.)
 
 
-### Copilot (`node/copilot/copilotAgent.ts`)
+### AI (`node/copilot/copilotAgent.ts`)
 
-Copilot also has no AH-session container:
+AI also has no AH-session container:
 - `_chatEntriesBySdkId: DisposableMap<string, CopilotChatEntry>` owns every live SDK conversation and its MCP/customization subscriptions.
 - `_chatBackings: Map<string, IPersistedChat>` maps each concrete host chat URI to exactly one provider-owned SDK backing record; SDK callbacks route directly through `_chatEntriesBySdkId`.
 - Fork/import provisioning binds the exact target chat inside `chats.createChat`, so a create result is never left waiting for a follow-up bind call.
@@ -460,7 +460,7 @@ Copilot also has no AH-session container:
 
 No `CopilotSessionEntry`, `AgentSessionEntry`, default-chat URI helper, or sibling cascade remains. Send/history/model/agent/abort/tool/config/dispose/release operations resolve one leaf. Active-client state remains keyed by the owning SDK session where it is genuinely shared, while each live leaf owns its own SDK and MCP lifecycle. Capabilities remain `multipleChats: { fork: true }`.
 
-`CopilotSessionLauncher` sets `mcpOAuthTokenStorage: 'in-memory'` for created, resumed, and ephemeral SDK sessions. VS Code owns durable MCP credentials through `onMcpAuthRequest`; the runtime must not consult its persistent MCP OAuth keychain store.
+`CopilotSessionLauncher` sets `mcpOAuthTokenStorage: 'in-memory'` for created, resumed, and ephemeral SDK sessions. Vertex owns durable MCP credentials through `onMcpAuthRequest`; the runtime must not consult its persistent MCP OAuth keychain store.
 
 ### Codex (`node/codex/codexAgent.ts`)
 
@@ -485,9 +485,9 @@ Restoring or continuing a thread retains its saved model when available. When th
 
 Explicitly switching an existing chat's model provider reloads the same native thread on its next send. It must not create a replacement conversation or clear its turn-ID mappings. Unsubscribe before resuming so the app-server applies the new provider rather than rejoining the old runtime, and record the successfully resumed provider so a later switch back also reloads. Restoring a saved selection from another provider only marks this reload pending; metadata reads remain read-only.
 
-Native thread settings retain the last effective provider. Before resuming an OpenAI-backed thread through Copilot, the harness ensures the effective Codex user config has a portable `vscode-proxy` alias (`name = "OpenAI"`, `wire_api = "responses"`, `requires_openai_auth = true`). The app-server's config API targets its effective home, and version-checked writes are serialized with the existing user-config writes. The alias has no endpoint or credentials; VS Code supplies its loopback proxy settings only as process overrides, while a native client uses its own OpenAI authentication. Existing definitions are never overwritten, persistent conflicting settings fail before unsubscribe/resume, and concurrent edits are reread with bounded retries. Metadata/history reads do not install the alias or change thread settings. The configuration-file action honors the host's effective `CODEX_HOME`, including the forwarded Codex home setting.
+Native thread settings retain the last effective provider. Before resuming an OpenAI-backed thread through AI, the harness ensures the effective Codex user config has a portable `vscode-proxy` alias (`name = "OpenAI"`, `wire_api = "responses"`, `requires_openai_auth = true`). The app-server's config API targets its effective home, and version-checked writes are serialized with the existing user-config writes. The alias has no endpoint or credentials; Vertex supplies its loopback proxy settings only as process overrides, while a native client uses its own OpenAI authentication. Existing definitions are never overwritten, persistent conflicting settings fail before unsubscribe/resume, and concurrent edits are reread with bounded retries. Metadata/history reads do not install the alias or change thread settings. The configuration-file action honors the host's effective `CODEX_HOME`, including the forwarded Codex home setting.
 
-Threads with native history also opt into portable reasoning through a thread-local proxy header, never shared configuration. Cold restoration recovers that requirement from the rollout's original provider even after its selected provider becomes `vscode-proxy`. For those threads only, the proxy omits account-bound encrypted reasoning from requests and from SSE/JSON responses before the SDK can persist it. Visible reasoning summaries, messages, tool calls/results, and usage are preserved; ordinary Copilot-only traffic is unchanged. Existing rollout files are never rewritten. Reasoning ciphertext already persisted by an older client is not repaired by this normalization.
+Threads with native history also opt into portable reasoning through a thread-local proxy header, never shared configuration. Cold restoration recovers that requirement from the rollout's original provider even after its selected provider becomes `vscode-proxy`. For those threads only, the proxy omits account-bound encrypted reasoning from requests and from SSE/JSON responses before the SDK can persist it. Visible reasoning summaries, messages, tool calls/results, and usage are preserved; ordinary AI-only traffic is unchanged. Existing rollout files are never rewritten. Reasoning ciphertext already persisted by an older client is not repaired by this normalization.
 
 Portable SSE responses emit a synthetic heartbeat only when an upstream chunk arrives at least 15 seconds after the last downstream write. Completed events are forwarded immediately and reset that interval, preventing heartbeat amplification on fragmented streams without masking an upstream stall.
 
@@ -522,7 +522,7 @@ Agents expose exact-chat lifecycle and metadata methods for SDK backing data; th
 
 ### No provider-side default-chat derivation
 
-AH supplies the exact chat plus opaque persistence/configuration scopes. Claude and Copilot record only `chat → SDK conversation`; Codex records only `chat → thread runtime`. Session-versus-peer decisions remain in Agent Host.
+AH supplies the exact chat plus opaque persistence/configuration scopes. Claude and AI record only `chat → SDK conversation`; Codex records only `chat → thread runtime`. Session-versus-peer decisions remain in Agent Host.
 
 Provider chat resolution has three valid states:
 
@@ -532,7 +532,7 @@ Provider chat resolution has three valid states:
 | Cold exact chat | Present | Absent | Required before operations needing AH owner/storage context |
 | Fresh additional chat | Absent | Absent | Required; creation records the returned provider backing |
 
-`IAgentChatContext.resource` is either the owning session (default-chat storage) or the addressed chat (additional-chat storage); unrelated resources are rejected. When Copilot has both an explicit owner and a live exact-chat runtime, they must agree. Claude and Codex deliberately do not retain AH ownership on provider backing records, so their cold backing resolution relies on the transient owner context instead of attempting to validate or reconstruct membership.
+`IAgentChatContext.resource` is either the owning session (default-chat storage) or the addressed chat (additional-chat storage); unrelated resources are rejected. When AI has both an explicit owner and a live exact-chat runtime, they must agree. Claude and Codex deliberately do not retain AH ownership on provider backing records, so their cold backing resolution relies on the transient owner context instead of attempting to validate or reconstruct membership.
 
 ### Storage-preservation
 
@@ -546,7 +546,7 @@ Provider-native external-chat discovery is pushed through `onDidDiscoverChats`; 
 
 ## 8. Host Seams (what a provider is given, and what it must not read)
 
-Providers are being made pure consumers of host facts. Agent Host derives each fact once and hands it to the provider at the call boundary; the target is that no provider injects `AgentHostStateManager` and no provider recovers a host fact from URI shape. **Status:** the host side is complete — every seam below is published on every boundary — while the Claude, Codex, and Copilot slices still inject the state manager and are converted to the seams one at a time. Treat this section as the contract new and converted provider code must follow.
+Providers are being made pure consumers of host facts. Agent Host derives each fact once and hands it to the provider at the call boundary; the target is that no provider injects `AgentHostStateManager` and no provider recovers a host fact from URI shape. **Status:** the host side is complete — every seam below is published on every boundary — while the Claude, Codex, and AI slices still inject the state manager and are converted to the seams one at a time. Treat this section as the contract new and converted provider code must follow.
 
 ### 8a. `IAgentChatContext` — the exhaustive per-operation context
 
@@ -595,7 +595,7 @@ Membership changes re-enter the same seam: a `session/chatAdded` envelope fans e
 
 Live provider runtimes that react to session config subscribe to `IAgentConfigurationService.onDidSessionConfigChange` with their explicit config resource. `AgentSideEffects` does not enumerate chats or fan config values through provider hooks.
 
-Copilot advertises the optional `sandboxEnabled` session property (`default`,
+AI advertises the optional `sandboxEnabled` session property (`default`,
 `on`, or `off`). Omission and `default` follow the root sandbox settings;
 selections are saved in session-config metadata and restored across window reloads
 and agent-host restarts. The effective sandbox state is recomputed from the saved
@@ -604,7 +604,7 @@ Chats and subagents share their configuration owner's selection. New sessions
 and forks do not copy it. Codex retains its native sandbox/permission preset;
 Claude does not advertise this unsupported control.
 
-Both the Copilot SDK sandbox and custom terminal sandbox read the same effective
+Both the AI SDK sandbox and custom terminal sandbox read the same effective
 session configuration. `SandboxSettingsResolutionHelper` resolves the user-editable
 enablement, bypass, and outbound-network toggles against the runtime-resolved floor.
 Managed enablement forces on; managed bypass and outbound denial force off, while

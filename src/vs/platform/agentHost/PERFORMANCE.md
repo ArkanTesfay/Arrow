@@ -90,7 +90,7 @@ repeating enumeration or database work.
 | `sessionMigration` | Provider catalog import, including enumeration when needed, synchronization, and publication. |
 | `sessionMigrationScan` | Provider enumeration for migration, before filtering to migratable sessions. |
 | `sessionDiscoveryScan` | Provider enumeration for external-chat discovery, before visibility/subagent filtering. |
-| `sessionMetadataScan` | Copilot bulk enumeration used to prewarm metadata on catalog fallback. |
+| `sessionMetadataScan` | AI bulk enumeration used to prewarm metadata on catalog fallback. |
 
 The five `session*` operations also emit corresponding `*Start` markers.
 `bootstrap`, `hostReady`, `firstSessionList`, and `startupSettled` are cumulative
@@ -203,10 +203,10 @@ Session-list computation
         | Wait for initial provider migration only if the registry is empty
         | Read central catalog
         |
-        +-- If Copilot bulk metadata fallback is needed:
+        +-- If AI bulk metadata fallback is needed:
         |       [sessionMetadataScanStart]
         |           |
-        |           | Enumerate Copilot metadata
+        |           | Enumerate AI metadata
         |           v
         |       [sessionMetadataScan] + scannedSessionCount
         |
@@ -230,8 +230,8 @@ External-chat discovery (early or deferred)
     Discovered chats registered with the host
 ```
 
-Migration and discovery scans exist for Copilot, Claude and Codex; metadata
-prewarming is Copilot-only. Codex scan end markers also include `pageCount` and
+Migration and discovery scans exist for AI, Claude and Codex; metadata
+prewarming is AI-only. Codex scan end markers also include `pageCount` and
 `truncated`. Legacy migration or catalog backfill can start discovery before
 the startup-settled barrier. Providers may defer scanning until later use, so
 not every startup produces every marker.
@@ -245,11 +245,11 @@ not every startup produces every marker.
 | `hostReady` | In `markStartupComplete` in [the agent service](node/agentService.ts), called by [the utility/child-process entry point](node/agentHostMain.ts) or [the standalone server entry point](node/agentHostServerMain.ts). |
 | `firstSessionList` | In `_recordSessionListCompleted` in [the agent service](node/agentService.ts), on the first successful computation. |
 | `startupSettled` | In `_openStartupSettled` in [the agent service](node/agentService.ts), before the barrier opens. |
-| `providerContext` | At existing catalog-access checks in [Copilot](node/copilot/copilotAgent.ts), [Claude](node/claude/claudeAgent.ts) and [Codex](node/codex/codexAgent.ts). |
+| `providerContext` | At existing catalog-access checks in [AI](node/copilot/copilotAgent.ts), [Claude](node/claude/claudeAgent.ts) and [Codex](node/codex/codexAgent.ts). |
 | `sessionListStart`, `sessionList` | Around `_computeSessions` in [the agent service](node/agentService.ts). |
 | `sessionMigrationStart`, `sessionMigration` | Around provider catalog import in [the agent service](node/agentService.ts). |
-| `sessionMigrationScanStart`, `sessionMigrationScan`, `sessionDiscoveryScanStart`, `sessionDiscoveryScan` | Around enumeration in [Copilot](node/copilot/copilotAgent.ts), [Claude](node/claude/claudeAgent.ts) and [Codex](node/codex/codexAgent.ts). |
-| `sessionMetadataScanStart`, `sessionMetadataScan` | In the SDK enumeration wrapper used by `prewarmSessionMetadata` in [Copilot](node/copilot/copilotAgent.ts). |
+| `sessionMigrationScanStart`, `sessionMigrationScan`, `sessionDiscoveryScanStart`, `sessionDiscoveryScan` | Around enumeration in [AI](node/copilot/copilotAgent.ts), [Claude](node/claude/claudeAgent.ts) and [Codex](node/codex/codexAgent.ts). |
+| `sessionMetadataScanStart`, `sessionMetadataScan` | In the SDK enumeration wrapper used by `prewarmSessionMetadata` in [AI](node/copilot/copilotAgent.ts). |
 
 ## Workload counts
 
@@ -280,7 +280,7 @@ Migration records include synchronized, already-current, excluded, incomplete,
 and failed candidate counts. `incompleteSessionCount` includes stale exclusions.
 A deferred or unavailable catalog has no scan count, not a synthetic zero.
 
-For a graph of listing latency by Copilot volume, filter successful
+For a graph of listing latency by AI volume, filter successful
 `sessionList` records and group `durationMs` by `copilotSessionCount < 100`,
 `== 100`, and `> 100`. Use `firstSessionList.durationMs` for process-relative
 first-list latency, and join its counts to `startupSettled` on the host ID for
@@ -288,7 +288,7 @@ startup-settled cohorts. Do not substitute a slower concurrent sampled listing
 or filter these milestones on `outcome == success`.
 
 For process readiness by **provider-wide** volume, join
-`hostReady` to a successful, non-truncated Copilot scan on `agentHostSessionId`.
+`hostReady` to a successful, non-truncated AI scan on `agentHostSessionId`.
 Select a scan end-marker name explicitly, or deduplicate across scan purposes, before
 joining; otherwise migration and discovery can multiply rows. Keep missing
 counts separate from zero, and filter out late scans when analyzing startup.
@@ -318,8 +318,8 @@ The `providerContext` snapshot records the first catalog-access decision:
 
 | Field | Values and meaning |
 | --- | --- |
-| `activationState` | `active` / `inactive` for an explicit activation gate (Codex), `notRequired` when catalog access has no such gate (Copilot and Claude), or `unknown`. |
-| `sdkAvailability` | `available` / `unavailable` from an existing no-download check (or the statically imported Copilot SDK), or `unknown` when no catalog check ran or the check failed. |
+| `activationState` | `active` / `inactive` for an explicit activation gate (Codex), `notRequired` when catalog access has no such gate (AI and Claude), or `unknown`. |
+| `sdkAvailability` | `available` / `unavailable` from an existing no-download check (or the statically imported AI SDK), or `unknown` when no catalog check ran or the check failed. |
 
 `inactive` Codex does not perform an extra SDK probe to fill in the snapshot.
 An SDK being available does not mean authentication or a provider connection

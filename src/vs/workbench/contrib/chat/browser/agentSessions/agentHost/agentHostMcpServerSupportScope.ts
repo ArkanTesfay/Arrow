@@ -89,15 +89,15 @@ export function createCustomizationMcpServerCompatibilityScope(
 export function getMcpCompatibilityDetail(reason: AgentHostMcpSupportReason): string {
 	switch (reason) {
 		case AgentHostMcpSupportReason.UnsupportedSourceLocation:
-			return localize('mcpCompatibilityUnsupportedSourceLocation', "The current configuration location for this server is not supported by the Copilot harness.\nTo migrate this server, move its configuration to the workspace root .mcp.json file.");
+			return localize('mcpCompatibilityUnsupportedSourceLocation', "The current configuration location for this server is not supported by the AI harness.\nTo migrate this server, move its configuration to the workspace root .mcp.json file.");
 		case AgentHostMcpSupportReason.RequiresUserInteraction:
-			return localize('mcpCompatibilityRequiresUserInteraction', "Input and command variables are not supported by the Copilot harness.\nTo migrate this server, replace them with concrete values or environment variables defined directly in the server configuration.");
+			return localize('mcpCompatibilityRequiresUserInteraction', "Input and command variables are not supported by the AI harness.\nTo migrate this server, replace them with concrete values or environment variables defined directly in the server configuration.");
 		case AgentHostMcpSupportReason.UnresolvedConfiguration:
-			return localize('mcpCompatibilityUnresolvedConfiguration', "Unresolved configuration, environment, or workspace variables are not supported by the Copilot harness.\nTo migrate this server, define the missing variables or replace them with concrete values.");
+			return localize('mcpCompatibilityUnresolvedConfiguration', "Unresolved configuration, environment, or workspace variables are not supported by the AI harness.\nTo migrate this server, define the missing variables or replace them with concrete values.");
 		case AgentHostMcpSupportReason.LaunchNotRepresentable:
-			return localize('mcpCompatibilityLaunchNotRepresentable', "The launch configuration for this server is not supported by the Copilot harness.\nTo migrate this server, add a command for a local server or a valid URL for a remote server.");
+			return localize('mcpCompatibilityLaunchNotRepresentable', "The launch configuration for this server is not supported by the AI harness.\nTo migrate this server, add a command for a local server or a valid URL for a remote server.");
 		case AgentHostMcpSupportReason.EnvironmentFileIgnored:
-			return localize('mcpCompatibilityEnvironmentFileIgnored', "Environment files are not supported by the Copilot harness.\nTo migrate this server, move required variables from the environment file into the server env configuration.");
+			return localize('mcpCompatibilityEnvironmentFileIgnored', "Environment files are not supported by the AI harness.\nTo migrate this server, move required variables from the environment file into the server env configuration.");
 		case AgentHostMcpSupportReason.WorkingDirectoryNotPortable:
 			return localize('mcpCompatibilityWorkingDirectoryNotPortable', "Working directory settings cannot be migrated to the workspace root .mcp.json file.\nTo migrate this server, remove the cwd property.");
 		case AgentHostMcpSupportReason.GalleryMetadataNotPortable:
@@ -107,11 +107,11 @@ export function getMcpCompatibilityDetail(reason: AgentHostMcpSupportReason): st
 		case AgentHostMcpSupportReason.SseTransportNotPortable:
 			return localize('mcpCompatibilitySseTransportNotPortable', "SSE transport settings cannot be migrated to the workspace root .mcp.json file.\nTo migrate this server, use the default HTTP transport.");
 		case AgentHostMcpSupportReason.SandboxConfigurationIgnored:
-			return localize('mcpCompatibilitySandboxConfigurationIgnored', "Per-server sandbox settings are not supported by the Copilot harness.\nTo migrate this server, remove the server sandbox setting.");
+			return localize('mcpCompatibilitySandboxConfigurationIgnored', "Per-server sandbox settings are not supported by the AI harness.\nTo migrate this server, remove the server sandbox setting.");
 		case AgentHostMcpSupportReason.DevelopmentModeIgnored:
-			return localize('mcpCompatibilityDevelopmentModeIgnored', "MCP development mode is not supported by the Copilot harness.\nTo migrate this server, remove the development mode setting and restart the server manually after configuration changes.");
+			return localize('mcpCompatibilityDevelopmentModeIgnored', "MCP development mode is not supported by the AI harness.\nTo migrate this server, remove the development mode setting and restart the server manually after configuration changes.");
 		case AgentHostMcpSupportReason.OAuthClientConfigurationIgnored:
-			return localize('mcpCompatibilityOAuthClientConfigurationIgnored', "Custom OAuth client configuration is not supported by the Copilot harness.\nTo migrate this server, remove the custom OAuth client configuration and sign in when the Copilot harness prompts for authentication.");
+			return localize('mcpCompatibilityOAuthClientConfigurationIgnored', "Custom OAuth client configuration is not supported by the AI harness.\nTo migrate this server, remove the custom OAuth client configuration and sign in when the AI harness prompts for authentication.");
 		case AgentHostMcpSupportReason.DefinitionNotLoaded:
 			return localize('mcpCompatibilityDefinitionNotLoaded', "Compatibility cannot be determined because the server definition has not loaded.\nTo migrate this server, wait for MCP discovery to finish, then refresh this view. If the issue persists, check the server configuration for errors.");
 		case AgentHostMcpSupportReason.SourceUnknown:

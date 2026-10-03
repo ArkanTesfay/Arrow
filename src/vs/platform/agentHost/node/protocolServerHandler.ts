@@ -821,7 +821,7 @@ export class ProtocolServerHandler extends Disposable implements IAgentHostClien
 	}
 
 	/**
-	 * Forwards a client's upgrade request to the hosting VS Code CLI's
+	 * Forwards a client's upgrade request to the hosting Vertex CLI's
 	 * HTTP management API (advertised via the {@link VSCODE_AGENT_HOST_MANAGEMENT_SOCKET_ENV}).
 	 * Returns the CLI's parsed response verbatim so the client can render
 	 * a meaningful status (already up-to-date, restart scheduled, etc.).

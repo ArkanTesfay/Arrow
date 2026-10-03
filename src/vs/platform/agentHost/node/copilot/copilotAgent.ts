@@ -171,7 +171,7 @@ export async function getCopilotManagedSettingsDiagnostics(
 	}));
 	const result = await raceTimeout(request, timeoutMs);
 	if (!result) {
-		throw new Error(`Copilot runtime managed-settings query exceeded ${timeoutMs / 1000} seconds while waiting for native MDM or GitHub policy resolution.`);
+		throw new Error(`AI runtime managed-settings query exceeded ${timeoutMs / 1000} seconds while waiting for native MDM or GitHub policy resolution.`);
 	}
 	return result;
 }
@@ -434,7 +434,7 @@ const CHAT_QUEUE_STALL_WARNING_MS = 60_000;
 
 class CopilotSessionConfigurationBusyError extends Error {
 	constructor(readonly session: CopilotAgentSession) {
-		super('Cannot refresh Copilot session configuration while the session has an active turn.');
+		super('Cannot refresh AI session configuration while the session has an active turn.');
 	}
 }
 
@@ -970,7 +970,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 	private _resolveChatScope(chat: URI): URI {
 		const scope = this._chatScopes.get(chat.toString());
 		if (!scope) {
-			throw new Error(`[Copilot] No recorded scope for chat ${chat.toString()}; it must be created or materialized before it can be forked from`);
+			throw new Error(`[AI] No recorded scope for chat ${chat.toString()}; it must be created or materialized before it can be forked from`);
 		}
 		return scope;
 	}
@@ -1096,12 +1096,12 @@ export class CopilotAgent extends Disposable implements IAgent {
 		// `_ensureClient`, so they only take effect on the next client start.
 		this._register(this._configurationService.onDidRootConfigChange(() => {
 			this._restartClientIfStartupConfigChanged().catch(err =>
-				this._logService.error('[Copilot] Failed to apply root config change', err)
+				this._logService.error('[AI] Failed to apply root config change', err)
 			);
 		}));
 		this._register(this._managedSettingsService.onDidChange(() => {
 			this._restartClientIfStartupConfigChanged().catch(err =>
-				this._logService.error('[Copilot] Failed to apply managed settings change', err)
+				this._logService.error('[AI] Failed to apply managed settings change', err)
 			);
 		}));
 		this._register(this._configurationService.onDidRootConfigChange(() => {
@@ -1115,7 +1115,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		// Surface renderer BYOK models in the picker: republish them whenever the
 		// set of connected renderer bridges, or any renderer's models, change.
 		this._register(this._byokBridgeRegistry.onDidChangeModels(() => {
-			this._logService.info('[Copilot] BYOK bridge changed; refreshing models');
+			this._logService.info('[AI] BYOK bridge changed; refreshing models');
 			this._refreshByokModels();
 		}));
 
@@ -1133,7 +1133,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				this._applyGitHubToken(undefined, undefined),
 				this._restartClientIfStartupConfigChanged(),
 			]).catch(err =>
-				this._logService.error('[Copilot] Failed to restart client after endpoint change', err)
+				this._logService.error('[AI] Failed to restart client after endpoint change', err)
 			);
 		}));
 	}
@@ -1214,7 +1214,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				return client;
 			}
 
-			await this._requestClientRestart('Copilot Connector authentication changed before session launch');
+			await this._requestClientRestart('AI Connector authentication changed before session launch');
 			if (!this._client) {
 				continue;
 			}
@@ -1284,7 +1284,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			this._refreshProxy();
 		}
 		if (this._client) {
-			this._logService.info(`[Copilot] Startup config changed (${changed}), restarting CopilotClient`);
+			this._logService.info(`[AI] Startup config changed (${changed}), restarting CopilotClient`);
 		}
 		await this._requestClientRestart(`startup config changed: ${changed}`);
 	}
@@ -1321,12 +1321,12 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return false;
 		}
 		if (this._updatingGitHubCredentials) {
-			this._logService.info(`[Copilot] Deferring CopilotClient restart (${reason}) until GitHub credential updates finish`);
+			this._logService.info(`[AI] Deferring CopilotClient restart (${reason}) until GitHub credential updates finish`);
 			return true;
 		}
 		const busyChats = this._chatsWithActiveTurn();
 		if (busyChats > 0) {
-			this._logService.info(`[Copilot] Deferring CopilotClient restart (${reason}) until ${busyChats} in-flight turn(s) finish`);
+			this._logService.info(`[AI] Deferring CopilotClient restart (${reason}) until ${busyChats} in-flight turn(s) finish`);
 			return true;
 		}
 		await this._applyPendingClientRestart();
@@ -1343,7 +1343,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return;
 		}
 		const reason = [...this._pendingClientRestartReasons].join('; ');
-		this._logService.info(`[Copilot] Restarting CopilotClient (${reason})`);
+		this._logService.info(`[AI] Restarting CopilotClient (${reason})`);
 		this._chatEntriesBySdkId.clearAndDisposeAll();
 		await this._stopClient();
 		// The model list came from the subprocess we just tore down, and the
@@ -1368,7 +1368,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		queueMicrotask(() => {
 			this._applyPendingClientRestart().catch(err =>
-				this._logService.error('[Copilot] Failed to apply deferred client restart', err)
+				this._logService.error('[AI] Failed to apply deferred client restart', err)
 			);
 		});
 	}
@@ -1414,11 +1414,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 	}
 
 	private async _doRecoverFromClosedConnection(clientFailureId: string): Promise<ICopilotClosedConnectionRecoveryResult> {
-		this._logService.error('[Copilot] Recovering from closed SDK connection');
+		this._logService.error('[AI] Recovering from closed SDK connection');
 		const failedTurnIds = new Set<string>();
 		const error: ErrorInfo = {
 			errorType: 'providerConnectionClosed',
-			message: localize('copilotAgent.connectionClosed', "Copilot stopped unexpectedly. Retry your request."),
+			message: localize('copilotAgent.connectionClosed', "AI stopped unexpectedly. Retry your request."),
 		};
 		for (const chat of this._allLiveSessions()) {
 			const clientContext = chat.currentTurnClientContext;
@@ -1439,7 +1439,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			await this._stopClient();
 		} catch (error) {
 			stopSucceeded = false;
-			this._logService.error(error, '[Copilot] Failed to stop closed SDK client');
+			this._logService.error(error, '[AI] Failed to stop closed SDK client');
 		}
 		this._capiModels = [];
 		this._publishModels();
@@ -1478,8 +1478,8 @@ export class CopilotAgent extends Disposable implements IAgent {
 	getDescriptor(): IAgentDescriptor {
 		return {
 			provider: 'copilotcli',
-			displayName: 'Copilot',
-			description: localize('copilotAgent.description', "Copilot SDK agent running in the local agent host process"),
+			displayName: 'AI',
+			description: localize('copilotAgent.description', "AI SDK agent running in the local agent host process"),
 			capabilities: {
 				multipleChats: { fork: true, sideChat: true },
 				...(this._isMultiRootEnabled() ? { multipleWorkingDirectories: { immutablePrimary: true } } : {}),
@@ -1506,14 +1506,14 @@ export class CopilotAgent extends Disposable implements IAgent {
 			try {
 				capiUrl = await this._copilotApiService.resolveApiEndpoint(this._githubCredentials.token) || capiUrl;
 			} catch (error) {
-				this._logService.debug(`[Copilot] CAPI endpoint discovery for network diagnostics failed; using ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
+				this._logService.debug(`[AI] CAPI endpoint discovery for network diagnostics failed; using ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
 			}
 		}
 		const capiPingUrl = new URL(capiUrl);
 		capiPingUrl.pathname = `${capiPingUrl.pathname.replace(/\/$/, '')}/_ping`;
 		return [
 			{ name: 'GitHub API', url: this._gitHubEndpointService.getApiBaseUri() },
-			{ name: 'Copilot API (CAPI)', url: capiPingUrl.toString() },
+			{ name: 'AI API (CAPI)', url: capiPingUrl.toString() },
 		];
 	}
 
@@ -1522,19 +1522,19 @@ export class CopilotAgent extends Disposable implements IAgent {
 	}
 
 	async getManagedSettingsDiagnostics(): Promise<IAgentHostManagedSettingsSnapshot> {
-		this._logService.debug('[Copilot] Collecting runtime managed-settings diagnostics');
-		let stage = 'resolving the Copilot SDK runtime paths';
+		this._logService.debug('[AI] Collecting runtime managed-settings diagnostics');
+		let stage = 'resolving the AI SDK runtime paths';
 		const diagnostics = (async () => {
 			const nodeModulesUri = getAppNodeModulesUri();
 			const { sdkPath: runtimeSdkPath } = await resolveCopilotRuntimePaths(nodeModulesUri);
-			stage = 'checking the Copilot runtime SDK';
+			stage = 'checking the AI runtime SDK';
 			if (!await fileExists(runtimeSdkPath)) {
-				throw new Error(`Copilot runtime SDK not found at ${runtimeSdkPath}`);
+				throw new Error(`AI runtime SDK not found at ${runtimeSdkPath}`);
 			}
-			stage = 'loading the Copilot runtime SDK';
+			stage = 'loading the AI runtime SDK';
 			const runtimeSdk: unknown = await import(pathToFileURL(runtimeSdkPath).href);
 			if (!isCopilotRuntimeManagedSettingsSdk(runtimeSdk)) {
-				throw new Error('Copilot runtime SDK does not expose getManagedSettings()');
+				throw new Error('AI runtime SDK does not expose getManagedSettings()');
 			}
 
 			stage = 'resolving the proxy';
@@ -1552,10 +1552,10 @@ export class CopilotAgent extends Disposable implements IAgent {
 		})();
 		const result = await raceTimeout(diagnostics, COPILOT_MANAGED_SETTINGS_DIAGNOSTICS_TIMEOUT_MS);
 		if (!result) {
-			this._logService.warn(`[Copilot] Runtime managed-settings diagnostics timed out while ${stage}`);
-			throw new Error(`Copilot runtime diagnostics exceeded 4.5 seconds while ${stage}.`);
+			this._logService.warn(`[AI] Runtime managed-settings diagnostics timed out while ${stage}`);
+			throw new Error(`AI runtime diagnostics exceeded 4.5 seconds while ${stage}.`);
 		}
-		this._logService.debug('[Copilot] Runtime managed-settings diagnostics collected');
+		this._logService.debug('[AI] Runtime managed-settings diagnostics collected');
 		return {
 			...result.resolved,
 			...(result.account ? { account: result.account } : {}),
@@ -1806,7 +1806,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				if (!session.isDisposed) {
 					session.markConnectorConfigurationChanged();
 				}
-			}).catch(error => this._logService.warn(`[Copilot:${session.sessionId}] Failed to schedule Connector MCP refresh`, error))
+			}).catch(error => this._logService.warn(`[AI:${session.sessionId}] Failed to schedule Connector MCP refresh`, error))
 		));
 	}
 
@@ -1978,7 +1978,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			}
 			return;
 		}
-		this._logService.info(`[Copilot] Auth token ${token ? 'updated' : 'cleared'}`);
+		this._logService.info(`[AI] Auth token ${token ? 'updated' : 'cleared'}`);
 		this._telemetryAuthenticationGeneration++;
 		this._updateRestrictedTelemetry(token);
 		this._refreshProxy();
@@ -2002,7 +2002,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const host = this._gitHubEndpointService.getEnterpriseUri() ?? 'https://github.com';
 		const clientAuthenticationReason = this._getEnterpriseHost() !== undefined
 			? 'GitHub Enterprise authentication updated'
-			: this._areCopilotConnectorsEnabled() ? 'Copilot Connector authentication updated' : undefined;
+			: this._areCopilotConnectorsEnabled() ? 'AI Connector authentication updated' : undefined;
 		const useClientAuthentication = clientAuthenticationReason !== undefined;
 		let restartRequired = tokenProviderModeChanged || useClientAuthentication;
 		this._updatingGitHubCredentials = true;
@@ -2017,13 +2017,13 @@ export class CopilotAgent extends Disposable implements IAgent {
 						const result = await session.updateGitHubCredentials(host, token);
 						if (!result.success) {
 							restartRequired = true;
-							this._logService.warn(`[Copilot:${session.sessionId}] GitHub credential update was rejected; scheduling a safe CopilotClient restart`);
+							this._logService.warn(`[AI:${session.sessionId}] GitHub credential update was rejected; scheduling a safe CopilotClient restart`);
 						} else if (result.copilotUserResolved === false) {
-							this._logService.warn(`[Copilot:${session.sessionId}] GitHub credentials were updated, but Copilot user metadata could not be resolved; plan, quota, and billing metadata may be degraded. Reauthenticate to restore it.`);
+							this._logService.warn(`[AI:${session.sessionId}] GitHub credentials were updated, but AI user metadata could not be resolved; plan, quota, and billing metadata may be degraded. Reauthenticate to restore it.`);
 						}
 					} catch (error) {
 						restartRequired = true;
-						this._logService.warn(`[Copilot:${session.sessionId}] Failed to update GitHub credentials; scheduling a safe CopilotClient restart: ${getErrorMessage(error)}`);
+						this._logService.warn(`[AI:${session.sessionId}] Failed to update GitHub credentials; scheduling a safe CopilotClient restart: ${getErrorMessage(error)}`);
 					}
 				}
 			}
@@ -2057,7 +2057,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		try {
 			await this._copilotApiService.resolveCopilotSku?.(githubToken);
 		} catch (err) {
-			this._logService.debug(`[Copilot] SKU resolution failed: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.debug(`[AI] SKU resolution failed: ${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -2090,7 +2090,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				telemetryEndpoint: toRestrictedTelemetryEndpoint(ctx.telemetryEndpoint),
 			});
 		} catch (err) {
-			this._logService.debug(`[Copilot] Restricted telemetry resolution failed: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.debug(`[AI] Restricted telemetry resolution failed: ${err instanceof Error ? err.message : String(err)}`);
 		}
 	}
 
@@ -2098,7 +2098,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const rtEnabled = context?.restrictedTelemetryEnabled === true;
 		if (rtEnabled !== this._restrictedTelemetryEnabled) {
 			this._restrictedTelemetryEnabled = rtEnabled;
-			this._logService.info(`[Copilot] Enhanced (restricted) telemetry ${rtEnabled ? 'enabled for this account' : 'disabled'}`);
+			this._logService.info(`[AI] Enhanced (restricted) telemetry ${rtEnabled ? 'enabled for this account' : 'disabled'}`);
 			this._onDidChangeRestrictedTelemetry.fire();
 		}
 		// Push the token-derived telemetry policy/identity to the restricted sender: `rt` gates
@@ -2152,7 +2152,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				isVscodeTeamMember: context.isVscodeTeamMember === true,
 			}, additionalProperties);
 		} catch (error) {
-			this._logService.debug(`[Copilot:${sessionId}] Restricted telemetry context resolution failed; dropping ${notification.event.kind}: ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.debug(`[AI:${sessionId}] Restricted telemetry context resolution failed; dropping ${notification.event.kind}: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -2256,7 +2256,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 					this._modelRefreshSchedule.clear();
 					await this._startModelRefresh(scheduled.generation);
 				} catch (err) {
-					this._logService.error(err, '[Copilot] Failed to schedule model refresh');
+					this._logService.error(err, '[AI] Failed to schedule model refresh');
 				} finally {
 					if (this._scheduledModelRefresh === scheduled) {
 						this._scheduledModelRefresh = undefined;
@@ -2314,7 +2314,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			await this._handleClientOperationFailure(err, 'modelRefresh');
 			if (attempt + 1 < this._modelRefreshMaxAttempts) {
 				const delay = this._modelRefreshBackoff(attempt);
-				this._logService.warn(`[Copilot] Failed to refresh models (attempt ${attempt + 1}), retrying in ${delay}ms`, err);
+				this._logService.warn(`[AI] Failed to refresh models (attempt ${attempt + 1}), retrying in ${delay}ms`, err);
 				this._modelRefreshRetry.value = disposableTimeout(() => {
 					void this._refreshModels(attempt + 1, generation);
 				}, delay);
@@ -2324,7 +2324,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			// list so a transient failure never wipes a previously loaded, good
 			// model list. Republish so a concurrently-updated BYOK list still
 			// shows through.
-			this._logService.error(err, '[Copilot] Failed to refresh models');
+			this._logService.error(err, '[AI] Failed to refresh models');
 			this._publishModels();
 		}
 	}
@@ -2396,7 +2396,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		const rootConfigValue = this._configurationService.getRootValue(platformRootSchema, AgentHostByokModelsEnabledConfigKey);
 		const { enabled, trace } = resolveByokLmEnablement(rootConfigValue);
-		this._logService.trace(`[Copilot] BYOK model publication ${trace}`);
+		this._logService.trace(`[AI] BYOK model publication ${trace}`);
 		if (!enabled) {
 			this._byokModels = [];
 			this._publishModels();
@@ -2417,7 +2417,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				...(byokMeta && { _meta: byokMeta }),
 			};
 		});
-		this._logService.trace(`[Copilot] Found ${this._byokModels.length} BYOK models${this._byokModels.length ? ': ' + this._byokModels.map(m => m.name).join(', ') : ''}`);
+		this._logService.trace(`[AI] Found ${this._byokModels.length} BYOK models${this._byokModels.length ? ': ' + this._byokModels.map(m => m.name).join(', ') : ''}`);
 		this._publishModels();
 	}
 
@@ -2482,7 +2482,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		try {
 			await client.stop();
 		} catch (error) {
-			this._logService.error(error, '[Copilot] Failed to stop client after startup termination');
+			this._logService.error(error, '[AI] Failed to stop client after startup termination');
 		}
 		throw terminalError;
 	}
@@ -2514,7 +2514,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 						if (retries < MAX_STARTUP_CONFIG_RETRIES
 							&& !this._shutdownPromise
 							&& error instanceof CopilotClientStartupConfigChangedError) {
-							this._logService.info('[Copilot] Startup config changed while the client was starting; re-acquiring the client with the current config');
+							this._logService.info('[AI] Startup config changed while the client was starting; re-acquiring the client with the current config');
 							continue;
 						}
 						throw error;
@@ -2563,7 +2563,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const attemptNumber = ++this._clientStartupAttemptCount;
 		const startupStopWatch = StopWatch.create();
 		const startClient = async () => {
-			this._logService.info('[Copilot] Starting CopilotClient...');
+			this._logService.info('[AI] Starting CopilotClient...');
 
 			// Build a clean env for the CLI subprocess, stripping Electron/VS Code vars
 			// that can interfere with the Node.js process the SDK spawns.
@@ -2594,7 +2594,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 
 			// Identify VS Code's agent host traffic in CAPI
 			env['GITHUB_COPILOT_INTEGRATION_ID'] = COPILOT_INTEGRATION_ID;
-			this._logService.info(`[Copilot] Set CLI env: GITHUB_COPILOT_INTEGRATION_ID=${COPILOT_INTEGRATION_ID}`);
+			this._logService.info(`[AI] Set CLI env: GITHUB_COPILOT_INTEGRATION_ID=${COPILOT_INTEGRATION_ID}`);
 
 			// Point the Copilot CLI at a configured GitHub Enterprise host for its
 			// authentication and CAPI endpoint discovery. `COPILOT_GH_HOST` is
@@ -2603,7 +2603,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			const enterpriseHost = startupConfig.enterpriseHost;
 			if (enterpriseHost) {
 				env['COPILOT_GH_HOST'] = enterpriseHost;
-				this._logService.info(`[Copilot] Set CLI env: COPILOT_GH_HOST=${enterpriseHost}`);
+				this._logService.info(`[AI] Set CLI env: COPILOT_GH_HOST=${enterpriseHost}`);
 			}
 
 			// Enable the rubber duck critic subagent in the CLI when the agent host
@@ -2617,7 +2617,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 
 			setCopilotTgrepEnvironment(env, startupConfig.tgrep);
 			if (startupConfig.tgrep) {
-				this._logService.info('[Copilot] Set CLI env: USE_TGREP=true (tgrep indexed search forced on)');
+				this._logService.info('[AI] Set CLI env: USE_TGREP=true (tgrep indexed search forced on)');
 			}
 
 			// Keep the SDK wrapper and native module paired within the bundled platform
@@ -2628,9 +2628,9 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (startupConfig.runtimePath) {
 				await validateCopilotRuntimePath(startupConfig.runtimePath);
 				runtimePath = startupConfig.runtimePath;
-				this._logService.info(`[Copilot] Using configured runtime path: ${runtimePath}`);
+				this._logService.info(`[AI] Using configured runtime path: ${runtimePath}`);
 			} else {
-				this._logService.info(`[Copilot] Using bundled runtime path: ${runtimePath}`);
+				this._logService.info(`[AI] Using bundled runtime path: ${runtimePath}`);
 			}
 
 			// The SDK's sandbox auto-detection looks for `<MXC_BIN_DIR>/<arch>/wxc-exec.exe`
@@ -2680,7 +2680,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				logLevel: copilotSdkLogLevelAtStartup,
 				enableRemoteSessions: startupConfig.sessionSync,
 				onGetTraceContext: () => this._otelService.getCurrentTraceContext() ?? {},
-				onGitHubTelemetry: notification => { void this._routeGitHubTelemetry(notification).catch(err => this._logService.trace(`[Copilot] GitHub telemetry routing failed: ${err instanceof Error ? err.message : String(err)}`)); },
+				onGitHubTelemetry: notification => { void this._routeGitHubTelemetry(notification).catch(err => this._logService.trace(`[AI] GitHub telemetry routing failed: ${err instanceof Error ? err.message : String(err)}`)); },
 			};
 			const client = this._createCopilotClient(clientOptions);
 			await client.start();
@@ -2690,7 +2690,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (!this._readClientStartupConfig().equals(startupConfig)) {
 				return this._stopClientAfterStartupTermination(client, new CopilotClientStartupConfigChangedError());
 			}
-			this._logService.info('[Copilot] CopilotClient started successfully');
+			this._logService.info('[AI] CopilotClient started successfully');
 			this._client = client;
 			this._clientGeneration++;
 			this._clientConnectorAuthentication = { connectorsEnabled: startupConfig.copilotConnectors, enterpriseHost: startupConfig.enterpriseHost, token: gitHubToken };
@@ -2919,7 +2919,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return result;
 		})));
 		const result = mapped.filter((s): s is IAgentChatMetadata => s !== undefined);
-		this._logService.info(`[Copilot] Found ${result.length} legacy sessions`);
+		this._logService.info(`[AI] Found ${result.length} legacy sessions`);
 		return result;
 	}
 
@@ -2994,7 +2994,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 					return;
 				}
 				if (attempt >= CHAT_DISCOVERY_RETRY_DELAYS_MS.length) {
-					this._logService.warn('[Copilot] Chat discovery failed: catalog never became available');
+					this._logService.warn('[AI] Chat discovery failed: catalog never became available');
 					return;
 				}
 				await timeout(CHAT_DISCOVERY_RETRY_DELAYS_MS[attempt]);
@@ -3017,7 +3017,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			const enumerated = await this._discoverCopilotChats(chats => this._publishDiscoveredChats(chats, migrateLegacyAtStart));
 			return enumerated;
 		} catch (err) {
-			this._logService.warn('[Copilot] Failed to emit discovered chats', err);
+			this._logService.warn('[AI] Failed to emit discovered chats', err);
 			return false;
 		}
 	}
@@ -3045,7 +3045,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			this._discoveredChats.set(key, { signature, external: chat.external });
 			return true;
 		});
-		this._logService.info(`[Copilot] Chat discovery: emitting ${emitted.length} of ${chats.length} discovered chat(s) (adopt legacy extension-host chats: ${migrateLegacy})`);
+		this._logService.info(`[AI] Chat discovery: emitting ${emitted.length} of ${chats.length} discovered chat(s) (adopt legacy extension-host chats: ${migrateLegacy})`);
 		if (emitted.length > 0) {
 			this._onDidDiscoverChats.fire(emitted);
 		}
@@ -3167,12 +3167,12 @@ export class CopilotAgent extends Disposable implements IAgent {
 					external: !adoptable,
 				} satisfies IAgentDiscoveredChat;
 				if (externalClientName !== undefined) {
-					this._logService.info(`[Copilot] Chat discovery: classified ${session.toString()} as external (clientName: ${externalClientName})`);
+					this._logService.info(`[AI] Chat discovery: classified ${session.toString()} as external (clientName: ${externalClientName})`);
 				}
 				return discoveredChat;
 			} catch (err) {
 				failed++;
-				this._logService.warn(`[Copilot] Failed to classify discovered chat ${session.toString()}; skipping it`, err);
+				this._logService.warn(`[AI] Failed to classify discovered chat ${session.toString()}; skipping it`, err);
 				return undefined;
 			}
 		});
@@ -3188,7 +3188,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				publish(chats);
 			}
 		}
-		this._logService.info(`[Copilot] Chat discovery: ${sessions.length} SDK session(s) -> ${external} external, ${discovered - external} adoptable legacy extension-host, ${suppressedAdoptable} suppressed adoptable legacy extension-host, ${suppressedArchived} suppressed archived legacy extension-host, ${known} already known to Agent Host, ${withoutWorkingDirectory} without a working directory, ${unsupportedClientName} with unsupported or missing client name, ${outsideImportWindow} outside the import window, ${failed} failed to classify (adopt legacy extension-host chats: ${emitAdoptable})`);
+		this._logService.info(`[AI] Chat discovery: ${sessions.length} SDK session(s) -> ${external} external, ${discovered - external} adoptable legacy extension-host, ${suppressedAdoptable} suppressed adoptable legacy extension-host, ${suppressedArchived} suppressed archived legacy extension-host, ${known} already known to Agent Host, ${withoutWorkingDirectory} without a working directory, ${unsupportedClientName} with unsupported or missing client name, ${outsideImportWindow} outside the import window, ${failed} failed to classify (adopt legacy extension-host chats: ${emitAdoptable})`);
 		return true;
 	}
 
@@ -3196,16 +3196,16 @@ export class CopilotAgent extends Disposable implements IAgent {
 		this._startupPerformance.mark('providerContext', { provider: this.id, activationState: 'notRequired', sdkAvailability: 'available' });
 		const phase = reason === 'chats to migrate' ? 'sessionMigrationScan' : reason === 'discoverable chats' ? 'sessionDiscoveryScan' : 'sessionMetadataScan';
 		const timing = this._startupPerformance.start(phase, this.id);
-		this._logService.info(`[Copilot] Listing ${reason}...`);
+		this._logService.info(`[AI] Listing ${reason}...`);
 		try {
 			const sessions = await this._retryAfterClosedConnection('listSessions', listSessions);
 			timing?.complete('success', { scannedSessionCount: sessions.length });
-			this._logService.info(`[Copilot] Listed ${sessions.length} SDK session(s) for ${reason}`);
+			this._logService.info(`[AI] Listed ${sessions.length} SDK session(s) for ${reason}`);
 			return sessions;
 		} catch (err) {
 			if (err instanceof CancellationError || isRecognizedCopilotClientStartupFailure(err) || classifyCopilotClientOperationFailure(err) !== undefined) {
 				timing?.complete('unavailable');
-				this._logService.info(`[Copilot] Client unavailable while listing ${reason}: ${err instanceof Error ? err.message : String(err)}`);
+				this._logService.info(`[AI] Client unavailable while listing ${reason}: ${err instanceof Error ? err.message : String(err)}`);
 				return undefined;
 			}
 			timing?.complete('error');
@@ -3317,7 +3317,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 	}
 
 	private async _listModels(gitHubToken: string): Promise<IAgentModelInfo[]> {
-		this._logService.info('[Copilot] Listing models...');
+		this._logService.info('[AI] Listing models...');
 		const client = await this._ensureClient();
 		const { models } = await client.rpc.models.list(this._getEnterpriseHost() ? {} : { gitHubToken });
 		this._freeLongContextModels.clear();
@@ -3347,7 +3347,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				_meta: this._createModelPickerMeta(m, billing),
 			};
 		});
-		this._logService.info(`[Copilot] Found ${result.length} models: ${result.map(m => m.name).join(', ')}`);
+		this._logService.info(`[AI] Found ${result.length} models: ${result.map(m => m.name).join(', ')}`);
 		return result;
 	}
 
@@ -3387,7 +3387,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		const tmpPath = await fs.mkdtemp(join(os.tmpdir(), 'agent-host-session-'));
 		const workingDirectory = URI.file(tmpPath);
-		this._logService.trace(`[Copilot] No workingDirectory provided, defaulting to temp directory: ${workingDirectory.fsPath}`);
+		this._logService.trace(`[AI] No workingDirectory provided, defaulting to temp directory: ${workingDirectory.fsPath}`);
 		return workingDirectory;
 	}
 
@@ -3409,9 +3409,9 @@ export class CopilotAgent extends Disposable implements IAgent {
 	private async _ensureWorkspacelessScratchDir(scratchDir: URI, sessionId: string): Promise<void> {
 		try {
 			await fs.mkdir(scratchDir.fsPath, { recursive: true });
-			this._logService.trace(`[Copilot:${sessionId}] Workspace-less scratch directory ready: ${scratchDir.fsPath}`);
+			this._logService.trace(`[AI:${sessionId}] Workspace-less scratch directory ready: ${scratchDir.fsPath}`);
 		} catch (error) {
-			this._logService.warn(`[Copilot:${sessionId}] Failed to ensure workspace-less scratch directory '${scratchDir.fsPath}': ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.warn(`[AI:${sessionId}] Failed to ensure workspace-less scratch directory '${scratchDir.fsPath}': ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -3419,9 +3419,9 @@ export class CopilotAgent extends Disposable implements IAgent {
 	private async _cleanupWorkspacelessScratchDir(scratchDir: URI, sessionId: string): Promise<void> {
 		try {
 			await fs.rm(scratchDir.fsPath, { recursive: true, force: true });
-			this._logService.trace(`[Copilot:${sessionId}] Removed workspace-less scratch directory: ${scratchDir.fsPath}`);
+			this._logService.trace(`[AI:${sessionId}] Removed workspace-less scratch directory: ${scratchDir.fsPath}`);
 		} catch (error) {
-			this._logService.warn(`[Copilot:${sessionId}] Failed to remove workspace-less scratch directory '${scratchDir.fsPath}': ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.warn(`[AI:${sessionId}] Failed to remove workspace-less scratch directory '${scratchDir.fsPath}': ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 
@@ -3506,7 +3506,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const backing = this._chatBackings.get(chatKey);
 		const target = backing ? this._findSessionBySdkId(backing.sdkSessionId) : undefined;
 		if (!backing || !target) {
-			throw new Error(`Cold Copilot chat operation requires explicit host context: ${chatKey}`);
+			throw new Error(`Cold AI chat operation requires explicit host context: ${chatKey}`);
 		}
 		const ownerSession = target.ownerSessionUri ?? target.sessionUri;
 		return {
@@ -3530,7 +3530,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const backing = this._chatBackings.get(chatKey);
 		const target = backing ? this._findSessionBySdkId(backing.sdkSessionId) : undefined;
 		if (!backing || !target) {
-			throw new Error(`Cold Copilot chat operation requires explicit host context: ${chatKey}`);
+			throw new Error(`Cold AI chat operation requires explicit host context: ${chatKey}`);
 		}
 		const ownerSession = target.ownerSessionUri ?? target.sessionUri;
 		return {
@@ -3701,7 +3701,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				await this._finalizeConfigurationScope(scope, scopeId, workspacelessHint);
 			}
 		} catch (cleanupError) {
-			this._logService.warn(`[Copilot] Failed to finalize configuration scope ${scope.toString()} after a failed chat creation: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
+			this._logService.warn(`[AI] Failed to finalize configuration scope ${scope.toString()} after a failed chat creation: ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
 		}
 	}
 
@@ -3709,7 +3709,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 	private async _reserveChatBacking(chat: URI, context: IAgentChatContext, options: IAgentCreateChatOptions): Promise<IAgentCreateChatResult> {
 		const session = context.configurationResource;
 		const sessionId = AgentSession.id(session);
-		this._logService.info(`[Copilot] Creating chat ${chat.toString()} with a deferred backing... ${options.model ? `model=${options.model.id}` : ''}`);
+		this._logService.info(`[AI] Creating chat ${chat.toString()} with a deferred backing... ${options.model ? `model=${options.model.id}` : ''}`);
 		const sdkSessionId = generateUuid();
 		// No working directory means a workspace-less chat that runs in a stable scratch dir.
 		const isWorkspaceless = options.workingDirectories === undefined;
@@ -3723,7 +3723,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		// successful first message.
 		const existing = this._findChatByUri(chat);
 		if (existing) {
-			this._logService.info(`[Copilot] createChat is a no-op: chat ${chat.toString()} is already backed by a live runtime`);
+			this._logService.info(`[AI] createChat is a no-op: chat ${chat.toString()} is already backed by a live runtime`);
 			const project = await projectFromCopilotContext({ cwd: workingDirectory.fsPath }, this._gitService);
 			return {
 				resolvedWorkingDirectory: workingDirectory,
@@ -3791,7 +3791,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			this._chatBackings.set(chat.toString(), { sdkSessionId, ...(options.model ? { model: options.model } : {}) });
 		}
 
-		this._logService.info(`[Copilot] Chat created; its backing stays deferred until the first send: ${session.toString()}`);
+		this._logService.info(`[AI] Chat created; its backing stays deferred until the first send: ${session.toString()}`);
 		return {
 			resolvedWorkingDirectory: workingDirectory,
 			provisional: true,
@@ -3819,7 +3819,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			const current = this._resolveChatContext(chat, operationContext);
 			let entry = current.target ?? await this._ensureResolvedChatSession(current);
 			if (!entry) {
-				throw new Error(`[Copilot] resumeTurn for unknown chat: ${chat.toString()}`);
+				throw new Error(`[AI] resumeTurn for unknown chat: ${chat.toString()}`);
 			}
 			const activeClient = this._activeClients.get(current.configurationResource);
 			const currentSnapshot = activeClient ? await raceCancellationError(activeClient.snapshot(current.chatKey), token) : undefined;
@@ -3834,14 +3834,14 @@ export class CopilotAgent extends Disposable implements IAgent {
 				throw new CancellationError();
 			}
 			if (refreshReason) {
-				this._logService.info(`[Copilot:${current.configurationId}] Session configuration changed, refreshing session: operation=resumeTurn, sdkSessionId=${entry.sessionId}, chat=${current.chatKey}, turnId=${turnId}, reason=${refreshReason}`);
+				this._logService.info(`[AI:${current.configurationId}] Session configuration changed, refreshing session: operation=resumeTurn, sdkSessionId=${entry.sessionId}, chat=${current.chatKey}, turnId=${turnId}, reason=${refreshReason}`);
 				await this._destroyLiveSession(entry, true);
 				entry = entry.sessionId === current.configurationId
 					? await this._resumeSession(current.configurationId, current.chat)
 					: await this._ensureResolvedChatSession(current);
 			}
 			if (!entry) {
-				throw new Error(`[Copilot] resumeTurn for unavailable chat: ${chat.toString()}`);
+				throw new Error(`[AI] resumeTurn for unavailable chat: ${chat.toString()}`);
 			}
 			if (token.isCancellationRequested) {
 				throw new CancellationError();
@@ -3869,7 +3869,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const importConfig = options.importConversation!;
 		const sessionUri = AgentSession.uri(this.id, sessionId);
 		return this._queueSession(sessionId, async () => {
-			this._logService.info(`[Copilot] Importing conversation into session ${sessionId} (${importConfig.turns.length} turns)`);
+			this._logService.info(`[AI] Importing conversation into session ${sessionId} (${importConfig.turns.length} turns)`);
 			const model = importConfig.model ?? options.model;
 
 			// Translate the conversation and seed it at the CLI's native
@@ -3898,7 +3898,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			// seeded event log lives at the session's own SDK id, so the resume
 			// records that exact backing for the target chat.
 			const imported = await this._resumeSession(sessionId, chat);
-			this._logService.info(`[Copilot] Imported session created: ${sessionUri.toString()}`);
+			this._logService.info(`[AI] Imported session created: ${sessionUri.toString()}`);
 			return {
 				resolvedWorkingDirectory: workingDirectory,
 				...(project ? { project } : {}),
@@ -4092,9 +4092,9 @@ export class CopilotAgent extends Disposable implements IAgent {
 				return;
 			}
 			await Promise.all(work);
-			this._logService.info(`[Copilot] Backfilled durable metadata for ${sessionId} (marker=${existingMarker === undefined} baseBranch=${existingBaseBranch === undefined} lastTurn=${existingLastTurn === undefined}), migrated before it was recorded`);
+			this._logService.info(`[AI] Backfilled durable metadata for ${sessionId} (marker=${existingMarker === undefined} baseBranch=${existingBaseBranch === undefined} lastTurn=${existingLastTurn === undefined}), migrated before it was recorded`);
 		} catch (err) {
-			this._logService.warn(`[Copilot] Failed to backfill durable metadata for ${sessionId}`, err);
+			this._logService.warn(`[AI] Failed to backfill durable metadata for ${sessionId}`, err);
 		} finally {
 			ref.dispose();
 		}
@@ -4114,13 +4114,13 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (existing?.workingDirectory) {
 				await this._backfillAdoptedLegacyMarker(session, sessionId);
 				await this._backfillAdoptedLegacyListVisibleMetadata(session, sessionId);
-				this._logService.trace(`[Copilot] Adoption skipped for ${sessionId}: already has Agent Host metadata (cwd=${existing.workingDirectory.fsPath})`);
+				this._logService.trace(`[AI] Adoption skipped for ${sessionId}: already has Agent Host metadata (cwd=${existing.workingDirectory.fsPath})`);
 				return { adopted: false, eligible: false, native: true, reason: 'alreadyNative' };
 			}
 			// Only migrate legacy EH Copilot CLI sessions — never other Copilot SDK
 			// sessions (standalone CLI, Local agent, …) that share `~/.copilot`.
 			if (!(await this._isExtensionHostCliSession(sessionId))) {
-				this._logService.info(`[Copilot] Adoption declined for ${sessionId}: not a legacy extension-host Copilot CLI chat (no VS Code marker in its SDK session directory)`);
+				this._logService.info(`[AI] Adoption declined for ${sessionId}: not a legacy extension-host AI CLI chat (no Vertex marker in its SDK session directory)`);
 				return { adopted: false, eligible: false, reason: 'notLegacyChat' };
 			}
 			const client = await this._ensureClient();
@@ -4141,11 +4141,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (!workingDirectory) {
 				// An eligible legacy session whose on-disk working directory could not
 				// be resolved: a genuine migration candidate that did not migrate.
-				this._logService.warn(`[Copilot] Adoption skipped for ${sessionId}: no usable working directory (sdk='${sdkWorkingDirectory ?? '(none)'}' exists=${sdkWorkingDirectory ? await this._isExistingDirectory(sdkWorkingDirectory) : false}, no recorded worktree, no marker fallback). The session stays on the legacy provider.`);
+				this._logService.warn(`[AI] Adoption skipped for ${sessionId}: no usable working directory (sdk='${sdkWorkingDirectory ?? '(none)'}' exists=${sdkWorkingDirectory ? await this._isExistingDirectory(sdkWorkingDirectory) : false}, no recorded worktree, no marker fallback). The session stays on the legacy provider.`);
 				return { adopted: false, eligible: true, reason: 'workingDirectoryMissing' };
 			}
 			const worktreeCheckoutMissing = adoptedWorktree ? !(await this._isExistingDirectory(adoptedWorktree.worktreePath.fsPath)) : false;
-			this._logService.info(`[Copilot] Adopting legacy session ${sessionId} in place (reusing on-disk events.jsonl): cwd=${workingDirectory.fsPath}${adoptedWorktree ? ` worktree=${adoptedWorktree.worktreePath.fsPath} branch=${adoptedWorktree.branchName} base=${adoptedWorktree.baseBranch ?? '(none)'} repo=${adoptedWorktree.repositoryRoot.fsPath}${worktreeCheckoutMissing ? ' (checkout missing, will be recreated on resume)' : ' (checkout present)'}` : ''}`);
+			this._logService.info(`[AI] Adopting legacy session ${sessionId} in place (reusing on-disk events.jsonl): cwd=${workingDirectory.fsPath}${adoptedWorktree ? ` worktree=${adoptedWorktree.worktreePath.fsPath} branch=${adoptedWorktree.branchName} base=${adoptedWorktree.baseBranch ?? '(none)'} repo=${adoptedWorktree.repositoryRoot.fsPath}${worktreeCheckoutMissing ? ' (checkout missing, will be recreated on resume)' : ' (checkout present)'}` : ''}`);
 			// Resolve the project from the SDK-derived cwd (authoritative) — the
 			// caller may not have supplied a working directory (e.g. the chat
 			// editor), so we cannot trust a hint.
@@ -4165,7 +4165,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				// Adoption commits the archived state, and the extension host stops listing
 				// the chat once it does. Guessing `false` here would resurface a session the
 				// user had filed away, so leave it for the next open instead.
-				this._logService.warn(`[Copilot] Adoption skipped for ${sessionId}: its extension-host marker could not be re-read, so the archived state is unknown`);
+				this._logService.warn(`[AI] Adoption skipped for ${sessionId}: its extension-host marker could not be re-read, so the archived state is unknown`);
 				return { adopted: false, eligible: true, reason: 'markerUnavailable' };
 			}
 			// Seed VS Code-layer metadata only — the SDK event log on disk is
@@ -4197,7 +4197,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				metadataRef.dispose();
 			}
 			await this._adoptLegacyTurnUsage(session, sessionId);
-			this._logService.info(`[Copilot] Adopted legacy session ${sessionId}: project=${project ? project.uri.fsPath : '(unresolved)'} archived=${archived} title=${adoptedTitle !== undefined ? (cliName ? 'name' : customTitle ? 'custom' : 'summary') : 'none'} worktreeBridged=${!!adoptedWorktree}`);
+			this._logService.info(`[AI] Adopted legacy session ${sessionId}: project=${project ? project.uri.fsPath : '(unresolved)'} archived=${archived} title=${adoptedTitle !== undefined ? (cliName ? 'name' : customTitle ? 'custom' : 'summary') : 'none'} worktreeBridged=${!!adoptedWorktree}`);
 			return { adopted: true, eligible: true, reason: 'adopted', listVisible, ...(adoptedWorktree ? { worktree: adoptedWorktree } : {}) };
 		});
 	}
@@ -4234,7 +4234,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				ref.dispose();
 			}
 		} catch (error) {
-			this._logService.warn(`[Copilot] Failed to backfill adopted legacy list metadata for ${sessionId}`, error);
+			this._logService.warn(`[AI] Failed to backfill adopted legacy list metadata for ${sessionId}`, error);
 		}
 	}
 
@@ -4288,9 +4288,9 @@ export class CopilotAgent extends Disposable implements IAgent {
 			} finally {
 				dbRef.dispose();
 			}
-			this._logService.info(`[Copilot] Adopted ${rows.length} legacy turn usage records for session ${sessionId}`);
+			this._logService.info(`[AI] Adopted ${rows.length} legacy turn usage records for session ${sessionId}`);
 		} catch (err) {
-			this._logService.warn(`[Copilot] Failed to adopt legacy turn usage for session ${sessionId}`, err);
+			this._logService.warn(`[AI] Failed to adopt legacy turn usage for session ${sessionId}`, err);
 		}
 	}
 
@@ -4421,10 +4421,10 @@ export class CopilotAgent extends Disposable implements IAgent {
 		// does not learn about them until it observes the materialize event
 		// fired below, so a lookup here would still see the pre-worktree set.
 		this._checkpointService.captureBaselineCheckpoint(sessionUri, materializedWorkingDirectories).catch(err => {
-			this._logService.warn(`[Copilot:${sessionId}] Baseline checkpoint capture failed: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.warn(`[AI:${sessionId}] Baseline checkpoint capture failed: ${err instanceof Error ? err.message : String(err)}`);
 		});
 
-		this._logService.info(`[Copilot] Session materialized: ${sessionUri.toString()}`);
+		this._logService.info(`[AI] Session materialized: ${sessionUri.toString()}`);
 		// Emit the resolved working-directory set (index 0 = process root). The host
 		// replaces index 0 of the session set with it, preserving the tail.
 		this._onDidMaterializeChat.fire({ chat: provisional.chat, project, workingDirectories: materializedWorkingDirectories });
@@ -4445,7 +4445,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return { agent: agent, name: originalAgentName };
 		}
 		if (alternativeAgentName && alternativeAgent) {
-			this._logService.info(`[Copilot] Agent file ${agent.uri} is in the original repo; using worktree agent ${alternativeAgent?.uri}`);
+			this._logService.info(`[AI] Agent file ${agent.uri} is in the original repo; using worktree agent ${alternativeAgent?.uri}`);
 			return { agent: alternativeAgent, name: alternativeAgentName };
 		}
 		return undefined;
@@ -4537,7 +4537,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 	/** Adds `chat` to the host-published membership for `clientId`. */
 	private _adoptClientChat(activeClient: ActiveClient, clientId: string, chat: URI): void {
 		if (activeClient.addClientChat(clientId, chat)) {
-			this._logService.info(`[Copilot] Active client ${clientId} now contributes to chat ${chat.toString()}`);
+			this._logService.info(`[AI] Active client ${clientId} now contributes to chat ${chat.toString()}`);
 		}
 	}
 
@@ -4547,11 +4547,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const configurationId = AgentSession.id(configurationResource);
 		const activeClient = this._activeClients.get(configurationResource);
 		if (!activeClient) {
-			this._logService.info(`[Copilot:${configurationId}] removeActiveClient: no active client state for clientId=${clientId}, chat=${chat.toString()}`);
+			this._logService.info(`[AI:${configurationId}] removeActiveClient: no active client state for clientId=${clientId}, chat=${chat.toString()}`);
 			return;
 		}
 		const wasLastChat = activeClient.removeClientChat(clientId, chat);
-		this._logService.info(`[Copilot:${configurationId}] removeActiveClient: clientId=${clientId}, chat=${chat.toString()}, fullyRemoved=${wasLastChat}`);
+		this._logService.info(`[AI:${configurationId}] removeActiveClient: clientId=${clientId}, chat=${chat.toString()}, fullyRemoved=${wasLastChat}`);
 		if (wasLastChat) {
 			activeClient.removeClient(clientId);
 		}
@@ -4615,7 +4615,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		if (allowRestart === 'whenIdle' && entry.hasActiveTurn) {
 			throw new CopilotSessionConfigurationBusyError(entry);
 		}
-		this._logService.info(`[Copilot:${context.configurationId}] Session configuration changed, refreshing session: operation=${operation}, sdkSessionId=${entry.sessionId}, chat=${context.chatKey}, turnId=${turnId ?? '(none)'}, reason=${refreshReason}, clients=[${activeClient ? [...activeClient.toolSet.clientIds()].join(', ') || '(none)' : '(none)'}]`);
+		this._logService.info(`[AI:${context.configurationId}] Session configuration changed, refreshing session: operation=${operation}, sdkSessionId=${entry.sessionId}, chat=${context.chatKey}, turnId=${turnId ?? '(none)'}, reason=${refreshReason}, clients=[${activeClient ? [...activeClient.toolSet.clientIds()].join(', ') || '(none)' : '(none)'}]`);
 		// Finish a started restart so queued control operations can target the replacement runtime.
 		await this._destroyLiveSession(entry, true);
 		if (entry.sessionId === context.configurationId) {
@@ -4626,7 +4626,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		const refreshed = await this._ensureResolvedChatSession(context, workingDirectories);
 		if (!refreshed) {
-			throw new Error(`Cannot refresh Copilot session configuration for chat: ${context.chat.toString()}`);
+			throw new Error(`Cannot refresh AI session configuration for chat: ${context.chat.toString()}`);
 		}
 		return refreshed;
 	}
@@ -4647,11 +4647,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 				entry = await this._ensureResolvedChatSession(current, workingDirectories);
 			}
 			if (!entry) {
-				this._logService.info(`[Copilot:${current.configurationId}] No cached entry${hadCachedEntry ? ' (was evicted by configuration refresh)' : ''}, calling _resumeSession`);
+				this._logService.info(`[AI:${current.configurationId}] No cached entry${hadCachedEntry ? ' (was evicted by configuration refresh)' : ''}, calling _resumeSession`);
 			}
 			entry ??= await this._ensureResolvedChatSession(current, workingDirectories);
 			if (!entry) {
-				throw new Error(`[Copilot] sendMessage for unknown chat: ${chat.toString()}`);
+				throw new Error(`[AI] sendMessage for unknown chat: ${chat.toString()}`);
 			}
 			if (token.isCancellationRequested) {
 				throw new CancellationError();
@@ -4668,7 +4668,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			} catch (err) {
 				const errCode = (err as { code?: number })?.code;
 				const errMsg = err instanceof Error ? err.message : String(err);
-				this._logService.error(`[Copilot:${current.configurationId}] entry.send() failed: code=${errCode}, message=${errMsg}, hadCachedEntry=${hadCachedEntry}, errorType=${err?.constructor?.name}`);
+				this._logService.error(`[AI:${current.configurationId}] entry.send() failed: code=${errCode}, message=${errMsg}, hadCachedEntry=${hadCachedEntry}, errorType=${err?.constructor?.name}`);
 				throw err;
 			}
 		});
@@ -4723,7 +4723,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const backing = this._chatBackings.get(chat.toString());
 		const target = backing ? this._findSessionBySdkId(backing.sdkSessionId) : undefined;
 		if (!target) {
-			this._logService.warn(`[Copilot] setPendingMessages: chat not found for ${chat.toString()}`);
+			this._logService.warn(`[AI] setPendingMessages: chat not found for ${chat.toString()}`);
 			return;
 		}
 
@@ -4758,7 +4758,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				if (context.sdkSessionId) {
 					throw err;
 				}
-				this._logService.warn(`[Copilot:${context.configurationId}] Failed to resolve chat for message lookup`, err);
+				this._logService.warn(`[AI:${context.configurationId}] Failed to resolve chat for message lookup`, err);
 				return undefined;
 			});
 		});
@@ -4772,13 +4772,13 @@ export class CopilotAgent extends Disposable implements IAgent {
 	private async _getSubagentChatMessages(chat: URI, sessionOrContext: URI | IAgentChatContext): Promise<readonly Turn[]> {
 		const spawnedFrom = resolveSubagentChatParent(sessionOrContext);
 		if (!spawnedFrom) {
-			this._logService.warn(`[Copilot] Subagent chat ${chat.toString()} addressed without its host-supplied tool-call origin; no turns to reconstruct`);
+			this._logService.warn(`[AI] Subagent chat ${chat.toString()} addressed without its host-supplied tool-call origin; no turns to reconstruct`);
 			return [];
 		}
 		const owner = resolveAgentChatContext(sessionOrContext, chat).configurationResource;
 		const parentContext = this._resolveChatContext(spawnedFrom.chat, { configurationResource: owner, resource: owner });
 		const parentEntry = await this._ensureResolvedChatSession(parentContext).catch(err => {
-			this._logService.warn(`[Copilot:${parentContext.sdkSessionId ?? parentContext.configurationId}] Failed to resume exact source chat for subagent restore`, err);
+			this._logService.warn(`[AI:${parentContext.sdkSessionId ?? parentContext.configurationId}] Failed to resume exact source chat for subagent restore`, err);
 			return undefined;
 		});
 		return parentEntry?.getSubagentMessages(spawnedFrom.toolCallId) ?? [];
@@ -4807,7 +4807,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const queuedBarrier = this._queueChat(context.configurationId, context.sequencerKey, 'abortBarrier', () => barrier);
 		void queuedBarrier.catch(error => {
 			if (!(error instanceof CancellationError)) {
-				this._logService.error(`[Copilot:${context.configurationId}] Failed to queue abort barrier for ${context.sequencerKey}`, error);
+				this._logService.error(`[AI:${context.configurationId}] Failed to queue abort barrier for ${context.sequencerKey}`, error);
 			}
 		});
 		await abort;
@@ -4833,7 +4833,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const context = this._resolveChatContext(chat, operationContext);
 		const pendingTurns = this._pendingChatTurns.get(context.chatKey);
 		if (pendingTurns?.size) {
-			this._logService.info(`[Copilot:${context.configurationId}] Cancelling ${pendingTurns.size} pending turn operation(s): chat=${context.chatKey}`);
+			this._logService.info(`[AI:${context.configurationId}] Cancelling ${pendingTurns.size} pending turn operation(s): chat=${context.chatKey}`);
 			for (const cancellation of pendingTurns) {
 				cancellation.cancel();
 			}
@@ -4861,7 +4861,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return this._existingMintedChatResult(session, sessionId, existingBacking, inheritsFromOtherSession);
 		}
 		if (fork && isEqual(fork.source, chat)) {
-			throw new Error(`Cannot fork Copilot chat ${chatKey} onto itself`);
+			throw new Error(`Cannot fork AI chat ${chatKey} onto itself`);
 		}
 		let result: IAgentCreateChatResult | undefined;
 		// A fork reads the source's state, so it serializes against the source's
@@ -4882,7 +4882,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				? await this._resolveCreateWorkingDirectory(options, sessionId, false)
 				: options.workingDirectories?.[0];
 			if (!workingDirectory) {
-				throw new Error(`[Copilot] createChat: missing resolved working directory for session ${session.toString()}`);
+				throw new Error(`[AI] createChat: missing resolved working directory for session ${session.toString()}`);
 			}
 			const sourceMetadata = inheritsFromOtherSession ? await this._readSessionMetadata(forkSourceScope!) : undefined;
 			const model = options.model ?? sourceMetadata?.model;
@@ -4914,7 +4914,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (fork) {
 				sourceEntry = await this._ensureResolvedChatSession(this._resolveChatContext(fork.source, { configurationResource: forkSourceScope!, resource: this._resolveChatStorageScope(fork.source) }));
 				if (!sourceEntry) {
-					throw new Error(`[Copilot] createChat fork: source chat ${fork.source.toString()} not found`);
+					throw new Error(`[AI] createChat fork: source chat ${fork.source.toString()} not found`);
 				}
 				const forked = await this._forkSdkChat(client, sourceEntry, fork.turnId, this._sessionDataService.getSessionDataDir(storageScope));
 				sdkSessionId = forked.sessionId;
@@ -4988,7 +4988,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 					...(inheritedTurnId !== undefined ? { inheritedTurnId } : {}),
 					...this._chatBackingResult(sessionId, backing),
 				};
-				this._logService.info(`[Copilot] Created chat backing ${chatKey} for context ${session.toString()}${fork ? ' (forked)' : ''}`);
+				this._logService.info(`[AI] Created chat backing ${chatKey} for context ${session.toString()}${fork ? ' (forked)' : ''}`);
 			} catch (error) {
 				agentSession?.dispose();
 				throw error;
@@ -5002,12 +5002,12 @@ export class CopilotAgent extends Disposable implements IAgent {
 					const sourceWorkingDirectories = inheritedWorkingDirectories ?? [workingDirectory];
 					await this._reviewService.copyReviewedRef(forkSourceScope!.toString(), session.toString(), sourceWorkingDirectories, sourceWorkingDirectories);
 				} catch (err) {
-					this._logService.warn(`[Copilot] Failed to copy reviewed ref for fork: ${err instanceof Error ? err.message : String(err)}`);
+					this._logService.warn(`[AI] Failed to copy reviewed ref for fork: ${err instanceof Error ? err.message : String(err)}`);
 				}
 			}
 		});
 		if (!result) {
-			throw new Error(`[Copilot] createChat: no backing was recorded for ${chatKey}`);
+			throw new Error(`[AI] createChat: no backing was recorded for ${chatKey}`);
 		}
 		return result;
 	}
@@ -5064,7 +5064,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const sourceTurns = await sourceEntry.getMessages();
 		const sourceTurnIndex = sourceTurns.findIndex(turn => turn.id === turnId);
 		if (sourceTurnIndex === -1) {
-			this._logService.warn(`[Copilot] fork: turn ${turnId} not found in source session ${sourceEntry.sessionId}; inheriting all ${sourceTurns.length} turns`);
+			this._logService.warn(`[AI] fork: turn ${turnId} not found in source session ${sourceEntry.sessionId}; inheriting all ${sourceTurns.length} turns`);
 		}
 		const inheritedTurnIndex = sourceTurnIndex === -1 ? sourceTurns.length - 1 : sourceTurnIndex;
 		const inheritedTurnId = sourceTurns[inheritedTurnIndex]?.id;
@@ -5073,7 +5073,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		try {
 			toEventId = await sourceEntry.getForkBoundaryEventId(turnId);
 		} catch (err) {
-			throw new Error(`[Copilot] fork: failed to resolve fork boundary for turn ${turnId} in source session ${sourceEntry.sessionId} because ${getErrorMessage(err)}`);
+			throw new Error(`[AI] fork: failed to resolve fork boundary for turn ${turnId} in source session ${sourceEntry.sessionId} because ${getErrorMessage(err)}`);
 		}
 		const forkResult = await client.rpc.sessions.fork({
 			sessionId: sourceEntry.sessionId,
@@ -5097,7 +5097,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				}
 			}
 		} catch (err) {
-			this._logService.warn(`[Copilot] Failed to copy session database for chat fork: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.warn(`[AI] Failed to copy session database for chat fork: ${err instanceof Error ? err.message : String(err)}`);
 		}
 		return { sessionId: newSessionId, inheritedTurnId };
 	}
@@ -5191,7 +5191,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (await client.getSessionMetadata(sdkSessionId).then(metadata => !!metadata, () => true)) {
 				throw err;
 			}
-			this._logService.info(`[Copilot] SDK session ${sdkSessionId} already deleted; chat ${chatKey} disposal is idempotent`);
+			this._logService.info(`[AI] SDK session ${sdkSessionId} already deleted; chat ${chatKey} disposal is idempotent`);
 		}
 	}
 
@@ -5204,7 +5204,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return false;
 		}
 		if (await target.hasRunningDetachedShells()) {
-			this._logService.info(`[Copilot:${target.sessionId}] Deferring idle release while a detached shell is running`);
+			this._logService.info(`[AI:${target.sessionId}] Deferring idle release while a detached shell is running`);
 			return false;
 		}
 		return true;
@@ -5248,7 +5248,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		const backing = decodeProviderData(providerData);
 		if (!backing) {
-			this._logService.warn(`[Copilot] materializeChat: dropping corrupt providerData for ${chatKey}`);
+			this._logService.warn(`[AI] materializeChat: dropping corrupt providerData for ${chatKey}`);
 			return;
 		}
 		this._chatBackings.set(chatKey, backing);
@@ -5274,7 +5274,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 					workspaceless: metadata.workspaceless,
 				});
 			} else {
-				this._logService.warn(`[Copilot] Cannot restore deferred chat ${chatKey}: missing working directory`);
+				this._logService.warn(`[AI] Cannot restore deferred chat ${chatKey}: missing working directory`);
 			}
 		}
 	}
@@ -5332,7 +5332,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		return lifetime.queueChat(chatKey, async () => {
 			const stallWarning = disposableTimeout(
-				() => this._logService.warn(`[Copilot:${sessionId}] Chat queue task stalled: chat=${chatKey}, operation=${operation}`),
+				() => this._logService.warn(`[AI:${sessionId}] Chat queue task stalled: chat=${chatKey}, operation=${operation}`),
 				CHAT_QUEUE_STALL_WARNING_MS,
 			);
 			try {
@@ -5370,7 +5370,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (!(error instanceof CancellationError) || !token.isCancellationRequested) {
 				throw error;
 			}
-			this._logService.info(`[Copilot:${context.configurationId}] Dropping cancelled ${operation}: chat=${context.chatKey}, turnId=${turnId}`);
+			this._logService.info(`[AI:${context.configurationId}] Dropping cancelled ${operation}: chat=${context.chatKey}, turnId=${turnId}`);
 		} finally {
 			pendingTurns.deleteAndDispose(cancellation);
 			if (pendingTurns.size === 0) {
@@ -5414,7 +5414,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 					?? this._provisionalSessions.get(configurationId)?.workingDirectory
 					?? storedMetadata.workingDirectory;
 				if (!persistedWorkingDirectory) {
-					this._logService.warn(`[Copilot] Cannot resume chat ${chatKey}: missing working directory`);
+					this._logService.warn(`[AI] Cannot resume chat ${chatKey}: missing working directory`);
 					return undefined;
 				}
 				const workingDirectory = await this._worktree.resolveWorkingDirectoryForResume(configurationResource, AgentSession.id(configurationResource), persistedWorkingDirectory);
@@ -5451,11 +5451,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 				if (launchWorkingDirectories) {
 					await this._storeSessionMetadata(context.resource, info.model, workingDirectory, launchWorkingDirectories, undefined, undefined);
 				}
-				this._logService.info(`[Copilot] Resumed chat backing ${chatKey} for configuration ${configurationResource.toString()}`);
+				this._logService.info(`[AI] Resumed chat backing ${chatKey} for configuration ${configurationResource.toString()}`);
 				return agentSession;
 			} catch (error) {
 				agentSession?.dispose();
-				this._logService.warn(`[Copilot] Failed to resume chat backing ${chatKey}: ${error instanceof Error ? error.message : String(error)}`);
+				this._logService.warn(`[AI] Failed to resume chat backing ${chatKey}: ${error instanceof Error ? error.message : String(error)}`);
 				throw error;
 			} finally {
 				lease.dispose();
@@ -5486,11 +5486,11 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		await this._queueChat(resolved.configurationId, resolved.sequencerKey, 'truncateChat', async () => {
 			const current = this._resolveTruncateChatContext(chat, context);
-			this._logService.info(`[Copilot:${sessionId}] Truncating chat ${chat.toString()}${turnId !== undefined ? ` at turnId=${turnId}` : ' (all turns)'}`);
+			this._logService.info(`[AI:${sessionId}] Truncating chat ${chat.toString()}${turnId !== undefined ? ` at turnId=${turnId}` : ' (all turns)'}`);
 
 			const entry = await this._ensureResolvedChatSession(current);
 			if (!entry) {
-				this._logService.info(`[Copilot:${sessionId}] No chat entry resolved for truncation; nothing to truncate`);
+				this._logService.info(`[AI:${sessionId}] No chat entry resolved for truncation; nothing to truncate`);
 				return;
 			}
 
@@ -5509,10 +5509,10 @@ export class CopilotAgent extends Disposable implements IAgent {
 			if (eventId) {
 				await entry.truncateAtEventId(eventId, turnId);
 			} else {
-				this._logService.info(`[Copilot:${sessionId}] No event ID found for truncation, nothing to truncate`);
+				this._logService.info(`[AI:${sessionId}] No event ID found for truncation, nothing to truncate`);
 			}
 
-			this._logService.info(`[Copilot:${sessionId}] Session truncated`);
+			this._logService.info(`[AI:${sessionId}] Session truncated`);
 		});
 	}
 
@@ -5646,7 +5646,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				// Cancel any pending model-refresh retry so its timer cannot fire
 				// after teardown and resurrect the client.
 				this._modelRefreshRetry.clear();
-				this._logService.info('[Copilot] Shutting down...');
+				this._logService.info('[AI] Shutting down...');
 				await Promise.all([...this._sessionLifetimes.values()].map(lifetime => lifetime.close()));
 				for (const session of this._allLiveSessions()) {
 					await this._destroyLiveSession(session);
@@ -5724,7 +5724,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			for (const key of COPILOT_PROXY_SET_ENV_KEYS) {
 				env[key] = proxy;
 			}
-			this._logService.info('[Copilot] Resolved CAPI proxy and forwarded HTTP_PROXY/HTTPS_PROXY to Copilot SDK');
+			this._logService.info('[AI] Resolved CAPI proxy and forwarded HTTP_PROXY/HTTPS_PROXY to AI SDK');
 		}
 		if (noProxy) {
 			env['NO_PROXY'] = noProxy;
@@ -5746,7 +5746,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			return undefined;
 		}
 		if (COPILOT_PROXY_ENV_KEYS.some(key => env[key])) {
-			this._logService.debug('[Copilot] Proxy env var already set; leaving Copilot SDK proxy configuration to the environment');
+			this._logService.debug('[AI] Proxy env var already set; leaving AI SDK proxy configuration to the environment');
 			return undefined;
 		}
 
@@ -5758,14 +5758,14 @@ export class CopilotAgent extends Disposable implements IAgent {
 					capiUrl = discovered;
 				}
 			} catch (error) {
-				this._logService.debug(`[Copilot] CAPI endpoint discovery for proxy resolution failed; using ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
+				this._logService.debug(`[AI] CAPI endpoint discovery for proxy resolution failed; using ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
 			}
 		}
 
 		try {
 			return await this._proxyResolver.resolveProxy(capiUrl);
 		} catch (error) {
-			this._logService.warn(`[Copilot] Failed to resolve CAPI proxy for ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.warn(`[AI] Failed to resolve CAPI proxy for ${capiUrl}: ${error instanceof Error ? error.message : String(error)}`);
 			return undefined;
 		}
 	}
@@ -5807,7 +5807,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 				changes.push('Kerberos SPN changed');
 			}
 			await this._requestClientRestart(`CAPI proxy configuration changed (${changes.join(', ')})`);
-		}).catch(error => this._logService.error('[Copilot] Failed to refresh CAPI proxy', error));
+		}).catch(error => this._logService.error('[AI] Failed to refresh CAPI proxy', error));
 		this._proxyRefresh = refresh;
 		void refresh.finally(() => {
 			if (this._proxyRefresh === refresh) {
@@ -5932,7 +5932,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		try {
 			await chatSession.destroySession();
 		} catch (error) {
-			this._logService.warn(`[Copilot:${chatSession.sessionId}] Failed to destroy session before cleanup: ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.warn(`[AI:${chatSession.sessionId}] Failed to destroy session before cleanup: ${error instanceof Error ? error.message : String(error)}`);
 		}
 		const chatChannelUri = chatSession.chatChannelUri;
 		if (!preserveRouting && chatChannelUri && this._chatBackings.get(chatChannelUri.toString())?.sdkSessionId === chatSession.sessionId) {
@@ -5991,18 +5991,18 @@ export class CopilotAgent extends Disposable implements IAgent {
 	}
 
 	private async _doResumeSession(sessionId: string, workingDirectories?: readonly URI[]): Promise<CopilotAgentSession> {
-		this._logService.info(`[Copilot:${sessionId}] _resumeSession called — session not in memory, resuming...`);
+		this._logService.info(`[AI:${sessionId}] _resumeSession called — session not in memory, resuming...`);
 		const client = await this._ensureClientForSession();
 
 		const sessionUri = AgentSession.uri(this.id, sessionId);
 		const storedMetadata = await this._readSessionMetadata(sessionUri);
 		const sessionMetadata = await client.getSessionMetadata(sessionId).catch(err => {
-			this._logService.warn(`[Copilot:${sessionId}] getSessionMetadata failed`, err);
+			this._logService.warn(`[AI:${sessionId}] getSessionMetadata failed`, err);
 			return undefined;
 		});
 		const workingDirectory = storedMetadata.workingDirectory ?? (typeof sessionMetadata?.context?.workingDirectory === 'string' ? URI.file(sessionMetadata.context.workingDirectory) : undefined);
 		if (!workingDirectory) {
-			throw new Error(`workingDirectory is required to resume Copilot session '${sessionId}'`);
+			throw new Error(`workingDirectory is required to resume AI session '${sessionId}'`);
 		}
 		// A workspace-less chat's working directory is a stable per-session scratch dir
 		// that may have been reaped (OS temp cleanup, reboot) while the session
@@ -6034,7 +6034,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		const shellManager = this._instantiationService.createInstance(ShellManager, sessionUri, resolvedWorkingDirectory);
 		const resolvedAgentName = storedMetadata.agent ? this._resolveAgentName(snapshot, storedMetadata.agent) : undefined;
 		if (storedMetadata.agent && !resolvedAgentName) {
-			this._logService.info(`[Copilot:${sessionId}] Stored custom agent is not available in the current plugin snapshot; resuming without a custom agent`);
+			this._logService.info(`[AI:${sessionId}] Stored custom agent is not available in the current plugin snapshot; resuming without a custom agent`);
 		}
 		const launchPlan: CopilotSessionLaunchPlan = {
 			kind: 'resume',
@@ -6129,7 +6129,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 			}
 			return result;
 		} catch (err) {
-			this._logService.warn(`[Copilot] Failed to read persisted chats for ${session.toString()}: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.warn(`[AI] Failed to read persisted chats for ${session.toString()}: ${err instanceof Error ? err.message : String(err)}`);
 			return new Map();
 		} finally {
 			ref.dispose();
@@ -6417,7 +6417,7 @@ export class CopilotAgent extends Disposable implements IAgent {
 		}
 		this._activeClients.clear();
 		this.shutdown().catch(err => {
-			this._logService.warn('[Copilot] Shutdown failed during dispose', err);
+			this._logService.warn('[AI] Shutdown failed during dispose', err);
 		}).finally(() => super.dispose());
 	}
 }
@@ -6547,7 +6547,7 @@ class SessionDiscoveredEntry extends Disposable {
 			if (token.isCancellationRequested) {
 				return false;
 			}
-			this._logService.warn(`[Copilot:SessionDiscoveredEntry] Discovery/bundle failed: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.warn(`[AI:SessionDiscoveredEntry] Discovery/bundle failed: ${err instanceof Error ? err.message : String(err)}`);
 			const hadState = this._customizations.length > 0;
 			this._customizations = [];
 			return hadState;
@@ -6788,7 +6788,7 @@ class PluginController extends Disposable {
 		try {
 			return await parsePlugin(pluginDir, this._fileService, undefined, this.getUserHome(), pluginDir);
 		} catch (error) {
-			this._logService.warn(`[Copilot:PluginController] Error parsing plugin '${pluginDir.toString()}': ${error instanceof Error ? error.message : String(error)}`);
+			this._logService.warn(`[AI:PluginController] Error parsing plugin '${pluginDir.toString()}': ${error instanceof Error ? error.message : String(error)}`);
 			return undefined;
 		}
 	}
@@ -6971,8 +6971,8 @@ class SessionPluginController extends Disposable {
 		await this._enablementReady;
 		const entry = this._discoveredEntry();
 		await Promise.all([
-			this._parent.hostSync().catch(err => this._logService.warn('[Copilot:SessionPluginController] Host customization update failed', err)),
-			...[...this._clients.values()].map(client => client.sync.catch(err => this._logService.warn('[Copilot:SessionPluginController] Client customization sync failed', err))),
+			this._parent.hostSync().catch(err => this._logService.warn('[AI:SessionPluginController] Host customization update failed', err)),
+			...[...this._clients.values()].map(client => client.sync.catch(err => this._logService.warn('[AI:SessionPluginController] Client customization sync failed', err))),
 			entry?.whenSettled(),
 			this._mcpDiscoveryEntry()?.refresh(),
 		]);
@@ -6986,11 +6986,11 @@ class SessionPluginController extends Disposable {
 		const mcpDiscovery = this._mcpDiscoveryEntry();
 		const [host] = await Promise.all([
 			this._parent.hostSync().catch(err => {
-				this._logService.warn('[Copilot:SessionPluginController] Host customization update failed', err);
+				this._logService.warn('[AI:SessionPluginController] Host customization update failed', err);
 				return this._parent.hostCustomizations();
 			}),
 			...[...this._clients.values()].map(client => client.sync.catch(err => {
-				this._logService.warn('[Copilot:SessionPluginController] Client customization sync failed', err);
+				this._logService.warn('[AI:SessionPluginController] Client customization sync failed', err);
 				return client.customizations;
 			})),
 			entry?.whenSettled(),
@@ -7121,7 +7121,7 @@ class SessionPluginController extends Disposable {
 
 		const prev = client.sync;
 		const promise = client.sync = prev.catch(err => {
-			this._logService.warn('[Copilot:SessionPluginController] Previous customization sync failed', err);
+			this._logService.warn('[AI:SessionPluginController] Previous customization sync failed', err);
 		}).then(async () => {
 			const inputByUri = new Map(customizations.map(c => [c.uri, c]));
 			const result = await this._parent.pluginManager.syncCustomizations(clientId, customizations, status => {
@@ -7195,9 +7195,9 @@ class SessionPluginController extends Disposable {
 				continue;
 			}
 			const inputs = [...client.inputs];
-			this._logService.info(`[Copilot:SessionPluginController] Retrying ${errored.length} previously-failed client customization(s) for ${clientId}`);
+			this._logService.info(`[AI:SessionPluginController] Retrying ${errored.length} previously-failed client customization(s) for ${clientId}`);
 			await raceCancellationError(this.sync(clientId, inputs).catch(err => {
-				this._logService.warn('[Copilot:SessionPluginController] Retried client customization sync failed', err);
+				this._logService.warn('[AI:SessionPluginController] Retried client customization sync failed', err);
 			}), token);
 		}
 	}
@@ -7254,7 +7254,7 @@ class SessionPluginController extends Disposable {
 		if (this._isEnablementReady) {
 			publish();
 		} else {
-			void this._enablementReady.then(publish).catch(error => this._logService.error('[Copilot:SessionPluginController] Failed to initialize customization enablement', error));
+			void this._enablementReady.then(publish).catch(error => this._logService.error('[AI:SessionPluginController] Failed to initialize customization enablement', error));
 		}
 	}
 

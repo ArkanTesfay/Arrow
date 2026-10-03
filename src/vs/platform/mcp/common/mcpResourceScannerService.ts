@@ -102,7 +102,7 @@ export class McpResourceScannerService extends Disposable implements IMcpResourc
 			const copilotServers = servers.map(server => {
 				const error = getCopilotGlobalMcpConfigurationError(server);
 				if (error) {
-					throw new Error(localize('invalidCopilotGlobalMcpServerForWrite', "Cannot add Copilot Global MCP server '{0}': {1}", server.name, error));
+					throw new Error(localize('invalidCopilotGlobalMcpServerForWrite', "Cannot add AI Global MCP server '{0}': {1}", server.name, error));
 				}
 				return { name: server.name, config: toCopilotMcpServerConfiguration(server.config) };
 			});
@@ -134,7 +134,7 @@ export class McpResourceScannerService extends Disposable implements IMcpResourc
 			throw new Error(localize('unsupportedWorkspaceRootMcpSandbox', "Sandbox configuration is not supported in .mcp.json. Use .vscode/mcp.json instead."));
 		}
 		if (format === McpResourceFormat.CopilotGlobal) {
-			throw new Error(localize('unsupportedCopilotGlobalMcpSandbox', "Sandbox configuration is not supported in Copilot Global MCP configuration."));
+			throw new Error(localize('unsupportedCopilotGlobalMcpSandbox', "Sandbox configuration is not supported in AI Global MCP configuration."));
 		}
 		await this.withProfileMcpServers(mcpResource, target, updateFn);
 	}
@@ -181,7 +181,7 @@ export class McpResourceScannerService extends Disposable implements IMcpResourc
 		return this.withSharedMcpServersFile(
 			mcpResource,
 			content => ({ servers: parseCopilotGlobalMcpConfiguration(content) }),
-			localize('copilotGlobalMcpConfigurationChanged', "The Copilot Global MCP configuration changed while updating servers. Please try again."),
+			localize('copilotGlobalMcpConfigurationChanged', "The AI Global MCP configuration changed while updating servers. Please try again."),
 			update,
 		);
 	}

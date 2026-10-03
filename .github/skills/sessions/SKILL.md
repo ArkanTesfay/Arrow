@@ -32,8 +32,8 @@ Start with `src/vs/sessions/README.md`, then read only the specifications releva
 | Sessions sidebar list, grouping, filtering, and persistence | `src/vs/sessions/SESSIONS_LIST.md` |
 | Phone layout and mobile components | `src/vs/sessions/MOBILE.md` |
 | AI customizations | `src/vs/sessions/AI_CUSTOMIZATIONS.md` |
-| Copilot customizations | `src/vs/sessions/copilot-customizations-spec.md` |
-| Copilot Chat provider | `src/vs/sessions/contrib/providers/copilotChatSessions/COPILOT_CHAT_SESSIONS_PROVIDER.md` |
+| AI customizations | `src/vs/sessions/copilot-customizations-spec.md` |
+| AI Chat provider | `src/vs/sessions/contrib/providers/copilotChatSessions/COPILOT_CHAT_SESSIONS_PROVIDER.md` |
 | Agent Host provider | `src/vs/sessions/contrib/providers/agentHost/AGENT_HOST_SESSIONS_PROVIDER.md` |
 | Remote Agent Host provider | `src/vs/sessions/contrib/providers/remoteAgentHost/REMOTE_AGENT_HOST_SESSIONS_PROVIDER.md` |
 

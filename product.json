@@ -48,10 +48,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Microsoft",
+					"displayName": "Vertex",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Microsoft"
+				"publisherDisplayName": "Vertex"
 			}
 		},
 		{
@@ -64,10 +64,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Microsoft",
+					"displayName": "Vertex",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Microsoft"
+				"publisherDisplayName": "Vertex"
 			}
 		},
 		{
@@ -80,10 +80,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Microsoft",
+					"displayName": "Vertex",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Microsoft"
+				"publisherDisplayName": "Vertex"
 			}
 		}
 	],
@@ -92,14 +92,14 @@
 		"chatExtensionId": "GitHub.copilot-chat",
 		"chatExtensionOutputId": "GitHub.copilot-chat.GitHub Copilot Chat.log",
 		"chatExtensionOutputExtensionStateCommand": "github.copilot.debug.extensionState",
-		"documentationUrl": "https://aka.ms/github-copilot-overview",
-		"termsStatementUrl": "https://aka.ms/github-copilot-terms-statement",
-		"privacyStatementUrl": "https://aka.ms/github-copilot-privacy-statement",
-		"skusDocumentationUrl": "https://aka.ms/github-copilot-plans",
+		"documentationUrl": "https://github.com/ArkanTesfay/Arrow",
+		"termsStatementUrl": "https://github.com/ArkanTesfay/Arrow",
+		"privacyStatementUrl": "https://github.com/ArkanTesfay/Arrow",
+		"skusDocumentationUrl": "https://github.com/ArkanTesfay/Arrow",
 		"optimizeUsageDocumentationUrl": "https://aka.ms/token-usage-tips",
-		"publicCodeMatchesUrl": "https://aka.ms/github-copilot-match-public-code",
-		"managePlanUrl": "https://aka.ms/github-copilot-manage-plan",
-		"upgradePlanUrl": "https://aka.ms/github-copilot-upgrade-plan",
+		"publicCodeMatchesUrl": "https://github.com/ArkanTesfay/Arrow",
+		"managePlanUrl": "https://github.com/ArkanTesfay/Arrow",
+		"upgradePlanUrl": "https://github.com/ArkanTesfay/Arrow",
 		"signUpUrl": "https://aka.ms/github-sign-up",
 		"provider": {
 			"default": {
@@ -120,7 +120,7 @@
 			},
 			"microsoft": {
 				"id": "microsoft",
-				"name": "Microsoft"
+				"name": "Vertex"
 			}
 		},
 		"providerExtensionId": "vscode.github-authentication",
@@ -170,7 +170,7 @@
 	"onboardingKeymaps": [
 		{
 			"id": "vscode",
-			"label": "VS Code",
+			"label": "Vertex",
 			"description": "Default keyboard mapping"
 		},
 		{

@@ -2,9 +2,9 @@
 applyTo: 'build/azure-pipelines/{oss/**,common/downloadNotice.ts,{win32,linux,darwin}/steps/product-build-*-compile.yml}'
 ---
 
-# VS Code OSS Third-Party-Notices pipeline
+# Vertex OSS Third-Party-Notices pipeline
 
-This directory contains the thin VS Code-specific layer around Component Governance (CG) for producing OSS third-party notices. It replaces the legacy custom OSS tool with CG plus a gap-filling scanner, so release owners do not need to babysit `ThirdPartyNotices.txt` every release. The generated output should be at least as good as the legacy tool: CG provides the base NOTICE, the local scanner fills known CG gaps, and human-authored overrides cover the small set that automation cannot safely resolve.
+This directory contains the thin Vertex-specific layer around Component Governance (CG) for producing OSS third-party notices. It replaces the legacy custom OSS tool with CG plus a gap-filling scanner, so release owners do not need to babysit `ThirdPartyNotices.txt` every release. The generated output should be at least as good as the legacy tool: CG provides the base NOTICE, the local scanner fills known CG gaps, and human-authored overrides cover the small set that automation cannot safely resolve.
 
 The pipeline has two halves: **generation** (this `oss/` directory — CG + scanner + merge, producing the `notice_output` artifact) and **application** (the cutover that swaps the merged notice into the shipped product — see "Applying the NOTICE (cutover)" below).
 
@@ -48,7 +48,7 @@ Bootstrap with a successful tagged producer or an explicitly approved, verified 
 
 ## Applying the NOTICE (cutover)
 
-Generation (above) produces the merged `ThirdPartyNotices.new.txt` in the `notice_output` artifact. **Application** is the cutover that makes that file the one VS Code actually ships, replacing the legacy mixin notice.
+Generation (above) produces the merged `ThirdPartyNotices.new.txt` in the `notice_output` artifact. **Application** is the cutover that makes that file the one Vertex actually ships, replacing the legacy mixin notice.
 
 Consumer script: `build/azure-pipelines/common/downloadNotice.ts` (read its header comment for the full design rationale).
 
@@ -102,7 +102,7 @@ node .oss-build-out/scan-licenses.js \
 
 Key inputs:
 
-- `--repo`: VS Code repo root.
+- `--repo`: Vertex repo root.
 - `--cg`: optional CG NOTICE. Used to build `cgCovered` and `cgBodies`, so scanner network work is bounded and Cargo stub bodies can be detected.
 - `node_modules` trees under root, built-in extensions, `remote`, and `build`.
 - `cgmanifest.json` files.
@@ -116,7 +116,7 @@ Key outputs:
 
 Scanner sections:
 
-- Section 1 scans built-in extension dependencies. CG skips npm packages with `engines.vscode`, but VS Code ships built-in extensions, so their bundled dependencies are scanned from extension `node_modules` folders.
+- Section 1 scans built-in extension dependencies. CG skips npm packages with `engines.vscode`, but Vertex ships built-in extensions, so their bundled dependencies are scanned from extension `node_modules` folders.
 - Section 2 scans root `node_modules` for packages whose LICENSE files exist on disk but whose ClearlyDefined coverage did not produce CG NOTICE text.
 - Section 3 reads `licenseDetail` from `cgmanifest.json`, and for uncovered git components without inline text it tries `fetchLicenseFromGitRepo()` at the pinned `commitHash`.
 - Section 4 harvests Rust crate licenses from `Cargo.lock`; details below.
@@ -254,7 +254,7 @@ Tests:
 
 ### Platform-binary Section 5
 
-Section 5 closes a parity gap with the legacy OSS tool for arch-specific npm packages. Packages such as `@img/sharp-win32-x64` or `@esbuild/linux-x64` are optional dependencies of an arch-independent parent. On a single-platform build agent, only the host arch may be installed, but VS Code ships multiple platform and arch combinations.
+Section 5 closes a parity gap with the legacy OSS tool for arch-specific npm packages. Packages such as `@img/sharp-win32-x64` or `@esbuild/linux-x64` are optional dependencies of an arch-independent parent. On a single-platform build agent, only the host arch may be installed, but Vertex ships multiple platform and arch combinations.
 
 Important functions and constants:
 
@@ -271,7 +271,7 @@ Maintenance rules:
 
 - The shipped-arch filter intentionally uses the static constants `VSCODE_SHIPPED_PLATFORMS` and `VSCODE_SHIPPED_ARCHS` in `scan-licenses.ts`.
 - Do not import these constants from `build/agent-sdk/common.ts`. Agent SDK excludes `armhf` and uses `alpine` where npm package names use `linuxmusl`, so it is not a direct fit for this scanner.
-- If VS Code adds or removes a shipped platform or arch, update those constants. The source of truth is noted in the code comment: `build/azure-pipelines/product-build.yml` plus `build/agent-sdk/common.ts`. Expect this to change about once a year.
+- If Vertex adds or removes a shipped platform or arch, update those constants. The source of truth is noted in the code comment: `build/azure-pipelines/product-build.yml` plus `build/agent-sdk/common.ts`. Expect this to change about once a year.
 - Each arch child's own license ID is authoritative. Do not blindly reuse parent license text across a different child license ID; that would repeat the legacy sharp/libvips defect.
 
 Tests:

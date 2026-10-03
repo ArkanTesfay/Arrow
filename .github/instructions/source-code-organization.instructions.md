@@ -1,5 +1,5 @@
 ---
-description: VS Code source code organization — layers, target environments, dependency injection, and folder structure conventions. Reference when adding new modules, services, or contributions.
+description: Vertex source code organization — layers, target environments, dependency injection, and folder structure conventions. Reference when adding new modules, services, or contributions.
 applyTo: src/vs/**
 ---
 
@@ -14,7 +14,7 @@ The `src/vs/` core is partitioned into ordered layers — each may only import f
 1. **`base`** — General utilities and UI building blocks (no service dependencies)
 2. **`platform`** — Service injection support and base services shared across layers
 3. **`editor`** — Monaco Editor core (no `node` or `electron-*` dependencies)
-4. **`workbench`** — Full VS Code workbench, panels, views, and framework
+4. **`workbench`** — Full Vertex workbench, panels, views, and framework
 5. **`code`** — Desktop app entry point (Electron main, shared process, CLI)
 6. **`server`** — Server app entry point for remote development
 7. **`sessions`** — Agent Sessions window (may import from `workbench` and below; `workbench` must never import from `sessions`)

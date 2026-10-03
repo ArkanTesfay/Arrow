@@ -76,7 +76,7 @@ export const CopilotCloudSessionType: ISessionType = {
 
 export const CopilotSandboxSessionType: ISessionType = {
 	id: 'copilot-cloud-sandbox',
-	label: localize('copilotSandbox', "Copilot"),
+	label: localize('copilotSandbox', "AI"),
 	icon: Codicon.copilot,
 	authRequirement: SessionTypeAuthRequirement.GitHub,
 };
@@ -1030,7 +1030,7 @@ export class CopilotChatSessionsProvider extends Disposable implements ISessions
 	private static readonly SANDBOX_MODEL_WAIT_MS = 5_000;
 
 	get id(): string { return this.providerMode === 'sandbox' ? CLOUD_SANDBOX_CREATION_PROVIDER_ID : COPILOT_PROVIDER_ID; }
-	get label(): string { return this.providerMode === 'sandbox' ? localize('sandboxCreationProvider', "GitHub Sandboxes") : localize('copilotChatSessionsProvider', "Copilot Chat"); }
+	get label(): string { return this.providerMode === 'sandbox' ? localize('sandboxCreationProvider', "GitHub Sandboxes") : localize('copilotChatSessionsProvider', "AI Chat"); }
 	readonly icon = Codicon.copilot;
 	readonly order = 0;
 
@@ -1259,7 +1259,7 @@ export class CopilotChatSessionsProvider extends Disposable implements ISessions
 			? workspace
 			: this._getCloudWorkspaceForLocalRepository(workspace);
 		if (!cloudWorkspace) {
-			throw new Error('Copilot Cloud sessions require a local workspace with a GitHub remote');
+			throw new Error('AI Cloud sessions require a local workspace with a GitHub remote');
 		}
 		const target = this.providerMode === 'sandbox' ? CopilotSandboxSessionType.id : AgentSessionProviders.Cloud;
 		const resource = URI.from({ scheme: target, path: `/untitled-${generateUuid()}` });
@@ -1542,15 +1542,15 @@ export class CopilotChatSessionsProvider extends Disposable implements ISessions
 	}
 
 	async renameChat(_sessionId: string, _chatUri: URI, _title: string): Promise<void> {
-		throw new Error('Renaming is not supported for Copilot Cloud sessions');
+		throw new Error('Renaming is not supported for AI Cloud sessions');
 	}
 
 	async renameSession(_sessionId: string, _title: string): Promise<void> {
-		throw new Error('Renaming is not supported for Copilot Cloud sessions');
+		throw new Error('Renaming is not supported for AI Cloud sessions');
 	}
 
 	async deleteChat(_sessionId: string, _chatUri: URI, _options?: IDeleteChatOptions): Promise<boolean> {
-		throw new Error('Deleting individual chats is not supported for Copilot Cloud sessions');
+		throw new Error('Deleting individual chats is not supported for AI Cloud sessions');
 	}
 
 	async forkChat(sessionId: string, _sourceChat: URI, _turnId: string): Promise<IChat> {

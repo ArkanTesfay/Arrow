@@ -19,7 +19,7 @@ It documents the mental model, the fixture format, every config flag, and a symp
 4. **Never hand-write or hand-edit fixture contents** (especially not secrets/paths). Fixtures are always produced by recording; normalization/redaction is the proxy's job.
 5. **Gate, don't fight.** If a behavior can't replay deterministically, gate the test (see Workflow C) instead of loosening timeouts or the strict check.
 6. **Track every disabled variant.** Keep `e2e/KNOWN_ISSUES.md` current with the test title, scope, expected and observed behavior, and a focused reproduction command. For suspected product bugs, begin with a self-contained explanation in complete sentences of what the user is trying to do, what fails, and the likely user impact; define feature-specific terms instead of relying on test names or implementation details. Record symptoms, not speculative root causes.
-7. **Always verify new end-to-end tests in Azure DevOps.** Every new Agent Host E2E or real-provider integration test must pass a focused build from VS Code pipeline definition `111` before merge. Local runs and GitHub pull-request CI are useful signals, but neither substitutes for the Azure build because its packaged Electron path and runner environments differ.
+7. **Always verify new end-to-end tests in Azure DevOps.** Every new Agent Host E2E or real-provider integration test must pass a focused build from Vertex pipeline definition `111` before merge. Local runs and GitHub pull-request CI are useful signals, but neither substitutes for the Azure build because its packaged Electron path and runner environments differ.
 
 ## Workflow A — Add a cross-provider test
 
@@ -63,7 +63,7 @@ Always add a comment explaining *why* the gate exists. Also add or update the co
 
 New Agent Host E2E and real-provider integration tests are not ready to merge after local or GitHub pull-request CI alone. Push the branch, open or update a draft PR, then use the `azure-pipelines` skill to validate the real packaged Electron integration-test path.
 
-1. Queue VS Code pipeline definition `111` with `VSCODE_BUILD_TYPE=CI`; enable Windows, Linux, and macOS x64 while disabling publishing, release, Web, ARM, Alpine, and Snap artifacts. The `azure-pipelines` skill contains the canonical command.
+1. Queue Vertex pipeline definition `111` with `VSCODE_BUILD_TYPE=CI`; enable Windows, Linux, and macOS x64 while disabling publishing, release, Web, ARM, Alpine, and Snap artifacts. The `azure-pipelines` skill contains the canonical command.
 2. Monitor jobs as they finish. Inspect a failed platform's Electron integration-test task immediately rather than waiting for unrelated stages to complete.
 3. Treat the Agent Host E2E result as accepted only when the Electron integration tests succeed on Windows, Linux, and macOS.
 4. Rerun an apparently unrelated or pre-existing failure in isolation before attributing it to the PR.
@@ -76,5 +76,5 @@ For additions involving timing, filesystem watching, process lifecycle, worktree
 
 - Run a single provider in replay: `./scripts/test-integration.sh --run <path>` (no env var).
 - Filter to one test: add `--grep "<test title fragment>"`.
-- **On a hang / timeout, read the runtime log first.** For the **Copilot** provider, a failed test tails the most recent Copilot runtime (`@github/copilot` CLI) `process-*.log` into the test output (`[agent-host-e2e] # …` lines) — the SDK/CLI's own account of startup, auth, the model request, and the turn lifecycle. It runs at `--log trace`. A turn that never produced a model response, a panic, or an out-of-order/protocol error points at the SDK/CLI (re-record if a bump left the fixture stale; otherwise it's a real regression). Claude/Codex use their own runtimes and are not captured here. See the README's "A turn hangs or times out with no OS pattern".
+- **On a hang / timeout, read the runtime log first.** For the **AI** provider, a failed test tails the most recent AI runtime (`@github/copilot` CLI) `process-*.log` into the test output (`[agent-host-e2e] # …` lines) — the SDK/CLI's own account of startup, auth, the model request, and the turn lifecycle. It runs at `--log trace`. A turn that never produced a model response, a panic, or an out-of-order/protocol error points at the SDK/CLI (re-record if a bump left the fixture stale; otherwise it's a real regression). Claude/Codex use their own runtimes and are not captured here. See the README's "A turn hangs or times out with no OS pattern".
 - For any failure (`cache miss`, missing fixture, per-OS timeout, leaked PII, subagent staleness, accidental real-CAPI contact), go to the **Troubleshooting** section of the README — it maps each symptom to its cause and fix.

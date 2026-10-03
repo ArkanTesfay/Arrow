@@ -158,20 +158,20 @@ const promptFilesMigrationCategory: ICustomizationMigrationCategory = {
 		if (workspaceCount > 0 && userCount > 0) {
 			return localize(
 				'promptMigrationCardDescriptionWorkspaceAndUser',
-				"Prompt files are deprecated for this harness. Found {0} prompt files ({1} workspace, {2} global) that local VS Code can still run, but {3} ignores. Convert them to skills to keep them available.",
+				"Prompt files are deprecated for this harness. Found {0} prompt files ({1} workspace, {2} global) that local Vertex can still run, but {3} ignores. Convert them to skills to keep them available.",
 				totalCount, workspaceCount, userCount, harnessLabel,
 			);
 		}
 		if (workspaceCount > 0) {
 			return localize(
 				'promptMigrationCardDescriptionWorkspace',
-				"Prompt files are deprecated for this harness. Found {0} workspace prompt files that local VS Code can still run, but {1} ignores. Convert them to skills to keep them available.",
+				"Prompt files are deprecated for this harness. Found {0} workspace prompt files that local Vertex can still run, but {1} ignores. Convert them to skills to keep them available.",
 				workspaceCount, harnessLabel,
 			);
 		}
 		return localize(
 			'promptMigrationCardDescriptionUser',
-			"Prompt files are deprecated for this harness. Found {0} global prompt files that local VS Code can still run, but {1} ignores. Convert them to skills to keep them available.",
+			"Prompt files are deprecated for this harness. Found {0} global prompt files that local Vertex can still run, but {1} ignores. Convert them to skills to keep them available.",
 			userCount, harnessLabel,
 		);
 	},
@@ -184,20 +184,20 @@ const promptFilesMigrationCategory: ICustomizationMigrationCategory = {
 		if (workspaceCount > 0 && userCount > 0) {
 			return localize(
 				'promptMigrationPageDescriptionWorkspaceAndUser',
-				"Prompt files are not supported for this harness. Found {0} prompt files ({1} workspace, {2} user) that local VS Code can still run, but {3} ignores. Convert them to skills to keep them available.",
+				"Prompt files are not supported for this harness. Found {0} prompt files ({1} workspace, {2} user) that local Vertex can still run, but {3} ignores. Convert them to skills to keep them available.",
 				totalCount, workspaceCount, userCount, harnessLabel,
 			);
 		}
 		if (workspaceCount > 0) {
 			return localize(
 				'promptMigrationPageDescriptionWorkspace',
-				"Prompt files are not supported for this harness. Found {0} workspace prompt files that local VS Code can still run, but {1} ignores. Convert them to skills to keep them available.",
+				"Prompt files are not supported for this harness. Found {0} workspace prompt files that local Vertex can still run, but {1} ignores. Convert them to skills to keep them available.",
 				workspaceCount, harnessLabel,
 			);
 		}
 		return localize(
 			'promptMigrationPageDescriptionUser',
-			"Prompt files are not supported for this harness. Found {0} user prompt files that local VS Code can still run, but {1} ignores. Convert them to skills to keep them available.",
+			"Prompt files are not supported for this harness. Found {0} user prompt files that local Vertex can still run, but {1} ignores. Convert them to skills to keep them available.",
 			userCount, harnessLabel,
 		);
 	},
@@ -206,7 +206,7 @@ const promptFilesMigrationCategory: ICustomizationMigrationCategory = {
 		return {
 			message: localize(
 				'promptMigrationBannerMessage',
-				"Prompts are no longer supported by {0}. Convert them to skills to keep them available in both VS Code and this harness.",
+				"Prompts are no longer supported by {0}. Convert them to skills to keep them available in both Vertex and this harness.",
 				harnessLabel,
 			),
 		};
@@ -299,7 +299,7 @@ const userDataMigrationCategory: ICustomizationMigrationCategory = {
 		if (agentCount > 0 && instructionsCount > 0) {
 			return localize(
 				'userDataMigrationCardDescriptionMixed',
-				"User data customizations are only used by VS Code. Found {0} customizations that {1} ignores. Move them to keep them available.",
+				"User data customizations are only used by Vertex. Found {0} customizations that {1} ignores. Move them to keep them available.",
 				totalCount, harnessLabel,
 			);
 		}
@@ -307,24 +307,24 @@ const userDataMigrationCategory: ICustomizationMigrationCategory = {
 			return agentCount === 1
 				? localize(
 					'userDataMigrationCardDescriptionAgent',
-					"User data customizations are only used by VS Code. Found 1 agent that {0} ignores. Move it to keep it available.",
+					"User data customizations are only used by Vertex. Found 1 agent that {0} ignores. Move it to keep it available.",
 					harnessLabel,
 				)
 				: localize(
 					'userDataMigrationCardDescriptionAgents',
-					"User data customizations are only used by VS Code. Found {0} agents that {1} ignores. Move them to keep them available.",
+					"User data customizations are only used by Vertex. Found {0} agents that {1} ignores. Move them to keep them available.",
 					agentCount, harnessLabel,
 				);
 		}
 		return instructionsCount === 1
 			? localize(
 				'userDataMigrationCardDescriptionInstruction',
-				"User data customizations are only used by VS Code. Found 1 instruction file that {0} ignores. Move it to keep it available.",
+				"User data customizations are only used by Vertex. Found 1 instruction file that {0} ignores. Move it to keep it available.",
 				harnessLabel,
 			)
 			: localize(
 				'userDataMigrationCardDescriptionInstructions',
-				"User data customizations are only used by VS Code. Found {0} instruction files that {1} ignores. Move them to keep them available.",
+				"User data customizations are only used by Vertex. Found {0} instruction files that {1} ignores. Move them to keep them available.",
 				instructionsCount, harnessLabel,
 			);
 	},
@@ -334,12 +334,12 @@ const userDataMigrationCategory: ICustomizationMigrationCategory = {
 			message: destinationLabel
 				? localize(
 					'userDataMigrationBannerMessageWithDestination',
-					"They are stored in user data, which only VS Code reads. Move them to '{0}' so both VS Code and this harness can use them, keeping their name, type, and content.",
+					"They are stored in user data, which only Vertex reads. Move them to '{0}' so both Vertex and this harness can use them, keeping their name, type, and content.",
 					destinationLabel,
 				)
 				: localize(
 					'userDataMigrationBannerMessage',
-					"They are stored in user data, which only VS Code reads. Migrating moves them into the folders {0} reads, keeping their name, type, and content, so you can keep using them.",
+					"They are stored in user data, which only Vertex reads. Migrating moves them into the folders {0} reads, keeping their name, type, and content, so you can keep using them.",
 					harnessLabel,
 				),
 			consequence: localize(
@@ -357,7 +357,7 @@ const userDataMigrationCategory: ICustomizationMigrationCategory = {
 		if (agentCount > 0 && instructionsCount > 0) {
 			return localize(
 				'userDataMigrationPageDescriptionAgentsAndInstructions',
-				"Found {0} customizations in user data that local VS Code can still use, but {1} ignores. Move them to the harness folders to keep their type and content.",
+				"Found {0} customizations in user data that local Vertex can still use, but {1} ignores. Move them to the harness folders to keep their type and content.",
 				totalCount, harnessLabel,
 			);
 		}
@@ -365,24 +365,24 @@ const userDataMigrationCategory: ICustomizationMigrationCategory = {
 			return agentCount === 1
 				? localize(
 					'userDataMigrationPageDescriptionAgent',
-					"Found 1 agent in user data that local VS Code can still use, but {0} ignores. Move it to the harness agents folder to keep it available.",
+					"Found 1 agent in user data that local Vertex can still use, but {0} ignores. Move it to the harness agents folder to keep it available.",
 					harnessLabel,
 				)
 				: localize(
 					'userDataMigrationPageDescriptionAgents',
-					"Found {0} agents in user data that local VS Code can still use, but {1} ignores. Move them to the harness agents folder to keep them available.",
+					"Found {0} agents in user data that local Vertex can still use, but {1} ignores. Move them to the harness agents folder to keep them available.",
 					agentCount, harnessLabel,
 				);
 		}
 		return instructionsCount === 1
 			? localize(
 				'userDataMigrationPageDescriptionInstruction',
-				"Found 1 instruction file in user data that local VS Code can still use, but {0} ignores. Move it to the harness instructions folder to keep it available.",
+				"Found 1 instruction file in user data that local Vertex can still use, but {0} ignores. Move it to the harness instructions folder to keep it available.",
 				harnessLabel,
 			)
 			: localize(
 				'userDataMigrationPageDescriptionInstructions',
-				"Found {0} instruction files in user data that local VS Code can still use, but {1} ignores. Move them to the harness instructions folder to keep them available.",
+				"Found {0} instruction files in user data that local Vertex can still use, but {1} ignores. Move them to the harness instructions folder to keep them available.",
 				instructionsCount, harnessLabel,
 			);
 	},
@@ -492,7 +492,7 @@ const configuredLocationsMigrationCategory: ICustomizationMigrationCategory = {
 	getPageDescription(customizations, harnessLabel) {
 		return customizations.length === 0
 			? localize('configuredLocationsMigrationPageDescriptionEmpty', "Select customizations to move to locations supported by the active harness.")
-			: localize('configuredLocationsMigrationPageDescription', "Found {0} customizations in locations configured through VS Code settings that {1} does not use. Move them to supported harness locations.", customizations.length, harnessLabel);
+			: localize('configuredLocationsMigrationPageDescription', "Found {0} customizations in locations configured through Vertex settings that {1} does not use. Move them to supported harness locations.", customizations.length, harnessLabel);
 	},
 
 	getBanner(_customizations, harnessLabel, destinationLabel, modifiedSettingIds) {
@@ -500,11 +500,11 @@ const configuredLocationsMigrationCategory: ICustomizationMigrationCategory = {
 		const settingsList = formatSettingLinks(settingsLinks);
 		const message = settingsLinks.length === 1
 			? destinationLabel
-				? localize('configuredLocationsMigrationBannerSingleSettingWithDestination', "The setting {0} is no longer read by {1}. Move the customizations to '{2}' so both VS Code and {1} can use them.", settingsList, harnessLabel, destinationLabel)
-				: localize('configuredLocationsMigrationBannerSingleSetting', "The setting {0} is no longer read by {1}. Move the customizations into supported harness folders so both VS Code and {1} can use them.", settingsList, harnessLabel)
+				? localize('configuredLocationsMigrationBannerSingleSettingWithDestination', "The setting {0} is no longer read by {1}. Move the customizations to '{2}' so both Vertex and {1} can use them.", settingsList, harnessLabel, destinationLabel)
+				: localize('configuredLocationsMigrationBannerSingleSetting', "The setting {0} is no longer read by {1}. Move the customizations into supported harness folders so both Vertex and {1} can use them.", settingsList, harnessLabel)
 			: destinationLabel
-				? localize('configuredLocationsMigrationBannerSettingsWithDestination', "The settings {0} are no longer read by {1}. Move the customizations to '{2}' so both VS Code and {1} can use them.", settingsList, harnessLabel, destinationLabel)
-				: localize('configuredLocationsMigrationBannerSettings', "The settings {0} are no longer read by {1}. Move the customizations into supported harness folders so both VS Code and {1} can use them.", settingsList, harnessLabel);
+				? localize('configuredLocationsMigrationBannerSettingsWithDestination', "The settings {0} are no longer read by {1}. Move the customizations to '{2}' so both Vertex and {1} can use them.", settingsList, harnessLabel, destinationLabel)
+				: localize('configuredLocationsMigrationBannerSettings', "The settings {0} are no longer read by {1}. Move the customizations into supported harness folders so both Vertex and {1} can use them.", settingsList, harnessLabel);
 		return {
 			message: new MarkdownString(message, {
 				isTrusted: { enabledCommands: ['workbench.action.openSettings'] },
@@ -548,7 +548,7 @@ const mcpServersMigrationCategory: ICustomizationMigrationCategory = {
 	migrationType: CustomizationMigrationType.McpServers,
 	enablementSetting: getCustomizationMigrationEnablementSetting(CustomizationMigrationType.McpServers),
 	shortcutLabel: localize('mcpMigrationShortcutLabel', "Migrate MCP Servers"),
-	shortcutTooltip: localize('mcpMigrationShortcutTooltip', "Move eligible MCP servers to workspace root or Copilot home configuration files"),
+	shortcutTooltip: localize('mcpMigrationShortcutTooltip', "Move eligible MCP servers to workspace root or AI home configuration files"),
 	cardLabel: localize('mcpMigrationCardLabel', "Migrate MCP Servers"),
 	cardActionLabel: localize('mcpMigrationCardAction', "Migrate..."),
 	cardActionAriaLabel: localize('mcpMigrationCardActionAriaLabel', "Migrate eligible MCP servers"),
@@ -556,7 +556,7 @@ const mcpServersMigrationCategory: ICustomizationMigrationCategory = {
 	pageLinkLabel: localize('mcpMigrationLearnMore', "Learn more about MCP servers"),
 	pageLinkUrl: MCP_DOCUMENTATION_URL,
 	pageEmptyMessage: localize('mcpMigrationPageEmpty', "No MCP servers are eligible to migrate."),
-	migrateButtonTooltip: localize('mcpMigrationPageButtonTooltip', "Move selected MCP servers to workspace root or Copilot home configuration files"),
+	migrateButtonTooltip: localize('mcpMigrationPageButtonTooltip', "Move selected MCP servers to workspace root or AI home configuration files"),
 	backLabel: localize('backToMcpMigration', "Back to Migrate MCP Servers"),
 	noFilesMigratedMessage: localize('mcpMigrationNoneMigrated', "No MCP servers were migrated."),
 
@@ -595,7 +595,7 @@ const mcpServersMigrationCategory: ICustomizationMigrationCategory = {
 
 	getCardDescription(customizations, harnessLabel) {
 		if (customizations.some(customization => customization.storage === PromptsStorage.user)) {
-			return localize('mcpMigrationCardDescriptionUser', "Found {0} eligible MCP servers. User servers move to mcp-config.json in Copilot home; workspace servers move to the root .mcp.json so {1} can discover them directly.", customizations.length, harnessLabel);
+			return localize('mcpMigrationCardDescriptionUser', "Found {0} eligible MCP servers. User servers move to mcp-config.json in AI home; workspace servers move to the root .mcp.json so {1} can discover them directly.", customizations.length, harnessLabel);
 		}
 		return customizations.length === 1
 			? localize('mcpMigrationCardDescriptionSingle', "Found 1 eligible server in .vscode/mcp.json that can move to the workspace root so {0} can discover it directly.", harnessLabel)
@@ -611,7 +611,7 @@ const mcpServersMigrationCategory: ICustomizationMigrationCategory = {
 	getBanner(customizations, harnessLabel) {
 		if (customizations.some(customization => customization.storage === PromptsStorage.user)) {
 			return {
-				message: localize('mcpMigrationUserBannerMessage', "User servers move to mcp-config.json in Copilot home, making them available across profiles and workspaces. Disabled user servers may become enabled after migration. Workspace servers move to the root .mcp.json. Unselected servers and servers that cannot be migrated stay in their current files."),
+				message: localize('mcpMigrationUserBannerMessage', "User servers move to mcp-config.json in AI home, making them available across profiles and workspaces. Disabled user servers may become enabled after migration. Workspace servers move to the root .mcp.json. Unselected servers and servers that cannot be migrated stay in their current files."),
 			};
 		}
 		return {
@@ -627,10 +627,10 @@ const mcpServersMigrationCategory: ICustomizationMigrationCategory = {
 					? localize('mcpMigrationUserConfirmMessageSingle', "Migrate 1 MCP server?")
 					: localize('mcpMigrationUserConfirmMessage', "Migrate {0} MCP servers?", customizations.length),
 				detail: hasWorkspaceServers
-					? localize('mcpMigrationMixedConfirmDetail', "Move user servers to Copilot home and workspace servers to .mcp.json. The original entries will be removed.\n\nDisabled user servers may become enabled.")
+					? localize('mcpMigrationMixedConfirmDetail', "Move user servers to AI home and workspace servers to .mcp.json. The original entries will be removed.\n\nDisabled user servers may become enabled.")
 					: customizations.length === 1
-						? localize('mcpMigrationUserConfirmDetailSingle', "Move to Copilot home for use across profiles and workspaces. The original entry will be removed.\n\nDisabled servers may become enabled.")
-						: localize('mcpMigrationUserConfirmDetail', "Move to Copilot home for use across profiles and workspaces. The original entries will be removed.\n\nDisabled servers may become enabled."),
+						? localize('mcpMigrationUserConfirmDetailSingle', "Move to AI home for use across profiles and workspaces. The original entry will be removed.\n\nDisabled servers may become enabled.")
+						: localize('mcpMigrationUserConfirmDetail', "Move to AI home for use across profiles and workspaces. The original entries will be removed.\n\nDisabled servers may become enabled."),
 				primaryButton: localize('mcpMigrationConfirmButton', "Migrate"),
 			};
 		}

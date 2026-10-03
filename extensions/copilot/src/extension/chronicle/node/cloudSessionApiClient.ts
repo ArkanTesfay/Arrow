@@ -342,7 +342,7 @@ export class CloudSessionApiClient {
 			const headers: Record<string, string> = {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${bearerToken}`,
-				'Copilot-Integration-Id': INTEGRATION_ID,
+				'AI-Integration-Id': INTEGRATION_ID,
 			};
 
 			return { url, headers };

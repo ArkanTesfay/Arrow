@@ -9,9 +9,9 @@ applyTo: 'build/next/**'
 
 ## Important: Validating Changes
 
-**The `VS Code - Build` task is NOT needed to validate changes in the `build/` folder!**
+**The `Vertex - Build` task is NOT needed to validate changes in the `build/` folder!**
 
-Build scripts in `build/` are TypeScript files that run directly with `node` (e.g., `node build/next/index.ts`). They are not compiled by the main VS Code build.
+Build scripts in `build/` are TypeScript files that run directly with `node` (e.g., `node build/next/index.ts`). They are not compiled by the main Vertex build.
 
 To test changes:
 ```bash
@@ -48,7 +48,7 @@ grep -l "serverLicense" out-vscode-reh-web-test/vs/code/browser/workbench/workbe
 `npm run build-fast` stores its last successful input state in `.build/build-fast/state.json`. It uses scoped Git deltas plus content hashes for currently dirty/untracked inputs, so a repeated invocation can skip every build lane without running a watcher or scanning all source files.
 
 - Client changes are transpiled/copied/deleted at file granularity.
-- Built-in extension/media and Copilot builds run only when their inputs change.
+- Built-in extension/media and AI builds run only when their inputs change.
 - Missing, incompatible, or invalid state falls back to a full build.
 - `npm run build-fast -- --force` forces all lanes to rebuild and refreshes state.
 - State is invalidated before outputs change and published only after every selected lane succeeds. If inputs change during the build, the pre-build snapshot is saved so late changes are rebuilt on the next run.
@@ -71,7 +71,7 @@ Do not remove shared tooling based on its age:
 
 ### TypeScript Helpers in Production Bundles
 
-[bundle.ts](../../build/next/bundle.ts) holds the shared ESM options for normal entries (`neutral`) and Node bootstraps (`node`). Both compile TypeScript source directly with esbuild, which emits, scopes, and minifies the helpers each input needs. Their JS and CSS banners contain only the Microsoft copyright comment; do not append executable `tslib` to them. Esbuild does not parse banner text, so it cannot tree-shake it, minify it, or protect it from name/export collisions.
+[bundle.ts](../../build/next/bundle.ts) holds the shared ESM options for normal entries (`neutral`) and Node bootstraps (`node`). Both compile TypeScript source directly with esbuild, which emits, scopes, and minifies the helpers each input needs. Their JS and CSS banners contain only the Vertex copyright comment; do not append executable `tslib` to them. Esbuild does not parse banner text, so it cannot tree-shake it, minify it, or protect it from name/export collisions.
 
 - Desktop, server, server-web, and web entries do not consume the old banner's helpers or initialization. The public workbench and Sessions embedder exports are defined in their source entry points, not in tslib. Removing the banner intentionally removes its accidental 32 helper exports and default export, not any source-defined API.
 - Explicit tslib imports still follow normal bundler resolution: package imports remain external, while explicitly bundled helpers can be tree-shaken. Already-generated JavaScript retains its own helper definitions.
@@ -419,7 +419,7 @@ console.log(c.originalPositionFor({line: 1, column: XXXX}));
 
 ## Self-hosting Setup
 
-The default `VS Code - Build` task now runs three parallel watchers:
+The default `Vertex - Build` task now runs three parallel watchers:
 
 | Task | What it does | Script |
 |------|-------------|--------|
@@ -431,6 +431,6 @@ The default `VS Code - Build` task now runs three parallel watchers:
 
 - **`build/lib/compilation.ts`**: `watchTypeCheckTask()` runs tsgo with `noEmit: true` in response to source changes, alongside Monaco declaration generation.
 - **`build/gulpfile.ts`**: `watchClientTask` is now `task.parallel(compilation.watchTypeCheckTask('src'), ...)` — no `rimraf('out')` (the transpiler owns that), no JS emit.
-- **`build/next/index.ts`**: Watch mode emits `Starting transpilation...` / `Finished transpilation with N errors after X ms` for VS Code problem matcher.
+- **`build/next/index.ts`**: Watch mode emits `Starting transpilation...` / `Finished transpilation with N errors after X ms` for Vertex problem matcher.
 - **`.vscode/tasks.json`**: Old "Core - Build" split into "Core - Transpile" + "Core - Typecheck" with separate problem matchers (owners: `esbuild` vs `typescript`).
 - **`package.json`**: Added `watch-client-transpile`, `watch-client-transpiled`, `kill-watch-client-transpiled` scripts.

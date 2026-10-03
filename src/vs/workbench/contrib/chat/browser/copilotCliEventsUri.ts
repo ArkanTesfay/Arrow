@@ -221,7 +221,7 @@ function getRawSessionId(sessionResource: URI): string | undefined {
  * file service.
  *
  * Reuses {@link resolveEventsUri} so it stays in lockstep with the resolution
- * used by the chat debug panel and the "Open Copilot CLI State File" command,
+ * used by the chat debug panel and the "Open AI CLI State File" command,
  * then unwraps the result into a plain path:
  * - a local `file://` URI becomes its `fsPath` (same machine as the host).
  * - a remote `vscode-agent-host://` URI is unwrapped to the underlying file

@@ -1,5 +1,5 @@
 ---
-description: VS Code coding guidelines — naming, style, types, strings, and code quality rules. Reference when writing or reviewing code.
+description: Vertex coding guidelines — naming, style, types, strings, and code quality rules. Reference when writing or reviewing code.
 applyTo: src/vs/**
 ---
 
@@ -57,7 +57,7 @@ Use tabs, not spaces.
 
 ## Code Quality
 
-- Include Microsoft copyright header in all files
+- Include Vertex copyright header in all files
 - Prefer `async`/`await` over `Promise.then()`
 - Localize all user-facing messages
 - Prefer named regex capture groups over numbered ones

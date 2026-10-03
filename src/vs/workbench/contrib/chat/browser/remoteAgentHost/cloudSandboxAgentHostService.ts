@@ -334,7 +334,7 @@ export class CloudSandboxAgentHostService extends Disposable implements ICloudSa
 
 	async connect(options: ICloudSandboxConnectOptions, token: CancellationToken): Promise<string> {
 		if (!this._configurationService.getValue<boolean>(CloudSandboxEnabledSettingId)) {
-			throw new Error('Copilot cloud sandbox connections are not enabled.');
+			throw new Error('AI cloud sandbox connections are not enabled.');
 		}
 		if (!this._configurationService.getValue<boolean>(RemoteAgentHostsEnabledSettingId)) {
 			throw new Error('Remote agent host connections are not enabled.');

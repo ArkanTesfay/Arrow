@@ -1,6 +1,6 @@
 # SDK/Runtime Managed Setting
 
-Use this path when policy governs behavior implemented inside the Copilot runtime:
+Use this path when policy governs behavior implemented inside the AI runtime:
 
 - tools, shell, files, URLs, MCP, plugins, or subagents;
 - permissions, approvals, or sandboxing;
@@ -19,13 +19,13 @@ The runtime owns:
 
 Prefer runtime discovery of managed settings. Add a host-supplied SDK contract only when the host genuinely owns the value.
 
-Do not add a VS Code `policy:` merely to mirror runtime policy. Do not add a GitHub-token/account-policy field as a substitute for managed settings.
+Do not add a Vertex `policy:` merely to mirror runtime policy. Do not add a GitHub-token/account-policy field as a substitute for managed settings.
 
 ## Permissions
 
 - Managed `deny` / `ask` / `allow` are runtime policy.
 - AHP `{ allow, deny }` contains tool-name client preferences; it is not the managed DSL.
-- New VS Code/AHP code transports managed rules opaquely and does not parse or match them.
+- New Vertex/AHP code transports managed rules opaquely and does not parse or match them.
 - `managedApprovalRequired` bypasses all automatic and persistent approval paths.
 - Managed approval is human-only and one-time-only.
 - Permission authorization never widens sandbox access.
@@ -45,19 +45,19 @@ Policy removal must survive real JSON/AHP serialization.
 
 Client-injected settings are strict: malformed or unsupported rules reject create/resume. Server/device discovery instead uses its defined cache and fail-open/fail-closed degradation behavior.
 
-### VS Code legacy-setting bridge
+### Vertex legacy-setting bridge
 
-VS Code has a narrow declarative bridge for settings whose explicitly configured values must contribute restrictions to `managedSettings.permissions`. This is a bounded compatibility path for pre-existing legacy settings, not an architecture for new controls. New runtime-owned controls belong directly in the managed-settings schema and public SDK contract, without introducing or translating a VS Code setting.
+Vertex has a narrow declarative bridge for settings whose explicitly configured values must contribute restrictions to `managedSettings.permissions`. This is a bounded compatibility path for pre-existing legacy settings, not an architecture for new controls. New runtime-owned controls belong directly in the managed-settings schema and public SDK contract, without introducing or translating a Vertex setting.
 
 Bridge invariants:
 
 - the bridge is guarded by its own false-by-default experimental compatibility setting;
 - add mappings only for legacy settings that already exist; never create a new setting for this bridge;
-- mappings select one VS Code setting and use a callback typed against the host-owned managed permissions DTO;
-- mappings contribute only fields that can be flattened restrictively (`disable`, `deny`, and `ask`); do not flatten independent `allow` lists in VS Code;
+- mappings select one Vertex setting and use a callback typed against the host-owned managed permissions DTO;
+- mappings contribute only fields that can be flattened restrictively (`disable`, `deny`, and `ask`); do not flatten independent `allow` lists in Vertex;
 - only explicit global layers participate, in policy, user, then application precedence;
 - registered defaults and workspace/folder values do not contribute;
-- contributions aggregate restrictively and are transported without parsing their rule grammar in VS Code;
+- contributions aggregate restrictively and are transported without parsing their rule grammar in Vertex;
 - the aggregate is supplied on SDK create and resume;
 - an empty aggregate is forwarded when settings are removed so stale restrictions clear across JSON/AHP serialization;
 - contributions use a typed, client-owned AHP extension notification and a dedicated Agent Host managed-settings service; do not route them through root configuration;

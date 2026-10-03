@@ -32,14 +32,14 @@ export interface ICopilotApiServiceRequestOptions {
 	readonly signal?: AbortSignal;
 
 	/**
-	 * Suppress the `Copilot-Integration-Id` header on this request.
+	 * Suppress the `AI-Integration-Id` header on this request.
 	 *
 	 * When unset, `@vscode/copilot-api` derives the integration id from the
 	 * discovered Copilot SKU: a `no_auth_limited_copilot` SKU maps to
 	 * `vscode-nl`, which the CAPI backend treats as the limited/no-auth
 	 * integration and refuses premium models such as `claude-opus-4.7`.
 	 * Setting this to `true` omits the header so CAPI authorizes against the
-	 * token's real entitlement. Mirrors the Copilot Chat extension's
+	 * token's real entitlement. Mirrors the AI Chat extension's
 	 * `ClaudeStreamingPassThroughEndpoint.getEndpointFetchOptions()`.
 	 */
 	readonly suppressIntegrationId?: boolean;
@@ -386,7 +386,7 @@ export const ICopilotApiService = createDecorator<ICopilotApiService>('copilotAp
  *   HTTP status was 200 and is no longer meaningful) and the server-supplied
  *   error envelope preserved verbatim.
  * - Failures of the `/copilot_internal/user` discovery call throw plain
- *   `Error` (not `CopilotApiError`) with a `"Copilot endpoint discovery
+ *   `Error` (not `CopilotApiError`) with a `"AI endpoint discovery
  *   failed: ..."` prefix — it is an implementation detail of this service
  *   and is not part of the Anthropic-shaped CAPI surface.
  * - Malformed JSON in an SSE `data:` line is logged and skipped, not thrown.
@@ -1031,7 +1031,7 @@ export class CopilotApiService extends Disposable implements ICopilotApiService 
 
 		if (!response.ok) {
 			const text = await response.text().catch(() => '');
-			throw buildCopilotApiHttpError(response.status, response.statusText, text, 'Copilot endpoint discovery failed');
+			throw buildCopilotApiHttpError(response.status, response.statusText, text, 'AI endpoint discovery failed');
 		}
 
 		const envelope: ICopilotUserResponse = await response.json();

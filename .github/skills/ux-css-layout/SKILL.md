@@ -1,6 +1,6 @@
 ---
 name: ux-css-layout
-description: VS Code CSS conventions, file organization, class naming, standard sizes, SplitView/Grid layout, scrollable content, responsive layout, and text overflow/ellipsis patterns. Use when writing CSS, building layouts, or fixing text truncation issues.
+description: Vertex CSS conventions, file organization, class naming, standard sizes, SplitView/Grid layout, scrollable content, responsive layout, and text overflow/ellipsis patterns. Use when writing CSS, building layouts, or fixing text truncation issues.
 ---
 
 This skill covers CSS file organization, naming, standard sizes, programmatic layout (SplitView, Grid, scrollable), responsive patterns, and text overflow handling.
@@ -128,7 +128,7 @@ scrollable.scanDomNode(); // call after content changes
 
 ## 8. Responsive Layout
 
-VS Code does **not** use CSS media queries. Instead, it uses a **programmatic constraint-based layout system**:
+Vertex does **not** use CSS media queries. Instead, it uses a **programmatic constraint-based layout system**:
 
 - `IView.minimumSize` / `maximumSize` — views declare their size constraints.
 - `SplitView` and `Grid` distribute space according to constraints and `LayoutPriority`.
@@ -196,7 +196,7 @@ Flex children default to `min-width: auto`, which **prevents** `text-overflow: e
 }
 ```
 
-This pattern is used throughout VS Code — for example, `.monaco-icon-label-container` sets `min-width: 0` and `flex: 1` to allow label text to truncate.
+This pattern is used throughout Vertex — for example, `.monaco-icon-label-container` sets `min-width: 0` and `flex: 1` to allow label text to truncate.
 
 ### Fixed vs Flexible Elements
 
@@ -249,7 +249,7 @@ For `IconLabel` and list/tree renderers, this is handled automatically. For cust
 
 ## 10. Design-System Size Tokens (spacing, radius, font, codicon, stroke)
 
-VS Code ships a design-system **size** ramp, registered in `src/vs/platform/theme/common/sizes/baseSizes.ts` and emitted as `--vscode-*` CSS variables. When writing or editing CSS, prefer the token var over a raw px value wherever a token exists. The full tables + rationale live in the auto-injected `.github/instructions/design-tokens.instructions.md` (canonical source — keep this section in sync with it). This section captures the **decision logic** for deeper styling tasks.
+Vertex ships a design-system **size** ramp, registered in `src/vs/platform/theme/common/sizes/baseSizes.ts` and emitted as `--vscode-*` CSS variables. When writing or editing CSS, prefer the token var over a raw px value wherever a token exists. The full tables + rationale live in the auto-injected `.github/instructions/design-tokens.instructions.md` (canonical source — keep this section in sync with it). This section captures the **decision logic** for deeper styling tasks.
 
 > Every `--vscode-*` size var you reference must already exist in `build/lib/stylelint/vscode-known-variables.json` (`"sizes"` array, alphabetically sorted) or stylelint/hygiene fails. Adding a *new* token means adding it both in `baseSizes.ts` and that JSON file.
 

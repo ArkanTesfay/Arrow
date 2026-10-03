@@ -130,7 +130,7 @@ export class OTelContrib extends Disposable implements IExtensionContribution {
 			// Unlike ordinary messages, progress notifications close when their host is disposed.
 			restartExtensionHost: async () => vscode.window.withProgress({
 				location: vscode.ProgressLocation.Notification,
-				title: vscode.l10n.t("Restarting extensions in this window to apply your organization's Copilot telemetry settings. Active sessions may ask you to confirm."),
+				title: vscode.l10n.t("Restarting extensions in this window to apply your organization's AI telemetry settings. Active sessions may ask you to confirm."),
 				cancellable: false,
 			}, async () => {
 				await vscode.commands.executeCommand('workbench.action.restartExtensionHost');
@@ -140,17 +140,17 @@ export class OTelContrib extends Disposable implements IExtensionContribution {
 			}),
 			warnPolicyNotApplied: beforeReload => {
 				if (beforeReload) {
-					void this._promptReload(vscode.l10n.t("Your organization's Copilot telemetry policy could not be applied automatically. Reload the window to apply it."), true, beforeReload);
+					void this._promptReload(vscode.l10n.t("Your organization's AI telemetry policy could not be applied automatically. Reload the window to apply it."), true, beforeReload);
 				} else {
-					void vscode.window.showWarningMessage(vscode.l10n.t("Your organization's Copilot telemetry policy is still not applied after reloading. Check the GitHub Copilot Chat output log for details."));
+					void vscode.window.showWarningMessage(vscode.l10n.t("Your organization's AI telemetry policy is still not applied after reloading. Check the Vertex AI Chat output log for details."));
 				}
 			},
 			promptReload: (current, beforeReload) => {
 				const endpoint = current.config.otlpEndpoint;
 				const endpointChanged = current.config.enabled && endpoint !== this._otelConfigResolver.activeResolution.config.otlpEndpoint;
 				void this._promptReload(endpointChanged
-					? vscode.l10n.t("Copilot OTel endpoint will change to {0} after reload.", String(endpoint))
-					: vscode.l10n.t("Copilot OTel settings changed - a reload is required for the change to take effect."), false, beforeReload);
+					? vscode.l10n.t("AI OTel endpoint will change to {0} after reload.", String(endpoint))
+					: vscode.l10n.t("AI OTel settings changed - a reload is required for the change to take effect."), false, beforeReload);
 			},
 			notifyPolicyRestarted: () => {
 				this._logService.info('[OTel] Extensions were restarted to apply enterprise telemetry policy.');

@@ -42,8 +42,8 @@ Scope: `src/vs/sessions/**`
 ## Attribute a console error to the provider that backs the surface
 
 - **Scope:** `src/vs/sessions/contrib/providers/**`
-- **Learning:** The sessions list resolves every registered provider, so an error in the console may come from a provider unrelated to the surface the user was operating. Identify which provider backs that surface before editing; a stack trace shows where an error was thrown, not which feature produced it. Several providers share a product name across the workbench and the Copilot extension without sharing an implementation.
-- **Evidence:** A cloud sandbox report was traced into the Copilot extension's similarly named cloud provider, which shares neither code nor identifier with the Agents Window sandbox provider.
+- **Learning:** The sessions list resolves every registered provider, so an error in the console may come from a provider unrelated to the surface the user was operating. Identify which provider backs that surface before editing; a stack trace shows where an error was thrown, not which feature produced it. Several providers share a product name across the workbench and the AI extension without sharing an implementation.
+- **Evidence:** A cloud sandbox report was traced into the AI extension's similarly named cloud provider, which shares neither code nor identifier with the Agents Window sandbox provider.
 - **Disposition:** Candidate for the Sessions skill if provider-attribution mistakes recur.
 
 ## Rule out local product configuration before suspecting product code

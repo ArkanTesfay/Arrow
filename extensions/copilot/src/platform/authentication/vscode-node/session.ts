@@ -10,7 +10,7 @@ import { AuthPermissionMode, AuthProviderId, ConfigKey, IConfigurationService } 
 import { authProviderId, GITHUB_SCOPE_ALIGNED, GITHUB_SCOPE_READ_USER, GITHUB_SCOPE_USER_EMAIL, MinimalModeError } from '../common/authentication';
 import { resolveGitHubSessionUri } from '../common/enterprise';
 
-export const SESSION_LOGIN_MESSAGE = 'You are not signed in to GitHub. Please sign in to use Copilot.';
+export const SESSION_LOGIN_MESSAGE = 'You are not signed in to GitHub. Please sign in to use AI.';
 // These types are subsets of the "real" types AuthenticationSessionAccountInformation and
 // AuthenticationSession. They allow us to use the type system to validate which fields
 // are actually needed and hence which ones need values when we construct fake session.

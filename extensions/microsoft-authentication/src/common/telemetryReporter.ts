@@ -47,7 +47,7 @@ export class MicrosoftAuthenticationTelemetryReporter implements IExperimentatio
 		/* __GDPR__
 			"login" : {
 				"owner": "TylerLeonhardt",
-				"comment": "Used to determine the usage of the Microsoft Auth Provider.",
+				"comment": "Used to determine the usage of the Vertex Auth Provider.",
 				"scopes": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "Used to determine what scope combinations are being requested." }
 			}
 		*/
@@ -155,7 +155,7 @@ export class MicrosoftAuthenticationTelemetryReporter implements IExperimentatio
 		/* __GDPR__
 			"account" : {
 				"owner": "TylerLeonhardt",
-				"comment": "Used to determine the usage of the Microsoft Auth Provider.",
+				"comment": "Used to determine the usage of the Vertex Auth Provider.",
 				"scopes": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "Used to determine what scope combinations are being requested." },
 				"accountType": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "Used to determine what account types are being used." }
 			}
@@ -177,7 +177,7 @@ export class MicrosoftSovereignCloudAuthenticationTelemetryReporter extends Micr
 		/* __GDPR__
 			"loginMicrosoftSovereignCloud" : {
 				"owner": "TylerLeonhardt",
-				"comment": "Used to determine the usage of the Microsoft Auth Provider.",
+				"comment": "Used to determine the usage of the Vertex Auth Provider.",
 				"scopes": { "classification": "PublicNonPersonalData", "purpose": "FeatureInsight", "comment": "Used to determine what scope combinations are being requested." }
 			}
 		*/

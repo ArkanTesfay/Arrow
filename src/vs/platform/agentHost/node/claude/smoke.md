@@ -26,11 +26,11 @@ refs that change between runs.
 
 ## Prerequisites
 
-- A fresh build. Confirm via the `VS Code - Build` task or run
+- A fresh build. Confirm via the `Vertex - Build` task or run
   `npm run typecheck-client` once.
 - `@playwright/cli` available (`npx @playwright/cli --version` should work).
-- A real GitHub Copilot login. Models only populate after authenticate, and
-  the Anthropic catalog is only visible to authenticated Copilot accounts.
+- A real Vertex AI login. Models only populate after authenticate, and
+  the Anthropic catalog is only visible to authenticated AI accounts.
   The `~/.vscode-oss-sessions-dev` user-data-dir caches login state across
   runs, so you only need to sign in once.
 - `ClaudeAgent` registration is opt-in. Pick **either**:
@@ -115,7 +115,7 @@ npx @playwright/cli snapshot
 # Find the ref:
 SNAP=$(ls -t .playwright-cli/page-*.yml | head -1)
 grep -nE 'Pick Session Type' "$SNAP"
-# → e.g. "Pick Session Type, Copilot CLI" [ref=eXXX]
+# → e.g. "Pick Session Type, AI CLI" [ref=eXXX]
 npx @playwright/cli click <ref>
 ```
 
@@ -124,10 +124,10 @@ Re-snapshot and confirm both options exist:
 ```bash
 npx @playwright/cli snapshot
 SNAP=$(ls -t .playwright-cli/page-*.yml | head -1)
-grep -nE 'option "(Copilot CLI|Claude)"' "$SNAP"
+grep -nE 'option "(AI CLI|Claude)"' "$SNAP"
 ```
 
-Expected: two `option "Copilot CLI" [ref=…]` and `option "Claude" [ref=…]`
+Expected: two `option "AI CLI" [ref=…]` and `option "Claude" [ref=…]`
 lines.
 
 Capture screenshot for the PR:
@@ -336,13 +336,13 @@ that does run live — by which point the bisect window is wider.
 | `verify-claude-logs.sh` fails at check 1 (`copilotcli` missing) | A registration was deleted from `agentHostMain.ts` or `agentHostServerMain.ts`. |
 | `verify-claude-logs.sh` fails at check 1 (`claude` missing) | Same, but for ClaudeAgent. Or import broken. |
 | `verify-claude-logs.sh` fails at check 2 (`[Claude] Auth token updated` missing) | `agentService.authenticate` is short-circuiting on the first matching provider. The fan-out fix lives in `src/vs/platform/agentHost/node/agentService.ts`. |
-| `verify-claude-logs.sh` fails at check 5 (zero models) | The §3.5 filter rejected everything. Inspect the upstream `[Copilot] Found N models` log line and check vendor / `supported_endpoints` / `model_picker_enabled` / `tool_calls`. |
+| `verify-claude-logs.sh` fails at check 5 (zero models) | The §3.5 filter rejected everything. Inspect the upstream `[AI] Found N models` log line and check vendor / `supported_endpoints` / `model_picker_enabled` / `tool_calls`. |
 | `verify-claude-logs.sh` fails at check 6 (`[Claude SDK stderr]`) | Phase 6 SDK subprocess wrote to stderr. Inspect the captured stderr in `agenthost.log` — likely auth (`401`/`403` from the proxy), missing `node` runtime, or the subprocess can't reach `ANTHROPIC_BASE_URL`. |
 | `verify-claude-logs.sh` fails at check 6 (`_processMessages crashed`) | Phase 6 consumer loop hit an uncaught exception. The latched `_fatalError` is in the message; check whether it's a transport error or a bug in `claudeMapSessionEvents.ts`. |
 | `verify-claude-logs.sh` fails at check 6 (`Failed to persist customization directory`) | Phase 6 S5 fatal — `_writeCustomizationDirectory` rejected. Check `ISessionDataService.openDatabase` permissions on the user-data-dir. |
 | `verify-claude-logs.sh` fails at check 7 (no `session/responsePart`) | Phase 6 mapper returned no signals. The first `content_block_start` may be `tool_use` (Phase 7+) instead of `text`/`thinking`. Or `_inFlightRequests[0]?.turnId` was undefined when the first message arrived (sequencer race). |
 | `verify-claude-logs.sh` fails at check 8 (no `session/turnComplete`) | Phase 6 SDK never reached `result`. The subprocess may still be running (cancellation didn't propagate), or the prompt iterable parked permanently. Check for `_processMessages crashed` first. |
-| Picker shows only "Copilot CLI" but registration log is fine | Root state never propagated. Check the `autorun` in `agentSideEffects.ts` — `_publishAgentInfos` should fire on every `agents` observable change. |
+| Picker shows only "AI CLI" but registration log is fine | Root state never propagated. Check the `autorun` in `agentSideEffects.ts` — `_publishAgentInfos` should fire on every `agents` observable change. |
 | Stub fires `TODO: Phase 5` but plan expected Phase 6 | Operator clicked Claude on a brand-new session, which hits `createSession` first. In Phase 5 this stub is normal; in Phase 6+ it indicates the materialize spine is missing — `createSession` should return `provisional: true` not throw. |
 | Phase 6 prompt hangs without rendering text | Either (a) the SDK subprocess never started (check `[ClaudeProxyService]` access logs for the `/v1/messages` POST), (b) the proxy returned non-SSE bytes (check the proxy's stream-loop warn log), or (c) the mapper allocated no part-id and the UI has nothing to render. |
 | `npx @playwright/cli evaluate` returns a help screen | The command is `eval`, not `evaluate`. Use `--raw` to strip wrapper output. |

@@ -252,7 +252,7 @@ Resolved during council synthesis (strong 3/3 or 2/3 consensus). Grilling may ad
 - **`parentToolCallId` omitted.** Elicitation has no `agentID`; requests route to
   the top-level session. Subagent-scoped elicitation is out of scope.
 - **`decline` is reserved for explicit user Decline; everything else is
-  `cancel`.** Follow Copilot's semantic ([copilotAgentSession.ts:3784](./../copilot/copilotAgentSession.ts)):
+  `cancel`.** Follow AI's semantic ([copilotAgentSession.ts:3784](./../copilot/copilotAgentSession.ts)):
   a no-session lookup miss and a mid-park teardown both return
   `{ action: 'cancel' }`; only an explicit user Decline returns
   `{ action: 'decline' }`. This keeps one meaning for `decline` ("the user
@@ -273,7 +273,7 @@ Resolved during council synthesis (strong 3/3 or 2/3 consensus). Grilling may ad
 
 - **Permission-display metadata (`title`/`displayName`/`description`) is
   ignored.** Those SDK fields target elicitation-driven *permission* prompts,
-  but Phase 10.6 routes through the user-input channel; both Codex and Copilot
+  but Phase 10.6 routes through the user-input channel; both Codex and AI
   use `message` only. The bridge surfaces `request.message` as
   `ChatInputRequest.message` and drops the rest. A future permission-styled
   elicitation phase can thread them.
@@ -412,7 +412,7 @@ Matches the planned `Files to Modify or Create` table exactly — no drift.
 
 ### Review-driven fixes (PR #325908)
 
-Copilot's review surfaced real correctness gaps against the workbench consumer (`agentHostSessionHandler.ts`); all confirmed and fixed:
+AI's review surfaced real correctness gaps against the workbench consumer (`agentHostSessionHandler.ts`); all confirmed and fixed:
 
 - **Schema-aware answer coercion.** The consumer renders number/integer/boolean questions as *text* inputs and returns text answers, so `"3"`/`"false"` must be coerced back to `3`/`false`. `elicitationAnswerToValue` now takes the field and coerces per `type` (ported from copilot's `elicitationAnswerToFieldValue`); uncoercible values are dropped.
 - **`allowFreeformInput: false` on strict enum/select questions.** The consumer defaults an omitted `allowFreeformInput` to `true`, which would let a user submit an out-of-schema value that the translator then drops. MCP enums are strict, so the projection now disables free-form input on single/multi-select.

@@ -1,14 +1,14 @@
-# Copilot CLI Integration
+# AI CLI Integration
 
-This folder contains the Copilot CLI integration for VS Code Chat. It enables users to open a new Chat window and interact with a Copilot CLI agent instance directly within VS Code. **VS Code provides the UI, Copilot CLI SDK provides the smarts.**
+This folder contains the AI CLI integration for Vertex Chat. It enables users to open a new Chat window and interact with a AI CLI agent instance directly within Vertex. **Vertex provides the UI, AI CLI SDK provides the smarts.**
 
-> **Important:** The Copilot CLI agent functionality is powered by the `@github/copilot/sdk` package. See the SDK package for full type definitions.
+> **Important:** The AI CLI agent functionality is powered by the `@github/copilot/sdk` package. See the SDK package for full type definitions.
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         VS Code Chat UI                          │
+│                         Vertex Chat UI                          │
 └─────────────────────────┬───────────────────────────────────────┘
                           │
                           ▼
@@ -36,7 +36,7 @@ This folder contains the Copilot CLI integration for VS Code Chat. It enables us
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                 Copilot CLI SDK (@github/copilot/sdk)            │
+│                 AI CLI SDK (@github/copilot/sdk)            │
 │  - Manages the agentic conversation loop                         │
 │  - Executes tools and reports results via events                 │
 │  - Handles permissions (read, write, shell, MCP)                 │
@@ -48,7 +48,7 @@ This folder contains the Copilot CLI integration for VS Code Chat. It enables us
 ┌─────────────────────────────────────────────────────────────────┐
 │                    MCP Server (In-Process)                        │
 │  (vscode-node/contribution.ts, vscode-node/inProcHttpServer.ts)  │
-│  - Provides VS Code-specific tools to the SDK via MCP protocol   │
+│  - Provides Vertex-specific tools to the SDK via MCP protocol   │
 │  - Runs as an in-process HTTP server (InProcHttpServer)           │
 │  - Exposes diff, diagnostics, selection, and session tools        │
 │  - Discoverable by CLI via lock files in ~/.copilot/ide/          │
@@ -57,11 +57,11 @@ This folder contains the Copilot CLI integration for VS Code Chat. It enables us
 
 ## Folder Structure
 
-The integration follows VS Code's platform layering pattern with three layers:
+The integration follows Vertex's platform layering pattern with three layers:
 
 ```
 copilotcli/
-├── common/                     # Platform-agnostic (NO Node.js or VS Code API imports)
+├── common/                     # Platform-agnostic (NO Node.js or Vertex API imports)
 │   ├── copilotCLITools.ts      # Tool type definitions and processing helpers
 │   ├── copilotCLIPrompt.ts     # Prompt reference extraction and parsing
 │   ├── customSessionTitleService.ts
@@ -81,10 +81,10 @@ copilotcli/
 │   ├── nodePtyShim.ts          # Runtime node-pty copy for separate extension installs
 │   ├── userInputHelpers.ts     # User question/input handling interface
 │   ├── exitPlanModeHandler.ts  # Plan mode exit flow with user choice
-│   ├── ripgrepShim.ts          # Copies VS Code's ripgrep for SDK use
+│   ├── ripgrepShim.ts          # Copies Vertex's ripgrep for SDK use
 │   └── test/
 │
-└── vscode-node/                # VS Code API-dependent (commands, MCP tools, UI)
+└── vscode-node/                # Vertex API-dependent (commands, MCP tools, UI)
     ├── copilotCLIFolderMru.ts  # Folder MRU (most-recently-used) service
     └── test/
 ```
@@ -108,7 +108,7 @@ Strict import dependency rules — violations will cause build failures:
 
 **ICopilotCLIModels / CopilotCLIModels**
 - Fetches and caches available AI models from the SDK via `getAvailableModels()`
-- Registers a `LanguageModelChatProvider` with `targetChatSessionType: 'copilotcli'` so VS Code's model picker shows CLI models
+- Registers a `LanguageModelChatProvider` with `targetChatSessionType: 'copilotcli'` so Vertex's model picker shows CLI models
 - Exposes model capabilities: vision support, reasoning effort levels, token limits, billing multiplier
 - Rebuilds model list on authentication changes
 - Builds configuration schema for reasoning effort per model (low/medium/high/xhigh)
@@ -121,7 +121,7 @@ Strict import dependency rules — violations will cause build failures:
 **CopilotCLISession**
 - Wraps a single `Session` object from the `@github/copilot/sdk`
 - Entry point for every chat request via `handleRequest()`
-- Listens to SDK events and translates them to VS Code chat UI parts
+- Listens to SDK events and translates them to Vertex chat UI parts
 - Manages permission flow
 - Tracks external edits via `ExternalEditTracker` for proper diff display
 - Supports CLI commands: `compact`, `plan`, `fleet`
@@ -131,11 +131,11 @@ Strict import dependency rules — violations will cause build failures:
 ### `node/copilotcliSessionService.ts`
 
 **ICopilotCLISessionService / CopilotCLISessionService**
-- Central service managing the lifecycle of all Copilot CLI sessions
+- Central service managing the lifecycle of all AI CLI sessions
 
 ### `common/copilotCLITools.ts`
 
-Defines all tool type interfaces used by the Copilot CLI agent:
+Defines all tool type interfaces used by the AI CLI agent:
 
 * File Operations
 * Shell Operations
@@ -174,7 +174,7 @@ Handles permission requests from the SDK. Each permission kind has a dedicated h
 
 **ICopilotCLIMCPHandler / CopilotCLIMCPHandler**
 - Loads MCP server configuration for SDK sessions
-- Proxies all VS Code-configured MCP servers through a gateway URL with `type: 'http'` config per server
+- Proxies all Vertex-configured MCP servers through a gateway URL with `type: 'http'` config per server
 
 ### `node/copilotCLIImageSupport.ts`
 
@@ -191,11 +191,11 @@ Handles permission requests from the SDK. Each permission kind has a dedicated h
 
 ### `node/cliHelpers.ts`
 
-Path helpers for Copilot CLI directories.
+Path helpers for AI CLI directories.
 
 ## Message Flow
 
-1. **User sends message** in VS Code Chat
+1. **User sends message** in Vertex Chat
 2. **CopilotCLISessionService** creates or retrieves an existing session wrapper
 3. **CopilotCLISession.handleRequest()** is called:
    - If session is idle → normal request via `send()`
@@ -221,7 +221,7 @@ Tool invocation messages are intentionally held in a queue (`toolCallWaitingForP
 
 ## Session Persistence
 
-Copilot CLI sessions are persisted to `~/.copilot/session-state/<sessionId>/` directories containing:
+AI CLI sessions are persisted to `~/.copilot/session-state/<sessionId>/` directories containing:
 - `events.jsonl` — Ordered event stream (messages, tool calls, results)
 - `workspace.yaml` — Workspace configuration
 
@@ -231,7 +231,7 @@ Central type representing all workspace/repository/worktree state for a session:
 
 ### `IChatSessionMetadataStore` (`../common/chatSessionMetadataStore.ts`)
 
-Persists VS Code-specific metadata that sits alongside the SDK's own session data. This metadata is **not part of the SDK's `events.jsonl`** — it tracks VS Code concepts like worktree properties, request-to-tool mappings, mode instructions, and checkpoint refs.
+Persists Vertex-specific metadata that sits alongside the SDK's own session data. This metadata is **not part of the SDK's `events.jsonl`** — it tracks Vertex concepts like worktree properties, request-to-tool mappings, mode instructions, and checkpoint refs.
 
 **Key Types:**
 
@@ -313,9 +313,9 @@ Orchestrates the start and end of each chat request turn, coordinating worktree 
 
 ## Critical Pitfalls
 
-- **Shims before SDK import**: For separate Marketplace/VSIX extension installs, `CopilotCLISDK.ensureShims()` in `node/copilotCli.ts` MUST run before any `import('@github/copilot/sdk')`. That runtime path calls both `ensureRipgrepShim()` and `ensureNodePtyShim()` to copy VS Code's native binaries from `envService.appRoot` into the installed extension's SDK layout.
+- **Shims before SDK import**: For separate Marketplace/VSIX extension installs, `CopilotCLISDK.ensureShims()` in `node/copilotCli.ts` MUST run before any `import('@github/copilot/sdk')`. That runtime path calls both `ensureRipgrepShim()` and `ensureNodePtyShim()` to copy Vertex's native binaries from `envService.appRoot` into the installed extension's SDK layout.
 
-- **Bundled/core shim path is different**: When Copilot Chat is bundled together with core VS Code, build-time packaging materializes only the ripgrep shim and writes `node_modules/@github/copilot/shims.txt`. That marker intentionally makes runtime `ensureShims()` return early, so node-pty is not copied in the bundled path; it is resolved from VS Code's own app tree instead.
+- **Bundled/core shim path is different**: When AI Chat is bundled together with core Vertex, build-time packaging materializes only the ripgrep shim and writes `node_modules/@github/copilot/shims.txt`. That marker intentionally makes runtime `ensureShims()` return early, so node-pty is not copied in the bundled path; it is resolved from Vertex's own app tree instead.
 
 - **Delayed permission UI**: Tool invocation messages are held in `toolCallWaitingForPermissions` until permission resolves. `flushPendingInvocationMessageForToolCallId()` flushes only the specific approved tool, not all pending tools. This is intentional — don't bypass it.
 
@@ -325,7 +325,7 @@ Orchestrates the start and end of each chat request turn, coordinating worktree 
 
 ## Commands & Slash Commands
 
-**Copilot CLI  commands** (user-facing, sent programmatically):
+**AI CLI  commands** (user-facing, sent programmatically):
 - `compact` — compress conversation history to reduce tokens
 - `plan` — enter plan mode (SDK generates plan before executing)
 - `fleet` — start fleet mode for multi-agent parallel execution
@@ -333,11 +333,11 @@ Orchestrates the start and end of each chat request turn, coordinating worktree 
 **Built-in custom slash commands** (user-facing):
 `/commit`, `/sync`, `/merge`, `/create-pr`, `/create-draft-pr`, `/update-pr`
 
-**VS Code Session commands** (registered via `registerCLIChatCommands` in `vscode-node/copilotCLIChatSessions.ts`):
+**Vertex Session commands** (registered via `registerCLIChatCommands` in `vscode-node/copilotCLIChatSessions.ts`):
 
 ## Configuration
 
-The integration respects these VS Code settings (all under `github.copilot.chat.cli.*`):
+The integration respects these Vertex settings (all under `github.copilot.chat.cli.*`):
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -355,7 +355,7 @@ The integration respects these VS Code settings (all under `github.copilot.chat.
 
 ## Dependencies
 
-- `@github/copilot/sdk`: Official Copilot CLI SDK (session management, tools, permissions, events)
+- `@github/copilot/sdk`: Official AI CLI SDK (session management, tools, permissions, events)
 
 ## Deprecated Code
 

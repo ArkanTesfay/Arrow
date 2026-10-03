@@ -152,7 +152,7 @@ export class FetcherService extends Disposable implements IFetcherService {
 	createWebSocket(url: string, options?: WebSocketConnectOptions): WebSocketConnection {
 		if (options?.headers) {
 			delete options.headers['Request-Hmac'];
-			options.headers['Copilot-Integration-Id'] = INTEGRATION_ID;
+			options.headers['AI-Integration-Id'] = INTEGRATION_ID;
 		}
 		return createWebSocket(url, options);
 	}

@@ -118,7 +118,7 @@ export class CopilotCLIChatSessionInitializer implements ICopilotCLIChatSessionI
 			stream.warning(l10n.t('Chat session not found.'));
 			return { session: undefined, isNewSession, model, agent, trusted };
 		}
-		this.logService.info(`Using Copilot CLI session: ${session.object.sessionId} (isNewSession: ${isNewSession}, isolationEnabled: ${isIsolationEnabled(workspaceInfo)}, workingDirectory: ${workingDirectory}, worktreePath: ${worktreeProperties?.worktreePath})`);
+		this.logService.info(`Using AI CLI session: ${session.object.sessionId} (isNewSession: ${isNewSession}, isolationEnabled: ${isIsolationEnabled(workspaceInfo)}, workingDirectory: ${workingDirectory}, worktreePath: ${worktreeProperties?.worktreePath})`);
 
 		disposables.add(session);
 		disposables.add(session.object.attachStream(stream));
@@ -252,7 +252,7 @@ export class CopilotCLIChatSessionInitializer implements ICopilotCLIChatSessionI
 			if (modelId) {
 				return modelId;
 			}
-			// Sometimes the models can contain ` (Copilot)` suffix, try stripping that and resolving again.
+			// Sometimes the models can contain ` (AI)` suffix, try stripping that and resolving again.
 			if (!model.includes('(')) {
 				continue;
 			}

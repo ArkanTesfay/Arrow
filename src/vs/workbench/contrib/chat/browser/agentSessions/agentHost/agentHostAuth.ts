@@ -741,7 +741,7 @@ async function resolveSessionForProtectedResource(
 	try {
 		sessions = await authenticationService.getSessions(resolution.providerId, undefined, { account: resolution.session.account, silent: true }, true);
 	} catch (error) {
-		logService.trace(`${options.logPrefix} Unable to resolve an already-authorized connector session; retaining Copilot authentication`, error);
+		logService.trace(`${options.logPrefix} Unable to resolve an already-authorized connector session; retaining AI authentication`, error);
 		return resolution;
 	}
 	let preferred = resolution.session;
@@ -835,7 +835,7 @@ async function forceAuthenticationInteractively(
 			telemetrySource: 'agentHost',
 			forceSignInDialog: true,
 			additionalScopes: scopes,
-			dialogTitle: localize('agentHost.signInDialogTitle', "Sign in to use GitHub Copilot"),
+			dialogTitle: localize('agentHost.signInDialogTitle', "Sign in to use Vertex AI"),
 			disableChatViewReveal: true,
 			returnResult: true,
 		});
@@ -845,7 +845,7 @@ async function forceAuthenticationInteractively(
 			return undefined;
 		}
 		if (!setupResult.success) {
-			throw setupResult.error ?? new Error(localize('agentHost.signInFailed', "Failed to sign in to use GitHub Copilot."));
+			throw setupResult.error ?? new Error(localize('agentHost.signInFailed', "Failed to sign in to use Vertex AI."));
 		}
 		let sessionResolution = await resolveSessionForProtectedResource(authenticationService, logService, resource, options);
 		if (sessionResolution.kind === 'signedOut' && options.authTokenCache?.getRejectedSession(resource.resource, scopes)) {

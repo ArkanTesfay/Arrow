@@ -33,12 +33,12 @@ export class BaseTelemetryService implements ITelemetryService {
 			/* __GDPR__
 				"token" : {
 					"owner": "digitarald",
-					"comment": "Copilot token received from the service.",
+					"comment": "AI token received from the service.",
 					"snippyEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the block setting for public suggestions is enabled." },
 					"telemetryEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the subscription has telemetry enabled." },
 					"mcpEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the token has MCP features enabled." },
 					"previewEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the token has editor preview features enabled." },
-					"reviewEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the token has Copilot code review features enabled." }
+					"reviewEnabled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true, "comment": "If the token has AI code review features enabled." }
 				}
 			*/
 			this.sendMSFTTelemetryEvent('token', undefined, {

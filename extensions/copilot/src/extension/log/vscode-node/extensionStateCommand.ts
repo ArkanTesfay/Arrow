@@ -79,15 +79,15 @@ export class ExtensionStateCommandContribution extends Disposable implements IEx
 				const copilotModels = await vscode.lm.selectChatModels({ vendor: 'copilot' });
 				copilotModelCount = copilotModels.length;
 				copilotProviderRegistered = String(copilotModels.length > 0);
-				lines.push(`  Copilot chat provider registered: ${copilotModels.length > 0} (models: ${copilotModels.length})`);
+				lines.push(`  AI chat provider registered: ${copilotModels.length > 0} (models: ${copilotModels.length})`);
 			} catch (e) {
-				lines.push(`  Copilot chat provider registered: false (error: ${e})`);
+				lines.push(`  AI chat provider registered: false (error: ${e})`);
 			}
 
 			// Copilot embeddings model registration
 			const copilotEmbeddings = vscode.lm.embeddingModels.filter(m => m.startsWith('copilot.'));
 			copilotEmbeddingsRegistered = String(copilotEmbeddings.length > 0);
-			lines.push(`  Copilot embeddings model registered: ${copilotEmbeddings.length > 0} (models: [${copilotEmbeddings.join(', ')}])`);
+			lines.push(`  AI embeddings model registered: ${copilotEmbeddings.length > 0} (models: [${copilotEmbeddings.join(', ')}])`);
 
 			// Tools
 			toolCount = this._toolsService.tools.length;
@@ -104,14 +104,14 @@ export class ExtensionStateCommandContribution extends Disposable implements IEx
 				"comment": "Extension state diagnostic information",
 				"hasAnySession": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether a GitHub session exists" },
 				"hasPermissiveSession": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether a permissive GitHub session exists" },
-				"hasCopilotToken": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether a Copilot token exists" },
+				"hasCopilotToken": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether a AI token exists" },
 				"proxySupport": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The http.proxySupport setting value" },
 				"proxyConfigured": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether an http proxy is configured" },
 				"languageModelsLoaded": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether language models are loaded" },
-				"copilotProviderRegistered": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether the Copilot chat provider is registered" },
-				"copilotEmbeddingsRegistered": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether Copilot embeddings models are registered" },
+				"copilotProviderRegistered": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether the AI chat provider is registered" },
+				"copilotEmbeddingsRegistered": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether AI embeddings models are registered" },
 				"languageModelCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Number of language models loaded", "isMeasurement": true },
-				"copilotModelCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Number of Copilot chat models", "isMeasurement": true },
+				"copilotModelCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Number of AI chat models", "isMeasurement": true },
 				"toolCount": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Number of tools loaded", "isMeasurement": true }
 			}
 		*/

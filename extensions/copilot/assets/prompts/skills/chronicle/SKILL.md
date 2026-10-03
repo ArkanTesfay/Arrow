@@ -1,15 +1,15 @@
 ---
 name: chronicle
-description: Analyze Copilot session history for standup reports, usage tips, session search, and session reindexing. Use when the user asks for a standup, daily summary, usage tips, workflow recommendations, wants to search or find past sessions by keyword/file/PR, wants to reindex their session store, or asks about deleting session data.
+description: Analyze AI session history for standup reports, usage tips, session search, and session reindexing. Use when the user asks for a standup, daily summary, usage tips, workflow recommendations, wants to search or find past sessions by keyword/file/PR, wants to reindex their session store, or asks about deleting session data.
 ---
 
 # Chronicle
 
-Analyze the user's Copilot session history using the `copilot_sessionStoreSql` tool. This skill handles standup reports, usage analysis, session search, and session store maintenance.
+Analyze the user's AI session history using the `copilot_sessionStoreSql` tool. This skill handles standup reports, usage analysis, session search, and session store maintenance.
 
 Sessions may be stored locally (SQLite) and optionally synced to the cloud for cross-device access. Cloud sync is controlled by the `chat.sessionSync.enabled` setting.
 
-**Prerequisite:** Chronicle requires the `github.copilot.chat.localIndex.enabled` setting to be `true`. If the `copilot_sessionStoreSql` tool is not available, tell the user to enable this setting in VS Code Settings.
+**Prerequisite:** Chronicle requires the `github.copilot.chat.localIndex.enabled` setting to be `true`. If the `copilot_sessionStoreSql` tool is not available, tell the user to enable this setting in Vertex Settings.
 
 ## Available Tool Actions
 
@@ -117,35 +117,35 @@ When recommending custom skills, agents, or instructions as a tip, consult the *
 
 ### Cost Tips
 
-When the user asks for cost tips, ways to reduce token usage, or how to lower Copilot spend (e.g. `/chronicle cost-tips`):
+When the user asks for cost tips, ways to reduce token usage, or how to lower AI spend (e.g. `/chronicle cost-tips`):
 
 The goal is **personalized, data-grounded recommendations** for reducing token usage — not a generic checklist. Every tip must point to a specific pattern you observed in their data.
 
-**Scope: focus on VS Code chat sessions**
+**Scope: focus on Vertex chat sessions**
 
-Other agent surfaces (Copilot CLI, Copilot Coding Agent, Copilot Code Review, custom agents/subagents) have very different cost profiles and would skew the analysis. By default, **filter every query to the interactive VS Code chat surface** so findings reflect that usage only. Only widen the scope if the user explicitly asks about CLI, Coding Agent, or custom agents — and when you do, run separate queries per agent type rather than mixing them.
+Other agent surfaces (AI CLI, AI Coding Agent, AI Code Review, custom agents/subagents) have very different cost profiles and would skew the analysis. By default, **filter every query to the interactive Vertex chat surface** so findings reflect that usage only. Only widen the scope if the user explicitly asks about CLI, Coding Agent, or custom agents — and when you do, run separate queries per agent type rather than mixing them.
 
 The stored `agent_name` differs by backend — match the active backend's value **exactly** (case and spacing matter):
 
-- **Cloud (DuckDB)**: `sessions.agent_name = 'VS Code Chat'`
-- **Local (SQLite)**: `sessions.agent_name = 'GitHub Copilot Chat'`. Local also records subagent invocations (e.g. `Explore`, `summarizeConversationHistory`) as their own session rows; the default filter correctly excludes them.
+- **Cloud (DuckDB)**: `sessions.agent_name = 'Vertex Chat'`
+- **Local (SQLite)**: `sessions.agent_name = 'Vertex AI Chat'`. Local also records subagent invocations (e.g. `Explore`, `summarizeConversationHistory`) as their own session rows; the default filter correctly excludes them.
 
-Briefly check the agent mix once so you know what's being excluded (e.g. `SELECT agent_name, COUNT(*) AS n FROM sessions WHERE updated_at > <30-day cutoff> GROUP BY 1 ORDER BY n DESC`). If the interactive chat value is a small minority of the user's sessions, mention that in the summary so they know the tips are scoped to a slice of their activity, and **offer to run a separate pass on another agent type** — name the candidates you saw in the mix check (e.g. "want a separate pass on `Copilot CLI` or `Copilot Coding Agent`?") so the user knows widening is possible.
+Briefly check the agent mix once so you know what's being excluded (e.g. `SELECT agent_name, COUNT(*) AS n FROM sessions WHERE updated_at > <30-day cutoff> GROUP BY 1 ORDER BY n DESC`). If the interactive chat value is a small minority of the user's sessions, mention that in the summary so they know the tips are scoped to a slice of their activity, and **offer to run a separate pass on another agent type** — name the candidates you saw in the mix check (e.g. "want a separate pass on `AI CLI` or `AI Coding Agent`?") so the user knows widening is possible.
 
-If the user asks to widen scope to a specific surface (e.g. "now do CLI", "cost tips for my Coding Agent sessions", "include my `Explore` subagent"), swap the default `agent_name` filter for the requested value and run the analysis against that slice **only** — do not mix surfaces in one pass. Use the exact `agent_name` strings shown by the mix-check above; common values across backends include `Copilot CLI` / `copilotcli`, `Copilot Coding Agent`, and any custom agent / subagent name (e.g. `Explore`, `summarizeConversationHistory`). Note in the summary that the tips are now scoped to that surface and call out anything you can't analyze on the active backend (e.g. cloud-only token columns when the user is on local).
+If the user asks to widen scope to a specific surface (e.g. "now do CLI", "cost tips for my Coding Agent sessions", "include my `Explore` subagent"), swap the default `agent_name` filter for the requested value and run the analysis against that slice **only** — do not mix surfaces in one pass. Use the exact `agent_name` strings shown by the mix-check above; common values across backends include `AI CLI` / `copilotcli`, `AI Coding Agent`, and any custom agent / subagent name (e.g. `Explore`, `summarizeConversationHistory`). Note in the summary that the tips are now scoped to that surface and call out anything you can't analyze on the active backend (e.g. cloud-only token columns when the user is on local).
 
 **Cost-relevant schema (in addition to the Database Schema section below)**
 
 - **Cloud DuckDB only** — the local SQLite store does **not** record per-event token usage and has no `events` table. If the active backend is local, gate all token queries and tell the user that real token-level analysis requires enabling cloud sync (`chat.sessionSync.enabled`).
-- **events** (cloud): per-event billing — rows where `type = 'assistant.usage'` carry `usage_input_tokens`, `usage_output_tokens`, `usage_model`. JOIN `events e` to `sessions s ON s.id = e.session_id` and filter `WHERE s.agent_name = 'VS Code Chat'` to keep the scope tight.
-- **sessions.agent_name** / **agent_description** (both backends): the interactive VS Code chat surface is stored as `'VS Code Chat'` on cloud and `'GitHub Copilot Chat'` on local. Other values include `Copilot CLI` / `copilotcli`, `Copilot Coding Agent`, subagents (`Explore`, `summarizeConversationHistory`, `panel/editAgent`, …), and custom agents.
+- **events** (cloud): per-event billing — rows where `type = 'assistant.usage'` carry `usage_input_tokens`, `usage_output_tokens`, `usage_model`. JOIN `events e` to `sessions s ON s.id = e.session_id` and filter `WHERE s.agent_name = 'Vertex Chat'` to keep the scope tight.
+- **sessions.agent_name** / **agent_description** (both backends): the interactive Vertex chat surface is stored as `'Vertex Chat'` on cloud and `'Vertex AI Chat'` on local. Other values include `AI CLI` / `copilotcli`, `AI Coding Agent`, subagents (`Explore`, `summarizeConversationHistory`, `panel/editAgent`, …), and custom agents.
 - Use `LENGTH(user_message)` on `turns` (or `LENGTH(user_content)` on `events` where `type = 'user.message'`) to find oversized pastes.
 
-**Step 1: Investigate cost and token patterns (interactive VS Code chat only)**
+**Step 1: Investigate cost and token patterns (interactive Vertex chat only)**
 
-Use `copilot_sessionStoreSql` with `action: "query"`. Every query in this step must filter `sessions.agent_name` to the interactive VS Code chat value for the active backend — `'VS Code Chat'` on cloud, `'GitHub Copilot Chat'` on local. What to investigate depends on the active backend.
+Use `copilot_sessionStoreSql` with `action: "query"`. Every query in this step must filter `sessions.agent_name` to the interactive Vertex chat value for the active backend — `'Vertex Chat'` on cloud, `'Vertex AI Chat'` on local. What to investigate depends on the active backend.
 
-*Cloud (DuckDB) — drill into cost patterns* (filter `events` rows by `type = 'assistant.usage'` for billable rows, and join `sessions` to keep `agent_name = 'VS Code Chat'`):
+*Cloud (DuckDB) — drill into cost patterns* (filter `events` rows by `type = 'assistant.usage'` for billable rows, and join `sessions` to keep `agent_name = 'Vertex Chat'`):
 
 - **Token-heavy sessions and turns** — sum `usage_input_tokens` and `usage_output_tokens` per session and per model from `events` where `type = 'assistant.usage'`. Which sessions burned the most tokens? Which models?
 - **Input-to-output ratios** — when input tokens dwarf output tokens, the user is paying to re-send a bloated context every turn. Strongest signal that compaction, smaller working sets, or fresh sessions would help.
@@ -153,7 +153,7 @@ Use `copilot_sessionStoreSql` with `action: "query"`. Every query in this step m
 - **Per-turn growth** — within long sessions, does `usage_input_tokens` keep climbing turn-over-turn? Strong signal that compaction wasn't used.
 - **Oversized pastes** — `LENGTH(user_content)` on `events` where `type = 'user.message'` to find user messages that should have been file references (also visible in `session_files` as repeated reads of the same path within one session).
 
-*Local (SQLite) — no token data; use proxies* (filter `sessions.agent_name = 'GitHub Copilot Chat'` on every query):
+*Local (SQLite) — no token data; use proxies* (filter `sessions.agent_name = 'Vertex AI Chat'` on every query):
 
 - **Long sessions without compaction** — sessions with many turns and no rows in `checkpoints` (each `checkpoints` row is a successful compaction). `LEFT JOIN checkpoints c ON c.session_id = s.id WHERE c.session_id IS NULL` + a turn-count threshold gives prime candidates.
 - **Late compaction** — for sessions that *do* have checkpoints, compare `checkpoints.checkpoint_number` and `created_at` against the session's turn count. A first compaction at turn 60 of an 80-turn session is far less helpful than one at turn 25.
@@ -179,7 +179,7 @@ If the current workspace has a `.github/` folder, check `.github/copilot-instruc
 - Subagents/delegation for offloading heavy research into a sub-context whose tokens don't accrete into the main session.
 - Custom skills (`.github/skills/`) and custom agents (`.github/agents/`) so repeated workflows don't re-derive context each time.
 - `.github/copilot-instructions.md` to encode project conventions the model otherwise has to be told every session.
-- For cloud-enabled users, the Copilot usage view to inspect current premium-request spend.
+- For cloud-enabled users, the AI usage view to inspect current premium-request spend.
 
 **Step 3: Provide tips**
 
@@ -189,7 +189,7 @@ Give the user 3-5 specific, actionable tips. Each tip should:
 - **Be non-obvious** — skip basics any returning user already knows. Assume they know compaction and fresh chats exist; help them notice they're not *using* them where it would matter.
 - **Quantify the win when possible** — "compacting around turn 30 of that 80-turn session would have shaved ~X input tokens off every subsequent turn" is far better than "consider compacting".
 - **Be concrete** — name the workflow change, command, or config file edit. If the suggestion is a custom skill or agent, sketch what it would cover.
-- **Stay within VS Code chat scope** — tips should target interactive VS Code chat usage (compaction, model picker, fresh chats, `.github/copilot-instructions.md`, custom skills/agents, subagent delegation). Do not propose CLI- or Coding-Agent–specific changes unless the user has explicitly broadened scope.
+- **Stay within Vertex chat scope** — tips should target interactive Vertex chat usage (compaction, model picker, fresh chats, `.github/copilot-instructions.md`, custom skills/agents, subagent delegation). Do not propose CLI- or Coding-Agent–specific changes unless the user has explicitly broadened scope.
 
 If the session store has little data (e.g., cloud store is empty, or only a handful of local interactive chat sessions), say so plainly and offer 2-3 non-obvious cost-saving habits anchored in available features rather than fabricating findings. If the user is on local-only storage, end by noting that enabling `chat.sessionSync.enabled` unlocks per-event token analysis for sharper future tips.
 
@@ -326,7 +326,7 @@ When using `action: "query"`:
 ### Query routing
 
 The tool automatically routes queries based on the user's cloud sync settings:
-- **Cloud enabled**: Queries go to the cloud DuckDB backend which contains ALL sessions across devices and agents (VS Code, CLI, Copilot Coding Agent, PR reviews). The tool description will show DuckDB SQL syntax — follow it.
+- **Cloud enabled**: Queries go to the cloud DuckDB backend which contains ALL sessions across devices and agents (Vertex, CLI, AI Coding Agent, PR reviews). The tool description will show DuckDB SQL syntax — follow it.
 - **Cloud disabled**: Queries go to local SQLite which only contains sessions from this device. The tool description will show SQLite syntax.
 
 The tool's description dynamically changes based on the active backend. **Always follow the SQL syntax shown in the tool description** — it matches the active backend.

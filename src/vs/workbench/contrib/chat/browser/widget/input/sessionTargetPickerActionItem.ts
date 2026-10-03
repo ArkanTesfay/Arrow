@@ -67,7 +67,7 @@ type CopilotHarnessTargetChangedEvent = {
 };
 
 type CopilotHarnessTargetChangedClassification = {
-	mode: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The effective Copilot harness introduction experiment mode when the target changed.' };
+	mode: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The effective AI harness introduction experiment mode when the target changed.' };
 	fromHarness: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The categorized harness selected before the change.' };
 	toHarness: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The categorized harness selected after the change.' };
 	surface: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Whether the harness picker was in the sidebar or editor.' };
@@ -75,7 +75,7 @@ type CopilotHarnessTargetChangedClassification = {
 	sessionType: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The telemetry-safe chat session type represented by the picker, when available.' };
 	harness: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The underlying Agent Host harness represented by the picker, when applicable.' };
 	owner: 'justschen';
-	comment: 'Tracks explicit switches into or away from the Copilot harness for the introduction experiment.';
+	comment: 'Tracks explicit switches into or away from the AI harness for the introduction experiment.';
 };
 
 function getCopilotHarnessTargetCategory(target: AgentSessionTarget, chatSessionsService: IChatSessionsService): CopilotHarnessTargetCategory {

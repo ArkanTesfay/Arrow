@@ -39,8 +39,8 @@ Do not turn those files into general Sessions guidance.
 | System-wide Open Agents Window keybinding ownership | [SYSTEM_WIDE_KEYBINDING.md](SYSTEM_WIDE_KEYBINDING.md) |
 | Phone layout and mobile components | [MOBILE.md](MOBILE.md) |
 | AI customizations | [AI_CUSTOMIZATIONS.md](AI_CUSTOMIZATIONS.md) |
-| Copilot customizations | [copilot-customizations-spec.md](copilot-customizations-spec.md) |
-| Copilot Chat provider | [COPILOT_CHAT_SESSIONS_PROVIDER.md](contrib/providers/copilotChatSessions/COPILOT_CHAT_SESSIONS_PROVIDER.md) |
+| AI customizations | [copilot-customizations-spec.md](copilot-customizations-spec.md) |
+| AI Chat provider | [COPILOT_CHAT_SESSIONS_PROVIDER.md](contrib/providers/copilotChatSessions/COPILOT_CHAT_SESSIONS_PROVIDER.md) |
 | Agent Host provider | [AGENT_HOST_SESSIONS_PROVIDER.md](contrib/providers/agentHost/AGENT_HOST_SESSIONS_PROVIDER.md) |
 | Remote Agent Host provider | [REMOTE_AGENT_HOST_SESSIONS_PROVIDER.md](contrib/providers/remoteAgentHost/REMOTE_AGENT_HOST_SESSIONS_PROVIDER.md) |
 

@@ -60,7 +60,7 @@ export class CopilotConnectorsRequestService implements ICopilotConnectorsReques
 			return await this.doRequest(request, accessToken, cancellation.token);
 		} catch (error) {
 			if (!token.isCancellationRequested && cancellation.token.isCancellationRequested) {
-				const timeoutError = new CopilotConnectorsError(localize('copilotConnectors.timeout', "The Copilot connectors request timed out. Try again."));
+				const timeoutError = new CopilotConnectorsError(localize('copilotConnectors.timeout', "The AI connectors request timed out. Try again."));
 				this.logService.error('[CopilotConnectorsService] Request failed', timeoutError);
 				throw timeoutError;
 			}
@@ -79,7 +79,7 @@ export class CopilotConnectorsRequestService implements ICopilotConnectorsReques
 			// Invalid product configuration is reported below.
 		}
 		if (!endpointUrl || endpointUrl.protocol !== `${Schemas.https}:` || endpointUrl.username || endpointUrl.password || endpointUrl.search || endpointUrl.hash) {
-			throw new CopilotConnectorsError(localize('copilotConnectors.unavailable', "Copilot connectors are not available in this product."));
+			throw new CopilotConnectorsError(localize('copilotConnectors.unavailable', "AI connectors are not available in this product."));
 		}
 		const method = request.type === 'query' ? 'GET' : request.type === 'connect' ? 'PUT' : 'DELETE';
 		const path = request.type === 'query' ? '/plugins' : `/connectors/managed/${encodeURIComponent(request.name)}/connection`;
@@ -105,12 +105,12 @@ export class CopilotConnectorsRequestService implements ICopilotConnectorsReques
 				throw new CancellationError();
 			}
 			this.logService.error('[CopilotConnectorsService] Request failed', error);
-			throw new CopilotConnectorsError(localize('copilotConnectors.requestFailed', "Copilot connectors could not be reached. Check your connection and try again."));
+			throw new CopilotConnectorsError(localize('copilotConnectors.requestFailed', "AI connectors could not be reached. Check your connection and try again."));
 		}
 		try {
 			const status = context.res.statusCode ?? 0;
 			if (status < 200 || status >= 300) {
-				throw new CopilotConnectorsError(localize('copilotConnectors.httpError', "Copilot connectors could not complete the request (HTTP {0}).", status), status);
+				throw new CopilotConnectorsError(localize('copilotConnectors.httpError', "AI connectors could not complete the request (HTTP {0}).", status), status);
 			}
 			if (status === 204) {
 				return undefined;
@@ -119,7 +119,7 @@ export class CopilotConnectorsRequestService implements ICopilotConnectorsReques
 			try {
 				return text ? JSON.parse(text) : undefined;
 			} catch {
-				throw new CopilotConnectorsError(localize('copilotConnectors.invalidJson', "Copilot connectors returned an invalid response."));
+				throw new CopilotConnectorsError(localize('copilotConnectors.invalidJson', "AI connectors returned an invalid response."));
 			}
 		} catch (error) {
 			if (!(error instanceof CancellationError)) {
@@ -140,7 +140,7 @@ function readResponse(context: IRequestContext): Promise<string> {
 			onData: chunk => {
 				bytes += chunk.byteLength;
 				if (bytes > maxResponseBytes) {
-					reject(new CopilotConnectorsError(localize('copilotConnectors.responseTooLarge', "The Copilot connectors response is too large.")));
+					reject(new CopilotConnectorsError(localize('copilotConnectors.responseTooLarge', "The AI connectors response is too large.")));
 					context.stream.destroy();
 				} else {
 					chunks.push(chunk);

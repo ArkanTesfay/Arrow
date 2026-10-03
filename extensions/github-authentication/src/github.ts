@@ -329,7 +329,7 @@ export class GitHubSessionEngine implements vscode.AuthenticationProvider, vscod
 		const restored = (await Promise.all(missing.map(link => this.restoreOne(link, scopes))))
 			.filter(<T>(session?: T): session is T => Boolean(session));
 		if (restored.length) {
-			this._logger.info(`Restored ${restored.length} session(s) from a remembered Microsoft account.`);
+			this._logger.info(`Restored ${restored.length} session(s) from a remembered Vertex account.`);
 			this._sessionChangeEmitter.fire({ added: restored, removed: [], changed: [] });
 		}
 		return restored;
@@ -360,7 +360,7 @@ export class GitHubSessionEngine implements vscode.AuthenticationProvider, vscod
 		const microsoftAccount = (await this._microsoft.getAccounts())
 			.find(candidate => candidate.label === link.microsoftAccountLabel);
 		if (!microsoftAccount) {
-			this._logger.info(`Not restoring the session for ${link.gitHubAccountLabel}: its Microsoft account is not signed in.`);
+			this._logger.info(`Not restoring the session for ${link.gitHubAccountLabel}: its Vertex account is not signed in.`);
 			this._restoresTried.add(key);
 			return undefined;
 		}
@@ -500,7 +500,7 @@ export class GitHubSessionEngine implements vscode.AuthenticationProvider, vscod
 				const microsoftAccountLabel = rows.get(session.account.label)?.microsoftAccountLabel;
 				return !microsoftAccountLabel || !reachable.has(microsoftAccountLabel);
 			}),
-			'their Microsoft account is no longer signed in');
+			'their Vertex account is no longer signed in');
 	}
 
 	/**
@@ -531,7 +531,7 @@ export class GitHubSessionEngine implements vscode.AuthenticationProvider, vscod
 		// other one hands back a token for a different person, so no account means no renewal.
 		const microsoftAccount = await this.rememberedMicrosoftAccount(session.account.label);
 		if (!microsoftAccount) {
-			this._logger.info(`Session ${session.id} cannot renew: there is no Microsoft account signed in for it.`);
+			this._logger.info(`Session ${session.id} cannot renew: there is no Vertex account signed in for it.`);
 			return undefined;
 		}
 
@@ -581,7 +581,7 @@ export class GitHubSessionEngine implements vscode.AuthenticationProvider, vscod
 		if ((await this._microsoft.getAccounts()).some(account => account.label === label)) {
 			return true;
 		}
-		this._logger.info(`Discarding ${what}: its Microsoft account was signed out of while it was in flight.`);
+		this._logger.info(`Discarding ${what}: its Vertex account was signed out of while it was in flight.`);
 		return false;
 	}
 

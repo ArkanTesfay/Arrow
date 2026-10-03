@@ -111,7 +111,7 @@ export function gitHubMcpServerUrl(copilotApiBaseUri: string | undefined): strin
 export function gitHubCopilotResource(endpoints: IGitHubEndpoints): ProtectedResourceMetadata {
 	return {
 		resource: endpoints.apiBaseUri,
-		resource_name: 'GitHub Copilot',
+		resource_name: 'Vertex AI',
 		authorization_servers: [endpoints.oauthServer],
 		scopes_supported: ['read:user', 'user:email'],
 		required: true,

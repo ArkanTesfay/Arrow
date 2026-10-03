@@ -1,6 +1,6 @@
 ---
 name: chat-perf
-description: Run chat perf benchmarks and memory leak checks against the local dev build or any published VS Code version. Use when investigating chat rendering regressions, validating perf-sensitive changes to chat UI, or checking for memory leaks in the chat response pipeline.
+description: Run chat perf benchmarks and memory leak checks against the local dev build or any published Vertex version. Use when investigating chat rendering regressions, validating perf-sensitive changes to chat UI, or checking for memory leaks in the chat response pipeline.
 ---
 
 # Chat Performance Testing
@@ -10,13 +10,13 @@ description: Run chat perf benchmarks and memory leak checks against the local d
 - Before/after modifying chat rendering code (`chatListRenderer.ts`, `chatInputPart.ts`, markdown rendering)
 - When changing the streaming response pipeline or SSE processing
 - When modifying disposable/lifecycle patterns in chat components
-- To compare performance between two VS Code releases
+- To compare performance between two Vertex releases
 - In CI to gate PRs that touch chat UI code
 
 ## Quick start
 
 ```bash
-# Run perf regression test (compares local dev build vs VS Code 1.115.0):
+# Run perf regression test (compares local dev build vs Vertex 1.115.0):
 npm run perf:chat -- --scenario text-only --runs 3
 
 # Run all scenarios with no baseline (just measure):
@@ -39,7 +39,7 @@ npm run perf:chat-leak -- --messages 20 --verbose
 
 **Script:** `scripts/chat-simulation/test-chat-perf-regression.js` **npm:** `npm run perf:chat`
 
-Launches VS Code via Playwright Electron, opens the chat panel, sends a message with a mock LLM response, and measures timing, layout, and rendering metrics. By default, downloads VS Code 1.115.0 as a baseline, benchmarks it, then benchmarks the local dev build and compares.
+Launches Vertex via Playwright Electron, opens the chat panel, sends a message with a mock LLM response, and measures timing, layout, and rendering metrics. By default, downloads Vertex 1.115.0 as a baseline, benchmarks it, then benchmarks the local dev build and compares.
 
 > **You don't always need a baseline.** A baseline exists only for *comparison* (regression detection). If you just want the current build's numbers — profiling a single change, capturing traces/heap snapshots, or iterating on a scenario — pass `--no-baseline` to skip downloading and benchmarking the baseline entirely (roughly halves runtime). Baseline comparison is what turns raw measurements into a pass/fail verdict; without it you still get all the metrics, just no verdict.
 
@@ -63,9 +63,9 @@ Launches VS Code via Playwright Electron, opens the chat panel, sends a message 
 | `--heap-snapshots` | — | Take heap snapshots after each run (slow; auto-enabled in `--ci` mode). |
 | `--gc-object-stats` | — | **GC deep-dives only.** Enables V8 `gc_stats` tracing (per-type heap object dump on every GC). ⚠️ Corrupts all timing metrics — a major GC landing mid-request adds ~550ms — so never use it for benchmarking. Off by default; prefer heap snapshots for memory analysis. |
 | `--cleanup-diagnostics` | — | Delete heap snapshots, CPU profiles, and traces to save disk. During runs, only the latest run's files are kept; after comparison, files for non-regressed scenarios are deleted. Auto-enabled in `--ci` mode. |
-| `--setting <k=v>` | — | Set a VS Code setting override for all builds (repeatable). |
-| `--test-setting <k=v>` | — | Set a VS Code setting override for the test build only. |
-| `--baseline-setting <k=v>` | — | Set a VS Code setting override for the baseline build only. |
+| `--setting <k=v>` | — | Set a Vertex setting override for all builds (repeatable). |
+| `--test-setting <k=v>` | — | Set a Vertex setting override for the test build only. |
+| `--baseline-setting <k=v>` | — | Set a Vertex setting override for the baseline build only. |
 | `--verbose` | — | Print per-run details including response content. |
 
 ### Comparing two remote builds
@@ -77,7 +77,7 @@ npm run perf:chat -- --build 1.110.0 --baseline-build 1.115.0 --runs 5
 
 ### Comparing two local builds
 
-Both `--build` and `--baseline-build` accept local paths to VS Code executables. This enables apples-to-apples comparisons between any two builds:
+Both `--build` and `--baseline-build` accept local paths to Vertex executables. This enables apples-to-apples comparisons between any two builds:
 
 ```bash
 # Compare two dev builds (e.g. feature branch vs main):
@@ -116,7 +116,7 @@ npm run perf:chat -- --production-build --baseline-build 1.115.0 --runs 5
 
 ### Settings overrides
 
-Use `--setting`, `--test-setting`, and `--baseline-setting` to inject VS Code settings into the launched instance. This is useful for A/B testing experimental features:
+Use `--setting`, `--test-setting`, and `--baseline-setting` to inject Vertex settings into the launched instance. This is useful for A/B testing experimental features:
 
 ```bash
 # Enable a feature for the test build only:
@@ -207,7 +207,7 @@ Results use **IQR-based outlier removal** and **median** (not mean) to handle st
 
 **Script:** `scripts/chat-simulation/test-chat-mem-leaks.js` **npm:** `npm run perf:chat-leak`
 
-Launches one VS Code session, sends N messages sequentially, forces GC between each, and measures renderer heap and DOM node count. Uses **linear regression** on the samples to compute per-message growth rate, which is compared against a threshold.
+Launches one Vertex session, sends N messages sequentially, forces GC between each, and measures renderer heap and DOM node count. Uses **linear regression** on the samples to compute per-message growth rate, which is compared against a threshold.
 
 ### Key flags
 
@@ -216,7 +216,7 @@ Launches one VS Code session, sends N messages sequentially, forces GC between e
 | `--messages <n>` / `-n` | `10` | Number of messages to send. More = more accurate slope. |
 | `--build <path\|ver>` / `-b` | local dev | Build to test. |
 | `--threshold <MB>` | `2` | Max per-message heap growth in MB. |
-| `--setting <k=v>` | — | Set a VS Code setting override (repeatable). |
+| `--setting <k=v>` | — | Set a Vertex setting override (repeatable). |
 | `--verbose` | — | Print per-message heap/DOM counts. |
 
 ### What it measures
@@ -314,4 +314,4 @@ The copilot extension connects to this server via `IS_SCENARIO_AUTOMATION=1` mod
 ## Related skills
 
 - **heap-snapshot-analysis** — When a perf regression or leak check identifies high memory growth, use the heap-snapshot-analysis skill to dig deeper. It can parse `.heapsnapshot` files, compare before/after snapshots, group object deltas, and trace retainer paths to find what keeps disposed objects alive. The chat-perf leak check measures overall heap slope; heap-snapshot-analysis finds the specific objects responsible.
-- **auto-perf-optimize** — For launching VS Code, driving a scenario, and capturing heap snapshots or CPU profiles automatically before doing low-level analysis.
+- **auto-perf-optimize** — For launching Vertex, driving a scenario, and capturing heap snapshots or CPU profiles automatically before doing low-level analysis.

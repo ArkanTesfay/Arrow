@@ -4,7 +4,7 @@
 
 This document describes the import layering rules for `src/vs/sessions/`, enforced by the `local/code-import-patterns` ESLint rule.
 
-The sessions layer sits above `vs/workbench` in the VS Code source code hierarchy. For the broader VS Code layer rules (base → platform → editor → workbench → sessions), see `.github/instructions/source-code-organization.instructions.md`.
+The sessions layer sits above `vs/workbench` in the Vertex source code hierarchy. For the broader Vertex layer rules (base → platform → editor → workbench → sessions), see `.github/instructions/source-code-organization.instructions.md`.
 
 ## Layer Hierarchy
 

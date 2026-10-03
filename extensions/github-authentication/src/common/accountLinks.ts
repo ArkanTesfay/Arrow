@@ -134,7 +134,7 @@ export class AccountLinks {
 		} catch (e) {
 			// A lost hint costs the user an account picker, so it is never worth failing a sign in
 			// or a sign out over.
-			this.logger.error(`Could not update the Microsoft account links: ${e}`);
+			this.logger.error(`Could not update the Vertex account links: ${e}`);
 			return false;
 		}
 	}

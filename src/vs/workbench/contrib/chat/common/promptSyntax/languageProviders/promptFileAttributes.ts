@@ -118,7 +118,7 @@ export const customAgentAttributes: Record<string, IAttributeDefinition> = {
 	},
 	[PromptHeaderAttributes.model]: {
 		type: 'scalar | sequence',
-		description: localize('promptHeader.agent.model', 'Specify the model that runs this custom agent. This is supported by the GitHub Copilot harness. You can also provide an ordered list of model preferences; the first available model will be used.'),
+		description: localize('promptHeader.agent.model', 'Specify the model that runs this custom agent. This is supported by the Vertex AI harness. You can also provide an ordered list of model preferences; the first available model will be used.'),
 	},
 	[PromptHeaderAttributes.reasoningEffort]: {
 		type: 'scalar',

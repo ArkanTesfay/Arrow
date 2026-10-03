@@ -33,7 +33,7 @@ const TREATMENT = `config.${ChatConfiguration.ChatClosedPromoNotification}`;
 
 type PromoTelemetry = { promoId: string };
 type PromoClassification = {
-	promoId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The identifier of the model promo shown on the Copilot status entry.' };
+	promoId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The identifier of the model promo shown on the AI status entry.' };
 	owner: 'rfeltis';
 	comment: 'Tracks model promo visibility.';
 };

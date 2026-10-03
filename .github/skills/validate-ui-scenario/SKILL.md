@@ -1,15 +1,15 @@
 ---
 name: validate-ui-scenario
-description: Use when reproducing a UI bug or verifying a fix by driving a real VS Code window end to end and capturing evidence. Writes a scenario file, runs it against a dev build or installed Insiders, and produces a captioned video, per-step screenshots, a Playwright trace, and an HTML report to attach to an issue or pull request.
+description: Use when reproducing a UI bug or verifying a fix by driving a real Vertex window end to end and capturing evidence. Writes a scenario file, runs it against a dev build or installed Insiders, and produces a captioned video, per-step screenshots, a Playwright trace, and an HTML report to attach to an issue or pull request.
 ---
 
 # Validate UI Scenario
 
-Drives a real VS Code instance through a scenario and records reproducible evidence.
+Drives a real Vertex instance through a scenario and records reproducible evidence.
 
 Use this to reproduce a reported bug, to show that a fix works, or to attach a recording to a test-plan item. For deterministic regression coverage that runs on every build, write a smoke test instead (see the `smoke-tests` skill) — this skill is for one-off, issue-derived validation.
 
-A scenario is a small JavaScript file run by `test/scenario/out/runScenario.js`. Nothing else has to be configured: the runner launches VS Code, records video and a trace, captures a screenshot at every step boundary, writes the report, and captions the recording with each step and its result.
+A scenario is a small JavaScript file run by `test/scenario/out/runScenario.js`. Nothing else has to be configured: the runner launches Vertex, records video and a trace, captures a screenshot at every step boundary, writes the report, and captions the recording with each step and its result.
 
 ## Prepare
 
@@ -35,13 +35,13 @@ A new terminal may be needed for `PATH` to pick them up, or set `FFMPEG_PATH` an
 | A specific install | `--build <app-root>` | nothing | Pinning an exact build |
 | Web | `--web --headless` | `npm run transpile-client` | Browser-only behavior |
 
-With no target flag the runner finds an installed VS Code Insiders (falling back to Stable) and logs which one it chose. `--build` takes the application root — the install directory on Windows and Linux, or the `.app` bundle on macOS:
+With no target flag the runner finds an installed Vertex Insiders (falling back to Stable) and logs which one it chose. `--build` takes the application root — the install directory on Windows and Linux, or the `.app` bundle on macOS:
 
 ```bash
 # Windows
---build "C:/Users/<you>/AppData/Local/Programs/Microsoft VS Code Insiders"
+--build "C:/Users/<you>/AppData/Local/Programs/Microsoft Vertex Insiders"
 # macOS
---build "/Applications/Visual Studio Code - Insiders.app"
+--build "/Applications/Vertex - Insiders.app"
 ```
 
 Every target runs with its own profile and extensions directory, so your extensions and settings never leak into the recording, and the window is sized to the recording canvas so the capture has no empty margins. The evidence records the quality of the build that actually ran (`Insiders`, `Stable`, `Dev`), so a report always names the product it validated. An installed build only reproduces **shipped** behavior — to validate an unmerged change, use `--dev` in a checkout that contains it.
@@ -114,7 +114,7 @@ module.exports = {
 | `source` | Issue or test-plan item the scenario came from |
 | `workspacePath` | Disposable folder to open |
 | `userSettings` | Settings seeded into the profile before launch |
-| `extraArgs` | Extra VS Code command-line arguments |
+| `extraArgs` | Extra Vertex command-line arguments |
 | `stepPauseMs` | How long to hold each finished step so its caption is readable. Defaults to `1000`; set `0` when the scenario is timing-sensitive |
 
 Each step receives a `context` with `app`, `workbench`, `code`, `page`, and `skip(reason, options)`. `workbench` exposes the feature helpers (`settingsEditor`, `quickaccess`, `editors`, `terminal`, `chat`, …); `page` is the Playwright page for anything they do not cover.
@@ -170,7 +170,7 @@ The caption band is added **above** the recorded frame rather than drawn over it
 
 ## Report back
 
-Summarize the outcome, list failed or skipped steps, link `report.html`, and state the OS, the VS Code version and quality (both are in `manifest.json`), and the source issue. Attach the video to the issue or pull request by dragging it into the comment box.
+Summarize the outcome, list failed or skipped steps, link `report.html`, and state the OS, the Vertex version and quality (both are in `manifest.json`), and the source issue. Attach the video to the issue or pull request by dragging it into the comment box.
 
 Always call out, separately from the pass/fail result:
 

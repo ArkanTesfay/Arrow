@@ -5,7 +5,7 @@
 
 const copilotSpec: Fig.Spec = {
 	name: 'copilot',
-	description: 'GitHub Copilot CLI - An AI-powered coding assistant',
+	description: 'Vertex AI CLI - An AI-powered coding assistant',
 	options: [
 		{
 			name: '--add-dir',

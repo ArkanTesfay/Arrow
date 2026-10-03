@@ -1,8 +1,8 @@
 # Extension-Provided Setting Policy
 
-Use this path when the setting is contributed by an extension rather than VS Code core. Extensions cannot declare core `policy:` metadata in their `package.json`.
+Use this path when the setting is contributed by an extension rather than Vertex core. Extensions cannot declare core `policy:` metadata in their `package.json`.
 
-The source of truth is `extensionConfigurationPolicy` in `vscode-distro` `mixin/{quality}/product.json`. At runtime, VS Code attaches that metadata to matching extension configuration properties.
+The source of truth is `extensionConfigurationPolicy` in `vscode-distro` `mixin/{quality}/product.json`. At runtime, Vertex attaches that metadata to matching extension configuration properties.
 
 ```json
 "publisher.extension.settingName": {
@@ -21,7 +21,7 @@ The source of truth is `extensionConfigurationPolicy` in `vscode-distro` `mixin/
    - valid `PolicyCategory`;
    - first shipping `minimumVersion`;
    - human-readable `description`.
-3. Update VS Code's pinned distro commit.
+3. Update Vertex's pinned distro commit.
 4. Update `src/vs/workbench/contrib/policyExport/test/node/extensionPolicyFixture.json`.
 5. Run `npm run export-policy-data`.
 6. Verify and include `build/lib/policies/policyData.jsonc`.

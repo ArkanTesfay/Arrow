@@ -79,7 +79,7 @@ export class CloudSessionStoreClient {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${bearerToken}`,
-					'Copilot-Integration-Id': INTEGRATION_ID,
+					'AI-Integration-Id': INTEGRATION_ID,
 				},
 				json: { query: sql },
 				timeout: REQUEST_TIMEOUT_MS,

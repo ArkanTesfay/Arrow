@@ -8,7 +8,7 @@ import * as util from 'util';
 import { SimpleRPC } from '../node/copilotDebugWorker/rpc';
 
 export class CopilotDebugCommandHandle {
-	public static COPILOT_LABEL = 'Copilot';
+	public static COPILOT_LABEL = 'AI';
 
 	public get ended() {
 		return this.rpc.ended;

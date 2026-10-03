@@ -33,7 +33,7 @@ Replace [claudeAgent.ts](claudeAgent.ts)'s `sendMessage` stub with a real implem
 | **Modify** | [claudeAgentSdkService.ts](claudeAgentSdkService.ts) | Add `startup({ options }): Promise<WarmQuery>` to `IClaudeSdkBindings` and `IClaudeAgentSdkService`. Phase-5 surface (`listSessions`) preserved. (`getSessionMessages` and `forkSession` are added in Phase 6.5, NOT Phase 6.) |
 | **Major rewrite** | [claudeAgentSession.ts](claudeAgentSession.ts) | Phase-5 minimum (~30 lines) → Phase-6 Query owner (~300 lines): `_query: Query`, `_abortController: AbortController`, prompt iterable (`_createPromptIterable`), `_pendingPromptDeferred: DeferredPromise<void>`, `_inFlightRequests: QueuedRequest[]`, `_isResumed: boolean`, `_currentBlockParts: Map<number, string>`, `_fatalError: Error \| undefined`. Methods: `send`, `_processMessages`, `dispose`. |
 | **Modify** | [claudeAgent.ts](claudeAgent.ts) | Add `_provisionalSessions: Map<string, IClaudeProvisionalSession>`, `_onDidMaterializeSession: Emitter`, `_sessionSequencer: SequencerByKey<string>` (separate from Phase-5's `_disposeSequencer`). Add constructor dependency `@IAgentHostGitService` (resolved as `_gitService`) for `projectFromCopilotContext` lookups during `createSession`. Add helper imports: `rgPath` from `@vscode/ripgrep`, `delimiter` from `../../../../base/common/path.js`. Replace `sendMessage` stub. Make non-fork `createSession` return `provisional: true`. Add `_materializeProvisional`. Update fork branch error: `TODO: Phase 6` → `TODO: Phase 6.5`. Extend `shutdown()` to drain `_provisionalSessions` before the existing `_sessions` drain. |
-| **Create** | [claudeMapSessionEvents.ts](claudeMapSessionEvents.ts) | Pure helper: `SDKMessage → AgentSignal[]`. Markdown/reasoning part allocation. Defense-in-depth skip+warn for `tool_use`. Mirrors Copilot's `mapSessionEvents.ts`. |
+| **Create** | [claudeMapSessionEvents.ts](claudeMapSessionEvents.ts) | Pure helper: `SDKMessage → AgentSignal[]`. Markdown/reasoning part allocation. Defense-in-depth skip+warn for `tool_use`. Mirrors AI's `mapSessionEvents.ts`. |
 | **Create** | [claudePromptResolver.ts](claudePromptResolver.ts) | Pure helper: `(prompt: string, attachments?: IAgentAttachment[]) → Anthropic.ContentBlockParam[]`. Builds `<system-reminder>` block for file/selection references. |
 | **Modify** | [/package.json](../../../../../../package.json) | No version change — `@anthropic-ai/claude-agent-sdk@0.2.112` already pinned by Phase 5. |
 | **Modify** | [../../test/node/claudeAgent.test.ts](../../test/node/claudeAgent.test.ts) | Extend `FakeClaudeAgentSdkService` with `startup()`, `nextQueryMessages`, `queryAdvance`, `capturedStartupOptions`, `startupRejection`. Add `FakeWarmQuery` and `FakeQuery` helpers. Add the 15 Phase-6 unit cases in §5. |
@@ -515,7 +515,7 @@ export class ClaudeAgentSession extends Disposable {
 
 ### 3.6 `claudeMapSessionEvents.ts` — pure helper
 
-Mirrors Copilot's `mapSessionEvents.ts`. Pure function that takes one `SDKMessage` plus the `sessionUri`, the active `turnId`, and mutable mapper state, and returns zero or more `AgentSignal`s. Pure-function testability is the reason it's its own module instead of a private method on the session class.
+Mirrors AI's `mapSessionEvents.ts`. Pure function that takes one `SDKMessage` plus the `sessionUri`, the active `turnId`, and mutable mapper state, and returns zero or more `AgentSignal`s. Pure-function testability is the reason it's its own module instead of a private method on the session class.
 
 ```ts
 // claudeMapSessionEvents.ts
@@ -818,7 +818,7 @@ The PR is **done** when every box below is checked.
 - [ ] [claudePromptResolver.ts](claudePromptResolver.ts) is a pure helper exporting `resolvePromptToContentBlocks`. No I/O. No DI.
 - [ ] All Phase-7+ stubs (`respondToPermissionRequest`, `respondToUserInputRequest`, etc.) still throw `TODO: Phase N`.
 - [ ] No `as any` / `as unknown as Foo` casts in production or test code.
-- [ ] Microsoft copyright header on every new file.
+- [ ] Vertex copyright header on every new file.
 
 ### 7.2 Persistence invariants (assert in tests)
 
@@ -830,7 +830,7 @@ The PR is **done** when every box below is checked.
 
 ### 7.3 Compile + lint + layers
 
-- [ ] `VS Code - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
+- [ ] `Vertex - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
 - [ ] `npm run eslint -- src/vs/platform/agentHost/node/claude src/vs/platform/agentHost/test/node/claudeAgent.test.ts src/vs/platform/agentHost/test/node/claudeAgent.integration.test.ts` exits 0.
 - [ ] `npm run valid-layers-check` exits 0.
 - [ ] `npm run hygiene` exits 0.
@@ -929,7 +929,7 @@ The full grilling transcript locked these. Recording the conclusions here so a f
 
 **Q1: `canUseTool` stub.** Returns `{ behavior: 'deny', ... }`, not `allow`. `allow` would actually execute tools (filesystem mutations + multi-turn loops), exceeding Phase-6 scope. Mapper skip+warn for `tool_use` blocks is defense-in-depth on top.
 
-**Q2: Fork → Phase 6.5.** Claude SDK's `forkSession` API is structurally different from Copilot's (message UUID vs event id). Doing it right requires `sdk.getSessionMessages` lookup. Stacked PR keeps Phase 6 focused.
+**Q2: Fork → Phase 6.5.** Claude SDK's `forkSession` API is structurally different from AI's (message UUID vs event id). Doing it right requires `sdk.getSessionMessages` lookup. Stacked PR keeps Phase 6 focused.
 
 **Q3: Skip metadata write on materialize, lazy backfill in Phase 6.5.** No `protocolTurnId → messageUUID` mapping written in Phase 6 because Phase 6 doesn't need it; Phase 6.5 computes lazily from `sdk.getSessionMessages(srcId)` on fork.
 

@@ -74,7 +74,7 @@ The corollary: **state computed once must be rebuilt when its inputs change.** M
 
 | Provider | Launch | Mid-session |
 |---|---|---|
-| Copilot | `disabledMcpServers` on `SessionConfig` at open/resume | `rpc.mcp.enable` / `rpc.mcp.disable` |
+| AI | `disabledMcpServers` on `SessionConfig` at open/resume | `rpc.mcp.enable` / `rpc.mcp.disable` |
 | Claude | session options at materialize | live reconcile |
 | Codex | MCP servers supplied only at `thread/start` / resume | **not possible** — documented limitation |
 

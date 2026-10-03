@@ -55,7 +55,7 @@ async function initMicrosoftSovereignCloudAuthProvider(
 	const authProvider = await MsalAuthProvider.create(
 		context,
 		new MicrosoftSovereignCloudAuthenticationTelemetryReporter(context.extension.packageJSON.aiKey),
-		window.createOutputChannel(l10n.t('Microsoft Sovereign Cloud Authentication'), { log: true }),
+		window.createOutputChannel(l10n.t('Vertex Sovereign Cloud Authentication'), { log: true }),
 		uriHandler,
 		env
 	);
@@ -88,7 +88,7 @@ export async function activate(context: ExtensionContext) {
 			'Reload required',
 			{
 				modal: true,
-				detail: l10n.t('Microsoft Account configuration has been changed.'),
+				detail: l10n.t('Vertex Account configuration has been changed.'),
 			},
 			reload
 		);
@@ -117,7 +117,7 @@ export async function activate(context: ExtensionContext) {
 	);
 	context.subscriptions.push(authentication.registerAuthenticationProvider(
 		'microsoft',
-		'Microsoft',
+		'Vertex',
 		authProvider,
 		{
 			supportsMultipleAccounts: true,
@@ -140,5 +140,5 @@ export async function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
-	Logger.info('Microsoft Authentication is deactivating...');
+	Logger.info('Vertex Authentication is deactivating...');
 }

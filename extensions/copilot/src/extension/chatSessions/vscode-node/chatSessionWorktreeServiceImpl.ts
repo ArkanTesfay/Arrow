@@ -57,7 +57,7 @@ export class ChatSessionWorktreeService extends Disposable implements IChatSessi
 		}
 
 		return new Promise<ChatSessionWorktreeProperties | undefined>((resolve) => {
-			stream.progress(l10n.t('Creating isolated worktree for Copilot CLI session...'), async progress => {
+			stream.progress(l10n.t('Creating isolated worktree for AI CLI session...'), async progress => {
 				const result = await this._createWorktree(repositoryPath, progress, baseBranch, branchName);
 				resolve(result);
 				if (result) {
@@ -469,7 +469,7 @@ export class ChatSessionWorktreeService extends Disposable implements IChatSessi
 		if (!message) {
 			// Fallback commit message
 			this.logService.warn(`[ChatSessionWorktreeService][handleRequestCompleted] Unable to generate commit message for working directory ${worktreePath}. Repository state: ${JSON.stringify(repository.state)}`);
-			message = `Copilot CLI session ${sessionId} changes`;
+			message = `AI CLI session ${sessionId} changes`;
 		}
 
 		// Commit the changes
@@ -901,7 +901,7 @@ export class ChatSessionWorktreeService extends Disposable implements IChatSessi
 		}
 
 		if (!message) {
-			message = `Copilot CLI session changes`;
+			message = `AI CLI session changes`;
 		}
 
 		await this.gitService.commit(vscode.Uri.file(worktreePath), message, { all: true, noVerify: true, signCommit: false });

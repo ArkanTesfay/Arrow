@@ -1467,7 +1467,7 @@ export class CopilotAgentSession extends Disposable {
 		if (!this._dropLateRootTurnEvents) {
 			return false;
 		}
-		const message = `[Copilot:${this.sessionId}] ${eventType} emitted after cancellation; dropping`;
+		const message = `[AI:${this.sessionId}] ${eventType} emitted after cancellation; dropping`;
 		if (expectedAfterCancellation) {
 			this._logService.trace(message);
 		} else {
@@ -1484,7 +1484,7 @@ export class CopilotAgentSession extends Disposable {
 			&& isChatAction(action)
 			&& hasKey(action, { turnId: true })
 			&& action.type !== ActionType.ChatTurnStarted) {
-			this._logService.error(`[Copilot:${this.sessionId}] ${action.type} emitted after cancellation; dropping`);
+			this._logService.error(`[AI:${this.sessionId}] ${action.type} emitted after cancellation; dropping`);
 			return;
 		}
 		this._onDidSessionProgress.fire({
@@ -1508,7 +1508,7 @@ export class CopilotAgentSession extends Disposable {
 	private _emitModelCallFinished(event: ICopilotModelCallFinishedEvent): void {
 		const parentToolCallId = this._parentToolCallIdForSubagentEvent(event);
 		if (event.agentId && !parentToolCallId) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Ignoring unroutable subagent model.call_finished: agentId=${event.agentId}, sdkTurnId=${event.data.turnId}`);
+			this._logService.trace(`[AI:${this.sessionId}] Ignoring unroutable subagent model.call_finished: agentId=${event.agentId}, sdkTurnId=${event.data.turnId}`);
 			return;
 		}
 		const turn = this._currentTurn.value;
@@ -1521,7 +1521,7 @@ export class CopilotAgentSession extends Disposable {
 			turnId = turn?.sdkTurnIds.has(event.data.turnId) ? turn.id : undefined;
 		}
 		if (!turnId) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Ignoring model.call_finished without a host turn mapping: sdkTurnId=${event.data.turnId}`);
+			this._logService.trace(`[AI:${this.sessionId}] Ignoring model.call_finished without a host turn mapping: sdkTurnId=${event.data.turnId}`);
 			return;
 		}
 		this._onDidSessionProgress.fire({
@@ -1773,7 +1773,7 @@ export class CopilotAgentSession extends Disposable {
 						confirmation.schedule();
 					}
 				}, err => {
-					this._logService.warn(`[Copilot:${this.sessionId}] Failed to confirm subagent completion: ${getErrorMessage(err)}`);
+					this._logService.warn(`[AI:${this.sessionId}] Failed to confirm subagent completion: ${getErrorMessage(err)}`);
 					if (this._subagentTaskCompletionSchedulers.get(agentId) === confirmation) {
 						confirmation.schedule();
 					}
@@ -1859,7 +1859,7 @@ export class CopilotAgentSession extends Disposable {
 
 	private _refreshSubagentTaskStatuses(): void {
 		void this._reconcileSubagentTaskStatuses().catch(err => {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to reconcile subagent task status: ${getErrorMessage(err)}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to reconcile subagent task status: ${getErrorMessage(err)}`);
 		});
 	}
 
@@ -1886,7 +1886,7 @@ export class CopilotAgentSession extends Disposable {
 	private _shouldDropUnmappedSubagentEvent(e: { readonly agentId?: string }, eventName: string): boolean {
 		const parentToolCallId = this._parentToolCallIdForSubagentEvent(e);
 		if (!parentToolCallId && e.agentId) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Dropping ${eventName} for unknown subagent agentId=${e.agentId}`);
+			this._logService.warn(`[AI:${this.sessionId}] Dropping ${eventName} for unknown subagent agentId=${e.agentId}`);
 			return true;
 		}
 		return false;
@@ -2020,7 +2020,7 @@ export class CopilotAgentSession extends Disposable {
 				&& task.attachmentMode === 'detached'
 				&& (task.status === 'running' || task.status === 'idle'));
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to read detached shell state; deferring release: ${getErrorMessage(err)}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to read detached shell state; deferring release: ${getErrorMessage(err)}`);
 			return true;
 		}
 	}
@@ -2046,7 +2046,7 @@ export class CopilotAgentSession extends Disposable {
 			});
 		} catch (err) {
 			// Also covers the rejection from a throttler disposed mid-read.
-			this._logService.trace(`[Copilot:${this.sessionId}] usage.getMetrics RPC failed: ${getErrorMessage(err)}`);
+			this._logService.trace(`[AI:${this.sessionId}] usage.getMetrics RPC failed: ${getErrorMessage(err)}`);
 			return false;
 		}
 	}
@@ -2073,15 +2073,15 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			attribution = (await this._wrapper.session.rpc.metadata.getContextAttribution())?.contextAttribution ?? undefined;
 		} catch (err) {
-			this._logService.trace(`[Copilot:${this.sessionId}] contextAttribution RPC failed: ${getErrorMessage(err)}`);
+			this._logService.trace(`[AI:${this.sessionId}] contextAttribution RPC failed: ${getErrorMessage(err)}`);
 			return undefined;
 		}
 		if (!attribution) {
-			this._logService.trace(`[Copilot:${this.sessionId}] contextAttribution: null/empty`);
+			this._logService.trace(`[AI:${this.sessionId}] contextAttribution: null/empty`);
 			return undefined;
 		}
 		if (this._logService.getLevel() <= LogLevel.Trace) {
-			this._logService.trace(`[Copilot:${this.sessionId}] contextAttribution: totalTokens=${attribution.totalTokens}, entries=${JSON.stringify(attribution.entries.map(e => ({ kind: e.kind, id: e.id, label: e.label, tokens: e.tokens, parentId: e.parentId })))}`);
+			this._logService.trace(`[AI:${this.sessionId}] contextAttribution: totalTokens=${attribution.totalTokens}, entries=${JSON.stringify(attribution.entries.map(e => ({ kind: e.kind, id: e.id, label: e.label, tokens: e.tokens, parentId: e.parentId })))}`);
 		}
 		return attribution;
 	}
@@ -2154,7 +2154,7 @@ export class CopilotAgentSession extends Disposable {
 			// consistent. Contain the failure to the agent's bookkeeping rather
 			// than letting it escape into SDK event handling — or, on the
 			// `send()` failure path, replace the error we are propagating.
-			this._logService.error(err, `[Copilot:${this.sessionId}] onTurnEnded callback failed`);
+			this._logService.error(err, `[AI:${this.sessionId}] onTurnEnded callback failed`);
 		}
 	}
 
@@ -2189,7 +2189,7 @@ export class CopilotAgentSession extends Disposable {
 			totalToolCalls: turn.totalToolCalls,
 			parallelToolCallRounds: turn.parallelToolCallRounds,
 			parallelToolCallsTotal: turn.parallelToolCallsTotal,
-		}).catch(err => this._logService.trace(`[Copilot:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
+		}).catch(err => this._logService.trace(`[AI:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
 	}
 
 	private _reportToolApproval(toolCallId: string, toolName: string | undefined, mcpServerName: string | undefined): void {
@@ -2267,7 +2267,7 @@ export class CopilotAgentSession extends Disposable {
 			// Without a turn we can't persist the part id (so every delta would
 			// allocate a fresh part) and the action would carry an empty turnId.
 			// Drop it and surface the unexpected state.
-			this._logService.error(`[Copilot:${this.sessionId}] Markdown delta emitted with no active turn; dropping`);
+			this._logService.error(`[AI:${this.sessionId}] Markdown delta emitted with no active turn; dropping`);
 			return;
 		}
 		const markdownScope = parentToolCallId ?? '';
@@ -2297,7 +2297,7 @@ export class CopilotAgentSession extends Disposable {
 		}
 		const turn = this._currentTurn.value;
 		if (!turn) {
-			this._logService.error(`[Copilot:${this.sessionId}] Reasoning delta emitted with no active turn; dropping`);
+			this._logService.error(`[AI:${this.sessionId}] Reasoning delta emitted with no active turn; dropping`);
 			return;
 		}
 		const reasoningScope = parentToolCallId ?? '';
@@ -2411,7 +2411,7 @@ export class CopilotAgentSession extends Disposable {
 							);
 							return this._toToolSearchResult(clientResult, invocation.availableTools);
 						} catch (error) {
-							this._logService.error(error, `[Copilot:${this.sessionId}] Failed in tool-search handler: toolCallId=${invocation.toolCallId}`);
+							this._logService.error(error, `[AI:${this.sessionId}] Failed in tool-search handler: toolCallId=${invocation.toolCallId}`);
 							return this._toolSearchFailure(getErrorMessage(error));
 						}
 					}, this._toolSearchFailure('Tool call cancelled: session is aborting'), 'tool-search'),
@@ -2433,7 +2433,7 @@ export class CopilotAgentSession extends Disposable {
 						this._surfaceUnobservedClientToolStart(invocation);
 						return await this._pendingClientToolCalls.register(toolCallId);
 					} catch (error) {
-						this._logService.error(error, `[Copilot:${this.sessionId}] Failed in client tool handler: tool=${def.name}, toolCallId=${toolCallId}`);
+						this._logService.error(error, `[AI:${this.sessionId}] Failed in client tool handler: tool=${def.name}, toolCallId=${toolCallId}`);
 						throw error;
 					}
 				}, this._toolSearchFailure('Tool call cancelled: session is aborting'), 'client-tool'),
@@ -2470,13 +2470,13 @@ export class CopilotAgentSession extends Disposable {
 			const token = this._abortToken;
 			if (token.isCancellationRequested) {
 				await this._abortBarrier?.p;
-				this._logService.info(`[Copilot:${this.sessionId}] Discarding ${label} callback received while aborting`);
+				this._logService.info(`[AI:${this.sessionId}] Discarding ${label} callback received while aborting`);
 				return cancelled;
 			}
 			const result = await raceCancellation(handler(...args), token, cancelled);
 			if (token.isCancellationRequested) {
 				await this._abortBarrier?.p;
-				this._logService.info(`[Copilot:${this.sessionId}] Discarding ${label} callback result after abort`);
+				this._logService.info(`[AI:${this.sessionId}] Discarding ${label} callback result after abort`);
 				return cancelled;
 			}
 			return result;
@@ -2534,7 +2534,7 @@ export class CopilotAgentSession extends Disposable {
 		const parsedClientNames = this._parseToolSearchNames(clientResult.textResultForLlm);
 		const clientNames = parsedClientNames ?? [];
 		const toolReferences = [...new Set(clientNames.map(name => deferred.get(name)).filter(isDefined))];
-		this._logService.info(`[Copilot:${this.sessionId}] tool_search override: availableTools=${availableTools?.length ?? 0}, deferred=${deferred.size}, clientMatched=[${clientNames.join(', ')}] -> toolReferences=[${toolReferences.join(', ')}]`);
+		this._logService.info(`[AI:${this.sessionId}] tool_search override: availableTools=${availableTools?.length ?? 0}, deferred=${deferred.size}, clientMatched=[${clientNames.join(', ')}] -> toolReferences=[${toolReferences.join(', ')}]`);
 		return {
 			...clientResult,
 			...(clientResult.resultType === 'success' && parsedClientNames !== undefined ? { textResultForLlm: JSON.stringify(toolReferences) } : {}),
@@ -2576,7 +2576,7 @@ export class CopilotAgentSession extends Disposable {
 					return { textResultForLlm: await text, resultType: 'success' };
 				} catch (error) {
 					const message = error instanceof Error ? error.message : String(error);
-					this._logService.error(error, `[Copilot:${this.sessionId}] Failed in server tool handler: tool=${def.name}`);
+					this._logService.error(error, `[AI:${this.sessionId}] Failed in server tool handler: tool=${def.name}`);
 					return { textResultForLlm: message, resultType: 'failure', error: message };
 				}
 			},
@@ -2666,7 +2666,7 @@ export class CopilotAgentSession extends Disposable {
 			try {
 				await this._awaitControlPlaneRpc('rpc.eventLog.releaseInterest', wrapper.session.rpc.eventLog.releaseInterest({ handle: samplingInterest.handle }));
 			} catch (error) {
-				this._logService.error(error, `[Copilot:${this.sessionId}] Failed to release sampling event interest`);
+				this._logService.error(error, `[AI:${this.sessionId}] Failed to release sampling event interest`);
 			}
 		});
 		this._register(this._customizationEnablementService.onDidChange(event => {
@@ -2674,7 +2674,7 @@ export class CopilotAgentSession extends Disposable {
 				return;
 			}
 			this._markMcpLaunchConfigurationDirty();
-			this._reconcileMcpServerEnablement().catch(error => this._logService.error(error, `[Copilot:${this.sessionId}] Failed to reconcile MCP enablement after customizations changed`));
+			this._reconcileMcpServerEnablement().catch(error => this._logService.error(error, `[AI:${this.sessionId}] Failed to reconcile MCP enablement after customizations changed`));
 		}));
 		this._subscribeToEvents();
 		this._subscribeToSdkEvents();
@@ -2774,17 +2774,17 @@ export class CopilotAgentSession extends Disposable {
 			this._mcpCustomizations.pluginMcpServerSources,
 		));
 		if (customizationId !== undefined && enablement.get(customizationId) === false) {
-			this._logService.info(`[Copilot:${this.sessionId}] Suppressed authentication request from disabled MCP server '${request.serverName}'`);
+			this._logService.info(`[AI:${this.sessionId}] Suppressed authentication request from disabled MCP server '${request.serverName}'`);
 			return null;
 		}
 		if (customizationId === undefined || enablement.get(customizationId) === undefined) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Allowing authentication request from MCP server '${request.serverName}' without resolved enablement`);
+			this._logService.trace(`[AI:${this.sessionId}] Allowing authentication request from MCP server '${request.serverName}' without resolved enablement`);
 		}
 		const githubToken = request.reason === 'initial' && this._scopesFromChallenge(request.wwwAuthenticateParams?.scope).length === 0
 			? await this._initialGitHubMcpToken(request)
 			: undefined;
 		if (githubToken) {
-			this._logService.info(`[Copilot:${this.sessionId}] Reusing the existing GitHub token for initial GitHub MCP authentication`);
+			this._logService.info(`[AI:${this.sessionId}] Reusing the existing GitHub token for initial GitHub MCP authentication`);
 			return { kind: 'token', accessToken: githubToken };
 		}
 		const resource = this._protectedResourceFromMcpAuthRequest(request);
@@ -2829,7 +2829,7 @@ export class CopilotAgentSession extends Disposable {
 				auth,
 			}, toolCall.parentToolCallId);
 		}
-		this._logService.info(`[Copilot:${this.sessionId}] MCP server '${request.serverName}' requires authentication for ${resource.resource}`);
+		this._logService.info(`[AI:${this.sessionId}] MCP server '${request.serverName}' requires authentication for ${resource.resource}`);
 		try {
 			return await result;
 		} catch (error) {
@@ -2871,7 +2871,7 @@ export class CopilotAgentSession extends Disposable {
 				configuredUrls.push(resolvedUrl);
 			}
 		} catch (error) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to resolve the GitHub MCP server URL: ${getErrorMessage(error)}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to resolve the GitHub MCP server URL: ${getErrorMessage(error)}`);
 			return undefined;
 		}
 		return configuredUrls.some(u => u && requestUrl === normalizeMcpServerUrl(u)) ? githubToken : undefined;
@@ -2884,9 +2884,9 @@ export class CopilotAgentSession extends Disposable {
 				if (isAuthorizationProtectedResourceMetadata(parsed)) {
 					return parsed;
 				}
-				this._logService.warn(`[Copilot:${this.sessionId}] Ignoring invalid MCP protected-resource metadata for '${request.serverName}'`);
+				this._logService.warn(`[AI:${this.sessionId}] Ignoring invalid MCP protected-resource metadata for '${request.serverName}'`);
 			} catch (err) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Failed to parse MCP protected-resource metadata for '${request.serverName}'`, err);
+				this._logService.warn(`[AI:${this.sessionId}] Failed to parse MCP protected-resource metadata for '${request.serverName}'`, err);
 			}
 		}
 		const scopes = this._scopesFromChallenge(request.wwwAuthenticateParams?.scope);
@@ -3135,11 +3135,11 @@ export class CopilotAgentSession extends Disposable {
 
 	private _canSendTurn(turn: CopilotTurn | undefined, abortToken: CancellationToken): boolean {
 		if (this._currentTurn.value !== turn) {
-			this._logService.info(`[Copilot:${this.sessionId}] Turn changed during preparation; dropping send: turnId=${turn?.id}`);
+			this._logService.info(`[AI:${this.sessionId}] Turn changed during preparation; dropping send: turnId=${turn?.id}`);
 			return false;
 		}
 		if (abortToken.isCancellationRequested) {
-			this._logService.info(`[Copilot:${this.sessionId}] Turn cancelled during preparation; dropping send: turnId=${turn?.id}`);
+			this._logService.info(`[AI:${this.sessionId}] Turn cancelled during preparation; dropping send: turnId=${turn?.id}`);
 			this.discardActiveTurn();
 			return false;
 		}
@@ -3180,7 +3180,7 @@ export class CopilotAgentSession extends Disposable {
 	}
 
 	private async _send(prompt: string, attachments: readonly MessageAttachment[] | undefined, mode: CopilotSdkMode | undefined): Promise<void> {
-		this._logService.info(`[Copilot:${this.sessionId}] sendMessage called: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}" (${attachments?.length ?? 0} attachments)`);
+		this._logService.info(`[AI:${this.sessionId}] sendMessage called: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}" (${attachments?.length ?? 0} attachments)`);
 
 		// An aborted idle resets the live token; retain the pre-await token to preserve cancellation.
 		const abortToken = this._abortToken;
@@ -3236,7 +3236,7 @@ export class CopilotAgentSession extends Disposable {
 					this._completeActiveTurn(true);
 					return;
 				}
-				this._logService.error(err, `[Copilot:${this.sessionId}] rpc.history.compact failed`);
+				this._logService.error(err, `[AI:${this.sessionId}] rpc.history.compact failed`);
 				throw err;
 			}
 			// `/compact` is handled inline via the history RPC rather than by
@@ -3304,12 +3304,12 @@ export class CopilotAgentSession extends Disposable {
 						: err instanceof Error ? err : new Error(message, { cause: err });
 					const errorOutput = await runtimeSlashCommand.getErrorOutput?.(slashCommand.rest, commandError);
 					if (errorOutput) {
-						this._logService.trace(`[Copilot:${this.sessionId}] rpc.commands.invoke(${slashCommand.command}) returned command guidance`);
+						this._logService.trace(`[AI:${this.sessionId}] rpc.commands.invoke(${slashCommand.command}) returned command guidance`);
 						this._emitMarkdownDelta(renderCopilotSlashCommandOutput(errorOutput), undefined, true);
 						this._completeActiveTurn(true);
 						return;
 					}
-					this._logService.error(err, `[Copilot:${this.sessionId}] rpc.commands.invoke(${slashCommand.command}) failed`);
+					this._logService.error(err, `[AI:${this.sessionId}] rpc.commands.invoke(${slashCommand.command}) failed`);
 					throw commandError;
 				}
 				const output = await runtimeSlashCommand.getOutput?.(slashCommand.rest, result);
@@ -3345,7 +3345,7 @@ export class CopilotAgentSession extends Disposable {
 						// The runtime can be newer than these compiled SDK types, so an
 						// unknown kind must be logged rather than silently swallowed (the
 						// turn would otherwise complete with no user-facing output).
-						this._logService.warn(`[Copilot:${this.sessionId}] Unhandled slash command result kind: ${(result as { kind: string }).kind}`);
+						this._logService.warn(`[AI:${this.sessionId}] Unhandled slash command result kind: ${(result as { kind: string }).kind}`);
 						break;
 				}
 				if (result.runtimeSettingsChanged === true) {
@@ -3381,7 +3381,7 @@ export class CopilotAgentSession extends Disposable {
 		if (execution.kind === 'skipped') {
 			return;
 		}
-		this._logService.info(`[Copilot:${this.sessionId}] session.send() returned`);
+		this._logService.info(`[AI:${this.sessionId}] session.send() returned`);
 	}
 
 	private _syncObservedMcpServerEnablement(serverName: string, previousEnabled: boolean | undefined, enabled: boolean): void {
@@ -3394,7 +3394,7 @@ export class CopilotAgentSession extends Disposable {
 		}
 		const server = this._mcpCustomizations.customizationForServer(serverName);
 		if (!server) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Cannot record observed enablement for unknown MCP server ${serverName}`);
+			this._logService.warn(`[AI:${this.sessionId}] Cannot record observed enablement for unknown MCP server ${serverName}`);
 			return;
 		}
 		this._observedMcpEnablementOverrides.set(serverName, enabled);
@@ -3434,7 +3434,7 @@ export class CopilotAgentSession extends Disposable {
 				return;
 			}
 			turn?.markProviderCallResolved();
-			this._logService.info(`[Copilot:${this.sessionId}] zero-message continuation returned`);
+			this._logService.info(`[AI:${this.sessionId}] zero-message continuation returned`);
 		} catch (error) {
 			if (this._resumingTurnAwaitingProviderStart === turn) {
 				this._resumingTurnAwaitingProviderStart = undefined;
@@ -3566,11 +3566,11 @@ export class CopilotAgentSession extends Disposable {
 		// Preflight awaits several RPCs; if an abort or terminal idle raced it, do not
 		// start the fleet loop at all — starting it would orphan an autonomous run.
 		if (!startingTurn || this._currentTurn.value !== startingTurn) {
-			this._logService.warn(`[Copilot:${this.sessionId}] fleet turn ended during preflight; not starting fleet`);
+			this._logService.warn(`[AI:${this.sessionId}] fleet turn ended during preflight; not starting fleet`);
 			return;
 		}
 		if (abortToken.isCancellationRequested) {
-			this._logService.warn(`[Copilot:${this.sessionId}] aborted during fleet preflight; not starting fleet`);
+			this._logService.warn(`[AI:${this.sessionId}] aborted during fleet preflight; not starting fleet`);
 			this.discardActiveTurn();
 			return;
 		}
@@ -3589,13 +3589,13 @@ export class CopilotAgentSession extends Disposable {
 			// A terminal `session.idle` already ended this turn while the RPC was in
 			// flight — idle is authoritative, so never emit a second terminal action.
 			if (!startingTurn || this._currentTurn.value !== startingTurn) {
-				this._logService.warn(`[Copilot:${this.sessionId}] rpc.fleet.start rejected after its turn already ended`, err);
+				this._logService.warn(`[AI:${this.sessionId}] rpc.fleet.start rejected after its turn already ended`, err);
 				return;
 			}
 			// An abort raced the RPC; the client already finalized the protocol turn via
 			// cancellation, so drop our handle rather than surfacing another error.
 			if (abortToken.isCancellationRequested) {
-				this._logService.warn(`[Copilot:${this.sessionId}] rpc.fleet.start rejected after abort; discarding turn`, err);
+				this._logService.warn(`[AI:${this.sessionId}] rpc.fleet.start rejected after abort; discarding turn`, err);
 				this.discardActiveTurn();
 				return;
 			}
@@ -3604,7 +3604,7 @@ export class CopilotAgentSession extends Disposable {
 		if (!startingTurn || this._currentTurn.value !== startingTurn) {
 			// A terminal `session.idle` already ended this turn while the RPC was in flight.
 			if (!result.started) {
-				this._logService.warn(`[Copilot:${this.sessionId}] rpc.fleet.start returned started=false after its turn already ended`);
+				this._logService.warn(`[AI:${this.sessionId}] rpc.fleet.start returned started=false after its turn already ended`);
 			}
 			return;
 		}
@@ -3612,7 +3612,7 @@ export class CopilotAgentSession extends Disposable {
 			// An abort raced the RPC and left this turn `pending` (the idle handler keeps
 			// pending turns open), so it will never receive a completing idle. Drop the
 			// handle instead of promoting it to `running`, which would strand the chat.
-			this._logService.warn(`[Copilot:${this.sessionId}] rpc.fleet.start settled after abort; discarding turn`);
+			this._logService.warn(`[AI:${this.sessionId}] rpc.fleet.start settled after abort; discarding turn`);
 			this.discardActiveTurn();
 			return;
 		}
@@ -3622,7 +3622,7 @@ export class CopilotAgentSession extends Disposable {
 			// Promote the turn to `running` now so an abort before the first SDK event
 			// tears it down instead of stranding a `pending` turn.
 			startingTurn.markRunning();
-			this._logService.info(`[Copilot:${this.sessionId}] rpc.fleet.start succeeded; retaining turn until session idle`);
+			this._logService.info(`[AI:${this.sessionId}] rpc.fleet.start succeeded; retaining turn until session idle`);
 			return;
 		}
 		throw new Error(localize('copilotAgent.fleet.notStarted', "Fleet could not be started."));
@@ -3634,7 +3634,7 @@ export class CopilotAgentSession extends Disposable {
 			? (await Promise.all(attachments.map(attachment => this._toSdkAttachment(attachment)))).filter(isDefined)
 			: undefined;
 		if (sdkAttachments?.length) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Attachments: ${JSON.stringify(sdkAttachments.map(attachment => ({ type: attachment.type })))}`);
+			this._logService.trace(`[AI:${this.sessionId}] Attachments: ${JSON.stringify(sdkAttachments.map(attachment => ({ type: attachment.type })))}`);
 		}
 		return sdkAttachments;
 	}
@@ -3643,7 +3643,7 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			return !!(await this._slashCommandProvider.resolveSlashCommand(command));
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] rpc.commands.list failed`, err);
+			this._logService.warn(`[AI:${this.sessionId}] rpc.commands.list failed`, err);
 			return false;
 		}
 	}
@@ -3652,7 +3652,7 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			return await this._slashCommandProvider.getSlashCommands(options);
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] rpc.commands.list failed`, err);
+			this._logService.warn(`[AI:${this.sessionId}] rpc.commands.list failed`, err);
 			return [];
 		}
 	}
@@ -3716,7 +3716,7 @@ export class CopilotAgentSession extends Disposable {
 				const text = await this._readSelectedText(uri, attachment.selection.range);
 				return { type: 'selection' as const, filePath: path, displayName, text, selection: attachment.selection.range };
 			} catch (err) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Failed to read selected text for ${uri.toString()}: ${err}`);
+				this._logService.warn(`[AI:${this.sessionId}] Failed to read selected text for ${uri.toString()}: ${err}`);
 				return { type: 'file' as const, path, displayName };
 			}
 		}
@@ -3760,9 +3760,9 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			await this._wrapper.session.rpc.mode.set({ mode });
 			this._lastAppliedMode = mode;
-			this._logService.info(`[Copilot:${this.sessionId}] rpc.mode.set succeeded: mode=${mode}`);
+			this._logService.info(`[AI:${this.sessionId}] rpc.mode.set succeeded: mode=${mode}`);
 		} catch (err) {
-			this._logService.error(err, `[Copilot:${this.sessionId}] rpc.mode.set failed: mode=${mode}`);
+			this._logService.error(err, `[AI:${this.sessionId}] rpc.mode.set failed: mode=${mode}`);
 		}
 	}
 
@@ -3789,7 +3789,7 @@ export class CopilotAgentSession extends Disposable {
 		const steeringTurn = this._currentTurn.value;
 		const abortToken = this._abortToken;
 		this._steeringMessagesInFlight.add(steeringMessage.id);
-		this._logService.info(`[Copilot:${this.sessionId}] Sending steering message: "${steeringMessage.message.text.substring(0, 100)}"`);
+		this._logService.info(`[AI:${this.sessionId}] Sending steering message: "${steeringMessage.message.text.substring(0, 100)}"`);
 		try {
 			await this._reconcileMcpServerEnablement();
 			this._pendingSteeringFlips.set(steeringMessage.id, { pendingMessage: steeringMessage, sender });
@@ -3816,7 +3816,7 @@ export class CopilotAgentSession extends Disposable {
 			}
 		} catch (err) {
 			this._pendingSteeringFlips.delete(steeringMessage.id);
-			this._logService.error(`[Copilot:${this.sessionId}] Steering message failed`, err);
+			this._logService.error(`[AI:${this.sessionId}] Steering message failed`, err);
 		} finally {
 			this._steeringMessagesInFlight.delete(steeringMessage.id);
 		}
@@ -3852,7 +3852,7 @@ export class CopilotAgentSession extends Disposable {
 	}
 
 	private async _computeMappedEvents(agentScope: 'primary' | 'all'): Promise<IMappedSessionEvents> {
-		this._logService.trace(`[Copilot:${this.sessionId}] Reading persisted session events: scope=${agentScope}`);
+		this._logService.trace(`[AI:${this.sessionId}] Reading persisted session events: scope=${agentScope}`);
 		const pages: SessionEvent[][] = [];
 		const seenCursors = new Set<string>();
 		let cursor: string | undefined;
@@ -3871,7 +3871,7 @@ export class CopilotAgentSession extends Disposable {
 				throw new Error(localize('copilot.historyChanged', "Session history changed while it was loading. Reopen the session to try again."));
 			}
 			if (page.hasMore && (!page.cursor || seenCursors.has(page.cursor))) {
-				throw new Error(localize('copilot.invalidHistoryCursor', "The Copilot runtime returned an invalid history cursor. Reopen the session to try again."));
+				throw new Error(localize('copilot.invalidHistoryCursor', "The AI runtime returned an invalid history cursor. Reopen the session to try again."));
 			}
 
 			pages.push(page.events.filter(event => event.type !== 'system.message').map(event => {
@@ -3892,7 +3892,7 @@ export class CopilotAgentSession extends Disposable {
 		}
 		const events = pages.reverse().flat();
 		this._seedSubagentDisplayNames(events);
-		this._logService.trace(`[Copilot:${this.sessionId}] Read ${events.length} persisted event(s); reconstructing turns`);
+		this._logService.trace(`[AI:${this.sessionId}] Read ${events.length} persisted event(s); reconstructing turns`);
 		let db: ISessionDatabase | undefined;
 		try {
 			db = this._databaseRef.object;
@@ -3912,7 +3912,7 @@ export class CopilotAgentSession extends Disposable {
 			} : {}),
 		});
 		await this._restoreStoredShellOutputs(result);
-		this._logService.trace(`[Copilot:${this.sessionId}] Reconstructed ${result.turns.length} turn(s) from ${events.length} event(s)`);
+		this._logService.trace(`[AI:${this.sessionId}] Reconstructed ${result.turns.length} turn(s) from ${events.length} event(s)`);
 		return result;
 	}
 
@@ -3965,7 +3965,7 @@ export class CopilotAgentSession extends Disposable {
 	}
 
 	async abort(): Promise<void> {
-		this._logService.info(`[Copilot:${this.sessionId}] Aborting session...`);
+		this._logService.info(`[AI:${this.sessionId}] Aborting session...`);
 		const abortingTurn = this._currentTurn.value;
 		const resumingTurn = this._resumingTurnAwaitingProviderStart;
 		const abortTarget = abortingTurn ?? resumingTurn;
@@ -4018,7 +4018,7 @@ export class CopilotAgentSession extends Disposable {
 		this._invalidateMappedEvents();
 		this._settleIdleWaiters(false);
 		void this._editTracker.flushAttribution().catch(error => {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to flush edit attribution: ${error}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to flush edit attribution: ${error}`);
 		});
 		this._beginAbort();
 		this._abortBarrier?.complete();
@@ -4033,7 +4033,7 @@ export class CopilotAgentSession extends Disposable {
 		const wrapper: CopilotSessionWrapper | undefined = this._wrapper;
 		if (wrapper && this._shellInitScriptMaterialized) {
 			void wrapper.disconnect()
-				.catch(error => this._logService.warn(`[Copilot:${this.sessionId}] Failed to disconnect before shell init cleanup: ${getErrorMessage(error)}`))
+				.catch(error => this._logService.warn(`[AI:${this.sessionId}] Failed to disconnect before shell init cleanup: ${getErrorMessage(error)}`))
 				.then(() => this._disposeShellInitScript());
 		}
 		super.dispose();
@@ -4052,14 +4052,14 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			await this._editTracker.flushAttribution();
 		} catch (error) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to flush edit attribution: ${error}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to flush edit attribution: ${error}`);
 		}
 		await this._wrapper.disconnect();
 		await this._disposeShellInitScript();
 	}
 
 	async setModel(model: string, reasoningEffort?: SessionConfig['reasoningEffort'], contextTier?: SessionConfig['contextTier'], autoTier?: AutoModeTier | null): Promise<void> {
-		this._logService.info(`[Copilot:${this.sessionId}] Changing model to: ${model}`);
+		this._logService.info(`[AI:${this.sessionId}] Changing model to: ${model}`);
 		await this._awaitControlPlaneRpc('session.setModel', this._wrapper.session.setModel(model, {
 			reasoningEffort,
 			contextTier,
@@ -4198,7 +4198,7 @@ export class CopilotAgentSession extends Disposable {
 					changed = true;
 				}
 			} catch (e) {
-				this._logService.error(e, `[Copilot:${this.sessionId}] Failed to ${desired ? 'enable' : 'disable'} MCP server ${serverName}`);
+				this._logService.error(e, `[AI:${this.sessionId}] Failed to ${desired ? 'enable' : 'disable'} MCP server ${serverName}`);
 				if (!desired) {
 					throw e;
 				}
@@ -4303,7 +4303,7 @@ export class CopilotAgentSession extends Disposable {
 	async stopMcpServer(id: string): Promise<void> {
 		const serverName = this._mcpCustomizations.serverNameForCustomizationId(id);
 		if (!serverName) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Cannot stop unknown MCP server customization ${id}`);
+			this._logService.warn(`[AI:${this.sessionId}] Cannot stop unknown MCP server customization ${id}`);
 			return;
 		}
 		return this._mcpServerLifecycleSequencer.queue(serverName, async () => {
@@ -4371,10 +4371,10 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			const result = await this._wrapper.session.rpc.ui.handlePendingSampling({ requestId });
 			if (!result.success) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Sampling request was no longer pending: requestId=${requestId}`);
+				this._logService.warn(`[AI:${this.sessionId}] Sampling request was no longer pending: requestId=${requestId}`);
 			}
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to reject sampling request: requestId=${requestId}`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to reject sampling request: requestId=${requestId}`);
 		}
 	}
 
@@ -4385,8 +4385,8 @@ export class CopilotAgentSession extends Disposable {
 			// The request is still in flight and may still mutate SDK state, so
 			// mark the session for resync rather than continuing to use it.
 			this._controlPlaneDesynchronized = true;
-			const error = new Error(`[Copilot:${this.sessionId}] ${operation} timed out after ${this._controlPlaneRpcTimeoutMs}ms`);
-			this._logService.error(error, `[Copilot:${this.sessionId}] Control-plane RPC timed out: ${operation}`);
+			const error = new Error(`[AI:${this.sessionId}] ${operation} timed out after ${this._controlPlaneRpcTimeoutMs}ms`);
+			this._logService.error(error, `[AI:${this.sessionId}] Control-plane RPC timed out: ${operation}`);
 			throw error;
 		}
 		return result.value;
@@ -4399,19 +4399,19 @@ export class CopilotAgentSession extends Disposable {
 	async setAgent(agentName?: string): Promise<void> {
 		if (agentName) {
 			const name = agentName;
-			this._logService.info(`[Copilot:${this.sessionId}] Selecting custom agent: ${name}`);
+			this._logService.info(`[AI:${this.sessionId}] Selecting custom agent: ${name}`);
 			try {
 				await this._awaitControlPlaneRpc('rpc.agent.select', this._wrapper.session.rpc.agent.select({ name }));
 			} catch (err) {
-				this._logService.error(err, `[Copilot:${this.sessionId}] rpc.agent.select failed: name=${name}`);
+				this._logService.error(err, `[AI:${this.sessionId}] rpc.agent.select failed: name=${name}`);
 				throw err;
 			}
 		} else {
-			this._logService.info(`[Copilot:${this.sessionId}] Clearing custom agent selection`);
+			this._logService.info(`[AI:${this.sessionId}] Clearing custom agent selection`);
 			try {
 				await this._awaitControlPlaneRpc('rpc.agent.deselect', this._wrapper.session.rpc.agent.deselect());
 			} catch (err) {
-				this._logService.error(err, `[Copilot:${this.sessionId}] rpc.agent.deselect failed`);
+				this._logService.error(err, `[AI:${this.sessionId}] rpc.agent.deselect failed`);
 				throw err;
 			}
 		}
@@ -4433,11 +4433,11 @@ export class CopilotAgentSession extends Disposable {
 			const toolCallId = request.toolCallId;
 			if (!toolCallId) {
 				// TODO: handle permission requests without a toolCallId by creating a synthetic tool call
-				this._logService.warn(`[Copilot:${this.sessionId}] Permission request without toolCallId, auto-denying: kind=${request.kind}`);
+				this._logService.warn(`[AI:${this.sessionId}] Permission request without toolCallId, auto-denying: kind=${request.kind}`);
 				return { kind: 'reject' };
 			}
 			if (this._unroutableSubagentToolCallIds.delete(toolCallId)) {
-				this._logService.error(`[Copilot:${this.sessionId}] Rejecting permission request for unroutable subagent tool call: toolCallId=${toolCallId}, kind=${request.kind}`);
+				this._logService.error(`[AI:${this.sessionId}] Rejecting permission request for unroutable subagent tool call: toolCallId=${toolCallId}, kind=${request.kind}`);
 				return { kind: 'reject' };
 			}
 
@@ -4487,14 +4487,14 @@ export class CopilotAgentSession extends Disposable {
 			if (approvedSignature !== undefined) {
 				this._approvedDuplicablePermissionSignatures.delete(toolCallId);
 				if (!managedApprovalRequired && (request.kind === 'write' || request.kind === 'read' || request.kind === 'shell') && safeStringify(request) === approvedSignature) {
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving duplicate ${request.kind} permission request for tool call ${toolCallId}`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving duplicate ${request.kind} permission request for tool call ${toolCallId}`);
 					return { kind: 'approve-once' };
 				}
 			}
 
 			const sessionResourcePath = this._getInternalSessionResourcePath(request);
 			if (!managedApprovalRequired && sessionResourcePath) {
-				this._logService.info(`[Copilot:${this.sessionId}] Auto-approving internal session resource ${sessionResourcePath}`);
+				this._logService.info(`[AI:${this.sessionId}] Auto-approving internal session resource ${sessionResourcePath}`);
 				return { kind: 'approve-once' };
 			}
 
@@ -4504,7 +4504,7 @@ export class CopilotAgentSession extends Disposable {
 			// to read them back in a follow-up turn — no need to confirm.
 			if (!managedApprovalRequired && request.kind === 'read' && typeof request.path === 'string') {
 				if (isCopilotSdkToolOutputTempFile(request.path, this._environmentService.tmpDir.fsPath)) {
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving Copilot SDK tool-output temp file ${request.path}`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving AI SDK tool-output temp file ${request.path}`);
 					return { kind: 'approve-once' };
 				}
 			}
@@ -4512,7 +4512,7 @@ export class CopilotAgentSession extends Disposable {
 			// SDK plugin directories are discovery inputs, so the runtime does not otherwise trust their contents.
 			if (!managedApprovalRequired && !requestSandboxBypass && request.kind === 'read' && typeof request.path === 'string') {
 				if (await this._isReadWithinAppliedPluginDirectory(request.path)) {
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving read within an applied plugin directory: ${request.path}`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving read within an applied plugin directory: ${request.path}`);
 					return { kind: 'approve-once' };
 				}
 			}
@@ -4530,14 +4530,14 @@ export class CopilotAgentSession extends Disposable {
 				if (canRequireConfirmation
 					&& !serverToolHost.requiresConfirmation(this._chatChannelUri.toString(), serverToolName)
 				) {
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving server tool ${serverToolName} because it has nothing to confirm`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving server tool ${serverToolName} because it has nothing to confirm`);
 					return { kind: 'approve-once' };
 				}
 				// Server tools that never confirm only read or mutate the
 				// session's own server-held state and never touch the workspace,
 				// shell, or network, so prompting for them is redundant noise.
 				if (!canRequireConfirmation && !managedApprovalRequired) {
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving server tool ${serverToolName}`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving server tool ${serverToolName}`);
 					return { kind: 'approve-once' };
 				}
 			}
@@ -4562,7 +4562,7 @@ export class CopilotAgentSession extends Disposable {
 					? shellToolName
 					: undefined;
 			if (isShellRequest && shellLanguage === undefined) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Shell permission request has no recognized shell tool name; requiring confirmation: toolCallId=${toolCallId}, toolName=${shellToolName ?? '(missing)'}`);
+				this._logService.warn(`[AI:${this.sessionId}] Shell permission request has no recognized shell tool name; requiring confirmation: toolCallId=${toolCallId}, toolName=${shellToolName ?? '(missing)'}`);
 			}
 
 			if (!managedApprovalRequired && request.kind === 'custom-tool'
@@ -4570,11 +4570,11 @@ export class CopilotAgentSession extends Disposable {
 				&& this._clientToolNames.has(this._clientToolName(request.toolName))
 				&& this._pendingClientToolCalls.hasBufferedResult(toolCallId)
 			) {
-				this._logService.info(`[Copilot:${this.sessionId}] Auto-approving client tool ${request.toolName} because its result arrived before the permission request`);
+				this._logService.info(`[AI:${this.sessionId}] Auto-approving client tool ${request.toolName} because its result arrived before the permission request`);
 				return { kind: 'approve-once' };
 			}
 
-			this._logService.info(`[Copilot:${this.sessionId}] Requesting confirmation for tool call: ${toolCallId}`);
+			this._logService.info(`[AI:${this.sessionId}] Requesting confirmation for tool call: ${toolCallId}`);
 
 			const pendingPermission = this._pendingPermissions.register(toolCallId, { managedApprovalRequired, sdkSandboxBypass: requestSandboxBypass === true });
 
@@ -4592,7 +4592,7 @@ export class CopilotAgentSession extends Disposable {
 				// removed, so leave it alone.
 				if (this._pendingPermissions.has(toolCallId)) {
 					this._pendingPermissions.respond(toolCallId, { kind: 'approve-once' });
-					this._logService.info(`[Copilot:${this.sessionId}] Auto-approving sandboxed shell command for tool call ${toolCallId}`);
+					this._logService.info(`[AI:${this.sessionId}] Auto-approving sandboxed shell command for tool call ${toolCallId}`);
 					return { kind: 'approve-once' };
 				}
 				return { kind: 'reject' };
@@ -4671,13 +4671,13 @@ export class CopilotAgentSession extends Disposable {
 			if (result.kind === 'disable-sandbox') {
 				return await this._disableSandboxForPendingRequest(toolCallId, sandboxRequestId, result.context, abortToken);
 			}
-			this._logService.info(`[Copilot:${this.sessionId}] Permission response: toolCallId=${toolCallId}, result=${result.kind}`);
+			this._logService.info(`[AI:${this.sessionId}] Permission response: toolCallId=${toolCallId}, result=${result.kind}`);
 			if (!abortToken.isCancellationRequested && !managedApprovalRequired && result.kind === 'approve-once' && (request.kind === 'write' || request.kind === 'read' || request.kind === 'shell')) {
 				this._approvedDuplicablePermissionSignatures.set(toolCallId, safeStringify(request));
 			}
 			return result;
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to handle permission request: kind=${request.kind}, toolCallId=${request.toolCallId ?? 'missing'}`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to handle permission request: kind=${request.kind}, toolCallId=${request.toolCallId ?? 'missing'}`);
 			throw error;
 		} finally {
 			if (request.toolCallId && this._sandboxBypassRequests.get(request.toolCallId) === sandboxRequestId) {
@@ -4699,7 +4699,7 @@ export class CopilotAgentSession extends Disposable {
 				resolved = result.success;
 				enabled = result.enabled;
 				if (!result.success || result.enabled) {
-					throw new Error('Copilot SDK did not disable sandboxing for this session');
+					throw new Error('AI SDK did not disable sandboxing for this session');
 				}
 				this._sandboxDisabledForSession = true;
 				this._configurationService.setSessionSandboxEnabled(owner, result.enabled);
@@ -4708,7 +4708,7 @@ export class CopilotAgentSession extends Disposable {
 			});
 			return { kind: 'no-result' };
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to disable sandboxing from a permission request`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to disable sandboxing from a permission request`);
 			this._configurationService.setSessionSandboxEnabled(owner, enabled, context.origin && { ...context.origin, message: getErrorMessage(error) });
 			return resolved ? { kind: 'no-result' } : { kind: 'reject' };
 		}
@@ -4720,7 +4720,7 @@ export class CopilotAgentSession extends Disposable {
 				try {
 					return await isPathWithinDirectory(filePath, pluginDirectory, this._realpath);
 				} catch (error) {
-					this._logService.warn(`[Copilot:${this.sessionId}] Could not verify plugin resource containment: ${filePath}`, error);
+					this._logService.warn(`[AI:${this.sessionId}] Could not verify plugin resource containment: ${filePath}`, error);
 					return false;
 				}
 			}),
@@ -4897,7 +4897,7 @@ export class CopilotAgentSession extends Disposable {
 			const requestDisable = !!event?.origin && event.config[SessionConfigKey.SandboxEnabled] === 'off';
 			await this._applyEffectiveSandboxConfig(true, requestDisable);
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to apply permission config change${this.hasActiveTurn ? '; aborting active turn' : ''}`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to apply permission config change${this.hasActiveTurn ? '; aborting active turn' : ''}`);
 			if (event?.origin && Object.hasOwn(event.config, SessionConfigKey.SandboxEnabled)) {
 				this._configurationService.rejectSessionSandboxChange(owner, values, event.origin, getErrorMessage(error));
 			}
@@ -4907,7 +4907,7 @@ export class CopilotAgentSession extends Disposable {
 			try {
 				await this.abort();
 			} catch (abortError) {
-				this._logService.error(abortError, `[Copilot:${this.sessionId}] Failed to abort after permission config sync failure`);
+				this._logService.error(abortError, `[AI:${this.sessionId}] Failed to abort after permission config sync failure`);
 			}
 		}
 	}
@@ -4932,15 +4932,15 @@ export class CopilotAgentSession extends Disposable {
 		return this._permissionModeSequencer.queue(async () => {
 			const mode = this._getSdkPermissionMode();
 			const configuredLevel = this._getConfiguredApprovalLevel();
-			this._logService.info(`[Copilot:${this.sessionId}] Syncing permission mode: source=${source}, agentMode=${this._getConfiguredAgentMode()}, configuredLevel=${configuredLevel}, sdkMode=${mode}, previousSdkMode=${this._lastAppliedPermissionMode ?? 'unknown'}, globalAutoApprove=${this._configurationService.getRootValue(platformRootSchema, AgentHostGlobalAutoApproveEnabledConfigKey) === true}`);
+			this._logService.info(`[AI:${this.sessionId}] Syncing permission mode: source=${source}, agentMode=${this._getConfiguredAgentMode()}, configuredLevel=${configuredLevel}, sdkMode=${mode}, previousSdkMode=${this._lastAppliedPermissionMode ?? 'unknown'}, globalAutoApprove=${this._configurationService.getRootValue(platformRootSchema, AgentHostGlobalAutoApproveEnabledConfigKey) === true}`);
 			const experimentalModeEnabled = mode === 'assisted' || this._isHydraFusionEnabled();
 			if (this._experimentalModeEnabled !== experimentalModeEnabled) {
 				const experimentalResult = await this._wrapper.session.rpc.options.update({ isExperimentalMode: experimentalModeEnabled });
 				if (!experimentalResult.success) {
-					throw new Error('Copilot SDK rejected experimental mode required by the current session configuration');
+					throw new Error('AI SDK rejected experimental mode required by the current session configuration');
 				}
 				this._experimentalModeEnabled = experimentalModeEnabled;
-				this._logService.info(`[Copilot:${this.sessionId}] ${experimentalModeEnabled ? 'Enabled' : 'Disabled'} SDK experimental mode`);
+				this._logService.info(`[AI:${this.sessionId}] ${experimentalModeEnabled ? 'Enabled' : 'Disabled'} SDK experimental mode`);
 			}
 			if (this._lastAppliedPermissionMode === mode) {
 				return;
@@ -4951,12 +4951,12 @@ export class CopilotAgentSession extends Disposable {
 				// Mitigation: the runtime can reject a mode (e.g. `allow-all`) while it
 				// is still resolving managed settings in the background. Give it a short
 				// window to finish, then retry once before failing the turn.
-				this._logService.warn(`[Copilot:${this.sessionId}] SDK rejected permission mode '${mode}' before managed settings resolved; retrying once`);
+				this._logService.warn(`[AI:${this.sessionId}] SDK rejected permission mode '${mode}' before managed settings resolved; retrying once`);
 				await raceTimeout(this._managedSettingsResolved.p, managedSettingsPermissionRetryTimeoutMs);
 				applied = await this._trySetSdkPermissionMode(mode);
 			}
 			if (!applied) {
-				throw new Error(`Copilot SDK rejected permission mode '${mode}'`);
+				throw new Error(`AI SDK rejected permission mode '${mode}'`);
 			}
 			this._lastAppliedPermissionMode = mode;
 		});
@@ -4994,7 +4994,7 @@ export class CopilotAgentSession extends Disposable {
 			if (failOnError) {
 				throw err;
 			}
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to update sandbox config for request`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to update sandbox config for request`, err);
 		}
 	}
 
@@ -5017,7 +5017,7 @@ export class CopilotAgentSession extends Disposable {
 			const own = enabled ? this._configurationService.getSessionConfigValues(this._ownerSessionUri.toString())?.[SessionConfigKey.ShellInitScripts] : undefined;
 			if (own !== undefined && !isShellInitScriptList(own)) {
 				// Keep the last valid registration rather than clearing it.
-				this._logService.warn(`[Copilot:${this.sessionId}] Ignoring malformed shell init script config`);
+				this._logService.warn(`[AI:${this.sessionId}] Ignoring malformed shell init script config`);
 				return;
 			}
 			const scripts = own ?? [];
@@ -5031,7 +5031,7 @@ export class CopilotAgentSession extends Disposable {
 				if (this._registeredShellInitScriptPath) {
 					const result = await this._wrapper.session.rpc.options.update({ shell: { initScripts: [] } });
 					if (!result.success) {
-						throw new Error('Copilot SDK rejected shell init script update');
+						throw new Error('AI SDK rejected shell init script update');
 					}
 					this._registeredShellInitScriptPath = undefined;
 				}
@@ -5052,14 +5052,14 @@ export class CopilotAgentSession extends Disposable {
 				await this._applyEffectiveSandboxConfig(true);
 				const result = await this._wrapper.session.rpc.options.update({ shell: { initScripts: [ref] } });
 				if (!result.success) {
-					throw new Error('Copilot SDK rejected shell init script update');
+					throw new Error('AI SDK rejected shell init script update');
 				}
 				this._registeredShellInitScriptPath = ref.path;
 			}
 			this._lastAppliedShellInitScripts = serialized;
-			this._logService.trace(`[Copilot:${this.sessionId}] Applied shell init script`);
+			this._logService.trace(`[AI:${this.sessionId}] Applied shell init script`);
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to update shell init scripts`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to update shell init scripts`, err);
 		}
 	}
 
@@ -5072,7 +5072,7 @@ export class CopilotAgentSession extends Disposable {
 			await this._fileService.writeFile(resource, VSBuffer.fromString(script.script), { atomic });
 			return { shell: script.shell, path: resource.fsPath };
 		} catch (error) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to write shell init script: ${getErrorMessage(error)}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to write shell init script: ${getErrorMessage(error)}`);
 			return undefined;
 		}
 	}
@@ -5086,7 +5086,7 @@ export class CopilotAgentSession extends Disposable {
 			await this._fileService.del(this._shellInitScriptInstanceDirectory(), { recursive: true });
 		} catch (error) {
 			if (!(error instanceof Error) || toFileOperationResult(error) !== FileOperationResult.FILE_NOT_FOUND) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Failed to remove shell init script: ${getErrorMessage(error)}`);
+				this._logService.warn(`[AI:${this.sessionId}] Failed to remove shell init script: ${getErrorMessage(error)}`);
 			}
 		}
 		try {
@@ -5129,14 +5129,14 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			beforeExists = await this._fileService.exists(fileUri);
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to check file for edit preview: ${filePath}`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to check file for edit preview: ${filePath}`, err);
 		}
 
 		const afterUri = buildPendingEditContentUri(this._storageUri.toString(), toolCallId, filePath);
 		try {
 			await this._fileService.writeFile(afterUri, VSBuffer.fromString(newFileContents));
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to write pending edit content for ${filePath}`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to write pending edit content for ${filePath}`, err);
 			return undefined;
 		}
 
@@ -5145,7 +5145,7 @@ export class CopilotAgentSession extends Disposable {
 		// `_deletePendingEditContent` has already run and won't run again.
 		if (!this._pendingPermissions.has(toolCallId)) {
 			this._fileService.del(afterUri).catch(err => {
-				this._logService.warn(`[Copilot:${this.sessionId}] Failed to delete orphaned pending edit content: ${afterUri.toString()}`, err);
+				this._logService.warn(`[AI:${this.sessionId}] Failed to delete orphaned pending edit content: ${afterUri.toString()}`, err);
 			});
 			return undefined;
 		}
@@ -5280,13 +5280,13 @@ export class CopilotAgentSession extends Disposable {
 			};
 		}
 		if (!this.hasActiveTurn) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Rejecting user input request without an active turn`);
+			this._logService.warn(`[AI:${this.sessionId}] Rejecting user input request without an active turn`);
 			return { answer: 'No active turn', wasFreeform: true };
 		}
 
 		const questionPreview = request.question.substring(0, 100);
 		try {
-			this._logService.info(`[Copilot:${this.sessionId}] User input request: requestId=${requestId}, question="${questionPreview}"`);
+			this._logService.info(`[AI:${this.sessionId}] User input request: requestId=${requestId}, question="${questionPreview}"`);
 
 			const pendingInput = this._pendingUserInputs.register(requestId, { questionId });
 
@@ -5296,7 +5296,7 @@ export class CopilotAgentSession extends Disposable {
 			});
 
 			const result = await pendingInput;
-			this._logService.info(`[Copilot:${this.sessionId}] User input response: requestId=${requestId}, response=${result.response}`);
+			this._logService.info(`[AI:${this.sessionId}] User input response: requestId=${requestId}, response=${result.response}`);
 
 			if (result.response !== ChatInputResponseKind.Accept || !result.answers) {
 				return { answer: '', wasFreeform: true };
@@ -5318,7 +5318,7 @@ export class CopilotAgentSession extends Disposable {
 
 			return { answer: '', wasFreeform: true };
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to handle user input request: question="${questionPreview}"`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to handle user input request: question="${questionPreview}"`);
 			throw error;
 		}
 	}
@@ -5345,14 +5345,14 @@ export class CopilotAgentSession extends Disposable {
 			return { action: 'cancel' };
 		}
 		if (!this.hasActiveTurn) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Rejecting elicitation request without an active turn`);
+			this._logService.warn(`[AI:${this.sessionId}] Rejecting elicitation request without an active turn`);
 			return { action: 'decline' };
 		}
 
 		const messagePreview = context.message.substring(0, 100);
 		try {
 			const requestId = generateUuid();
-			this._logService.info(`[Copilot:${this.sessionId}] Elicitation request: requestId=${requestId}, mode=${context.mode ?? 'form'}, source=${context.elicitationSource ?? '<unknown>'}, message="${messagePreview}"`);
+			this._logService.info(`[AI:${this.sessionId}] Elicitation request: requestId=${requestId}, mode=${context.mode ?? 'form'}, source=${context.elicitationSource ?? '<unknown>'}, message="${messagePreview}"`);
 
 			const schema = context.mode === 'url' ? undefined : context.requestedSchema;
 			const requiredSet = new Set(schema?.required ?? []);
@@ -5375,7 +5375,7 @@ export class CopilotAgentSession extends Disposable {
 			});
 
 			const result = await pendingElicitation;
-			this._logService.info(`[Copilot:${this.sessionId}] Elicitation response: requestId=${requestId}, response=${result.response}`);
+			this._logService.info(`[AI:${this.sessionId}] Elicitation response: requestId=${requestId}, response=${result.response}`);
 
 			if (result.response === ChatInputResponseKind.Decline) {
 				return { action: 'decline' };
@@ -5400,7 +5400,7 @@ export class CopilotAgentSession extends Disposable {
 			}
 			return { action: 'accept', content };
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed to handle elicitation request: message="${messagePreview}"`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed to handle elicitation request: message="${messagePreview}"`);
 			throw error;
 		}
 	}
@@ -5537,7 +5537,7 @@ export class CopilotAgentSession extends Disposable {
 				?? (isCopilotMcpToolName(input.toolName, this._agentMergeRestrictedMcpServerNames) ? AGENT_MERGE_GITHUB_TOOL_RESTRICTION : undefined)
 				: undefined;
 			if (restriction) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Denying restricted Agent Merge tool: ${input.toolName}`);
+				this._logService.warn(`[AI:${this.sessionId}] Denying restricted Agent Merge tool: ${input.toolName}`);
 				return {
 					permissionDecision: 'deny',
 					permissionDecisionReason: restriction,
@@ -5550,7 +5550,7 @@ export class CopilotAgentSession extends Disposable {
 				await Promise.all(filePaths.map(p => this._editTracker.trackEditStart(p, mode)));
 			}
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed in onPreToolUse: tool=${input.toolName}`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed in onPreToolUse: tool=${input.toolName}`);
 			throw error;
 		}
 	}
@@ -5562,7 +5562,7 @@ export class CopilotAgentSession extends Disposable {
 				await Promise.all(filePaths.map(p => this._editTracker.completeEdit(p)));
 			}
 		} catch (error) {
-			this._logService.error(error, `[Copilot:${this.sessionId}] Failed in onPostToolUse: tool=${input.toolName}`);
+			this._logService.error(error, `[AI:${this.sessionId}] Failed in onPostToolUse: tool=${input.toolName}`);
 			throw error;
 		}
 	}
@@ -5572,7 +5572,7 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			resolved = await this._resolveRepoInfoTelemetryContext(githubToken);
 		} catch (error) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to resolve repository info telemetry context: ${getErrorMessage(error)}`);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to resolve repository info telemetry context: ${getErrorMessage(error)}`);
 			return undefined;
 		}
 		if (!resolved || this._store.isDisposed || !isCurrent()) {
@@ -5656,11 +5656,11 @@ export class CopilotAgentSession extends Disposable {
 			this._seedSubagentDisplayNames([e]);
 			const notification = buildCopilotSystemNotification(e, this._resolveAgentName);
 			if (!notification) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring system.notification kind=${e.data.kind.type}`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring system.notification kind=${e.data.kind.type}`);
 				return;
 			}
 
-			this._logService.info(`[Copilot:${sessionId}] System notification received: kind=${e.data.kind.type}`);
+			this._logService.info(`[AI:${sessionId}] System notification received: kind=${e.data.kind.type}`);
 			if (this._turnId) {
 				// Later parent reasoning belongs after this notice; child reasoning keeps its own stream.
 				this._currentTurn.value?.reasoningPartIds.delete('');
@@ -5675,7 +5675,7 @@ export class CopilotAgentSession extends Disposable {
 				return;
 			}
 			if (!notification.startsTurn) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring passive system.notification kind=${e.data.kind.type} without an active turn`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring passive system.notification kind=${e.data.kind.type} without an active turn`);
 				return;
 			}
 
@@ -5747,7 +5747,7 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onMessageDelta(e => {
-			this._logService.trace(`[Copilot:${sessionId}] delta: ${e.data.deltaContent}`);
+			this._logService.trace(`[AI:${sessionId}] delta: ${e.data.deltaContent}`);
 			this._resumeSubagentForEvent(e);
 			if (this._shouldDropUnmappedSubagentEvent(e, 'assistant.message_delta')) {
 				return;
@@ -5799,14 +5799,14 @@ export class CopilotAgentSession extends Disposable {
 				if (!call.hasToolRequests) {
 					renderMessage(chunk, undefined, isLastAssistantMessageChunk(chunk), true);
 				} else if (this._shownProvisionalFusionMessageIds.has(chunk.data.messageId)) {
-					this._logService.trace(`[Copilot:${sessionId}] Ignoring committed Fusion message already shown: ${chunk.data.messageId}`);
+					this._logService.trace(`[AI:${sessionId}] Ignoring committed Fusion message already shown: ${chunk.data.messageId}`);
 				} else {
 					renderMessage(chunk, this._fusionPhaseParentToolCallId(undefined, chunk.data.fusion), isLastAssistantMessageChunk(chunk), true);
 				}
 			}
 		};
 		this._register(wrapper.onMessage(e => {
-			this._logService.info(`[Copilot:${sessionId}] Full message received: ${e.data.content.length} chars`);
+			this._logService.info(`[AI:${sessionId}] Full message received: ${e.data.content.length} chars`);
 			this._resumeSubagentForEvent(e);
 			if (!e.agentId && this._shouldDropLateRootTurnEvent('assistant.message')) {
 				return;
@@ -5826,9 +5826,9 @@ export class CopilotAgentSession extends Disposable {
 			// describe a subagent's model call, so subagent messages (mapped or dropped) are skipped.
 			if (!e.agentId) {
 				const clientType = this._currentTurn.value?.clientType ?? AgentHostClientType.Unknown;
-				void this._telemetryReporter.assistantMessageReceived(this.resourceUri.toString(), this._chatChannelUri.toString(), clientType, e.data.clientRequestId, this._appliedSnapshot.tools).catch(err => this._logService.trace(`[Copilot:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
+				void this._telemetryReporter.assistantMessageReceived(this.resourceUri.toString(), this._chatChannelUri.toString(), clientType, e.data.clientRequestId, this._appliedSnapshot.tools).catch(err => this._logService.trace(`[AI:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
 				// Restricted `conversation.messageText` (source=model): the model's raw response text.
-				void this._telemetryReporter.modelMessageText(this.resourceUri.toString(), this._chatChannelUri.toString(), clientType, e.data.content, this._turnOrdinal, e.data.clientRequestId).catch(err => this._logService.trace(`[Copilot:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
+				void this._telemetryReporter.modelMessageText(this.resourceUri.toString(), this._chatChannelUri.toString(), clientType, e.data.content, this._turnOrdinal, e.data.clientRequestId).catch(err => this._logService.trace(`[AI:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
 				// Accumulate the per-turn tool-call aggregate for the restricted `toolCallDetails` event.
 				// Every main-agent `assistant.message` is one model-call round (matches the extension's
 				// `numRequests = toolCallRounds.length`, which counts the final tool-free response round
@@ -5924,7 +5924,7 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onToolCallDelta(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Tool call delta: ${e.data.toolName ?? '<pending>'} (${e.data.toolCallId})`);
+			this._logService.trace(`[AI:${sessionId}] Tool call delta: ${e.data.toolName ?? '<pending>'} (${e.data.toolCallId})`);
 			this._resumeSubagentForEvent(e);
 			if (!e.agentId && this._shouldDropLateRootTurnEvent('assistant.tool_call_delta')) {
 				return;
@@ -5945,7 +5945,7 @@ export class CopilotAgentSession extends Disposable {
 			streaming.input += e.data.inputDelta;
 			if (e.data.toolName) {
 				if (streaming.toolName && streaming.toolName !== e.data.toolName) {
-					this._logService.warn(`[Copilot:${sessionId}] Tool call ${e.data.toolCallId} changed name while streaming from ${streaming.toolName} to ${e.data.toolName}`);
+					this._logService.warn(`[AI:${sessionId}] Tool call ${e.data.toolCallId} changed name while streaming from ${streaming.toolName} to ${e.data.toolName}`);
 				} else {
 					streaming.toolName = e.data.toolName;
 				}
@@ -5986,10 +5986,10 @@ export class CopilotAgentSession extends Disposable {
 			if (isHiddenTool(e.data.toolName)) {
 				this._streamingToolDisplaySchedulers.deleteAndDispose(e.data.toolCallId);
 				this._streamingToolCalls.delete(e.data.toolCallId);
-				this._logService.trace(`[Copilot:${sessionId}] Tool started (hidden): ${e.data.toolName}`);
+				this._logService.trace(`[AI:${sessionId}] Tool started (hidden): ${e.data.toolName}`);
 				return;
 			}
-			this._logService.info(`[Copilot:${sessionId}] Tool started: ${e.data.toolName}`);
+			this._logService.info(`[AI:${sessionId}] Tool started: ${e.data.toolName}`);
 			let toolArgs = e.data.arguments !== undefined ? tryStringify(e.data.arguments) : undefined;
 			let parameters: Record<string, unknown> | undefined;
 			if (toolArgs) {
@@ -6009,7 +6009,7 @@ export class CopilotAgentSession extends Disposable {
 			}
 			this._streamingToolCalls.delete(e.data.toolCallId);
 			if (streamed?.toolName && streamed.toolName !== e.data.toolName) {
-				this._logService.warn(`[Copilot:${sessionId}] Tool call ${e.data.toolCallId} started as ${e.data.toolName} after streaming as ${streamed.toolName}`);
+				this._logService.warn(`[AI:${sessionId}] Tool call ${e.data.toolCallId} started as ${e.data.toolName} after streaming as ${streamed.toolName}`);
 			}
 			this._resumeSubagentForEvent(e);
 			if (!streamed?.started && this._shouldDropUnmappedSubagentEvent(e, 'tool.execution_start')) {
@@ -6098,7 +6098,7 @@ export class CopilotAgentSession extends Disposable {
 			// ourselves and drop the active-tool entry so the SDK's own
 			// tool.execution_complete for this id is suppressed.
 			if (isClientTool && !contributor) {
-				this._logService.warn(`[Copilot:${sessionId}] Client tool '${e.data.toolName}' started with no connected client; failing it immediately.`);
+				this._logService.warn(`[AI:${sessionId}] Client tool '${e.data.toolName}' started with no connected client; failing it immediately.`);
 				this._reportToolApprovalIfNoPermission(e.data.toolCallId);
 				this._toolApprovalRecords.delete(e.data.toolCallId);
 				this._activeToolCalls.delete(e.data.toolCallId);
@@ -6159,7 +6159,7 @@ export class CopilotAgentSession extends Disposable {
 		this._register(wrapper.onToolStart(e => {
 			if (this._surfacedProvisionalFusionToolCallIds.has(e.data.toolCallId)) {
 				// The committed re-emission of a tool call already shown from its provisional phase.
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring committed Fusion tool start already surfaced: ${e.data.toolCallId}`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring committed Fusion tool start already surfaced: ${e.data.toolCallId}`);
 				return;
 			}
 			handleToolStart(e);
@@ -6174,7 +6174,7 @@ export class CopilotAgentSession extends Disposable {
 			}
 			const parentToolCallId = tracked.parentToolCallId ?? this._parentToolCallIdForSubagentEvent(e);
 			if (!parentToolCallId && e.agentId) {
-				this._logService.warn(`[Copilot:${this.sessionId}] Dropping tool.execution_complete for unknown subagent agentId=${e.agentId}`);
+				this._logService.warn(`[AI:${this.sessionId}] Dropping tool.execution_complete for unknown subagent agentId=${e.agentId}`);
 				return;
 			}
 			if (e.data.success && tracked.contributor === undefined) {
@@ -6183,7 +6183,7 @@ export class CopilotAgentSession extends Disposable {
 					: this.resourceUri;
 				reportCopilotTodoStoreOperation(this._telemetryService, telemetrySession, e.data.toolCallId, tracked.toolName, tracked.parameters, this._currentTurn.value?.clientContext);
 			}
-			this._logService.info(`[Copilot:${sessionId}] Tool completed: ${e.data.toolCallId}`);
+			this._logService.info(`[AI:${sessionId}] Tool completed: ${e.data.toolCallId}`);
 			this._reportToolApprovalIfNoPermission(e.data.toolCallId);
 			this._activeToolCalls.delete(e.data.toolCallId);
 			this._autoApprovals.delete(e.data.toolCallId);
@@ -6311,7 +6311,7 @@ export class CopilotAgentSession extends Disposable {
 							}
 						}
 					} catch (error) {
-						this._logService.warn(`[Copilot:${sessionId}] Failed to persist shell output for ${e.data.toolCallId}`, error);
+						this._logService.warn(`[AI:${sessionId}] Failed to persist shell output for ${e.data.toolCallId}`, error);
 					} finally {
 						outputDatabase.dispose();
 					}
@@ -6326,18 +6326,18 @@ export class CopilotAgentSession extends Disposable {
 							content.push(fileEdit);
 						}
 					} catch (err) {
-						this._logService.warn(`[Copilot:${sessionId}] Failed to take completed edit`, err);
+						this._logService.warn(`[AI:${sessionId}] Failed to take completed edit`, err);
 					}
 				}
 				if (isCurrent()) {
 					complete(authoritativeOutput);
 				}
-			})().catch(err => this._logService.error(`[Copilot:${sessionId}] Failed to complete tool call`, err)).finally(async () => {
+			})().catch(err => this._logService.error(`[AI:${sessionId}] Failed to complete tool call`, err)).finally(async () => {
 				if (terminalOutputStored && !completionPublished) {
 					try {
 						await this._databaseRef.object.deleteTerminalOutput(e.data.toolCallId);
 					} catch (error) {
-						this._logService.warn(`[Copilot:${sessionId}] Failed to clean up unpublished shell output for ${e.data.toolCallId}`, error);
+						this._logService.warn(`[AI:${sessionId}] Failed to clean up unpublished shell output for ${e.data.toolCallId}`, error);
 					}
 				}
 				if (nonPtyCompletion?.shouldRetire) {
@@ -6355,7 +6355,7 @@ export class CopilotAgentSession extends Disposable {
 		};
 		this._register(wrapper.onToolComplete(e => {
 			if (this._surfacedProvisionalFusionToolCallIds.delete(e.data.toolCallId) && !this._activeToolCalls.has(e.data.toolCallId)) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring committed Fusion tool completion already surfaced: ${e.data.toolCallId}`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring committed Fusion tool completion already surfaced: ${e.data.toolCallId}`);
 				return;
 			}
 			handleToolComplete(e);
@@ -6396,7 +6396,7 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onIdle(async e => {
-			this._logService.info(`[Copilot:${sessionId}] Session idle`);
+			this._logService.info(`[AI:${sessionId}] Session idle`);
 			const abortingTurn = this._abortingTurn;
 			this._abortingTurn = undefined;
 			if (e.data.aborted) {
@@ -6429,7 +6429,7 @@ export class CopilotAgentSession extends Disposable {
 			if (e.data.aborted && (!abortingTurn || turn === abortingTurn)) {
 				this._cancelActiveRepoInfoTelemetry();
 				if (turn.isRunning || turn === this._resumingTurnAwaitingProviderStart) {
-					this._logService.trace(`[Copilot:${sessionId}] Idle from abort; tearing down cancelled turn ${turn.id}`);
+					this._logService.trace(`[AI:${sessionId}] Idle from abort; tearing down cancelled turn ${turn.id}`);
 					if (turn.isRunning) {
 						this._reportToolCallDetails(turn, 'cancelled');
 					}
@@ -6437,19 +6437,19 @@ export class CopilotAgentSession extends Disposable {
 					turn.markAborted();
 					this._clearActiveTurn();
 				} else {
-					this._logService.trace(`[Copilot:${sessionId}] Idle from abort; leaving ${turn.state} turn ${turn.id} open`);
+					this._logService.trace(`[AI:${sessionId}] Idle from abort; leaving ${turn.state} turn ${turn.id} open`);
 				}
 				return;
 			}
 			if (e.data.aborted && !turn.isRunning) {
-				this._logService.trace(`[Copilot:${sessionId}] Idle from abort; leaving ${turn.state} replacement turn ${turn.id} open`);
+				this._logService.trace(`[AI:${sessionId}] Idle from abort; leaving ${turn.state} replacement turn ${turn.id} open`);
 				return;
 			}
 			if (e.data.aborted) {
-				this._logService.trace(`[Copilot:${sessionId}] Idle from abort reached running replacement turn ${turn.id}; completing replacement`);
+				this._logService.trace(`[AI:${sessionId}] Idle from abort reached running replacement turn ${turn.id}; completing replacement`);
 			}
 			if (turn === this._resumingTurnAwaitingProviderStart && !turn.providerTurnStarted) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring idle from the failed execution while resumed turn ${turn.id} awaits provider start`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring idle from the failed execution while resumed turn ${turn.id} awaits provider start`);
 				return;
 			}
 			// Only a `running` turn is completed by a normal idle. A `pending`
@@ -6472,7 +6472,7 @@ export class CopilotAgentSession extends Disposable {
 		// tool-start/complete pair from the latter so the UI can render a
 		// clickable file link, matching the `view`-tool display style.
 		this._register(wrapper.onSkillInvoked(e => {
-			this._logService.info(`[Copilot:${sessionId}] Skill invoked: ${e.data.name} (${e.data.path})`);
+			this._logService.info(`[AI:${sessionId}] Skill invoked: ${e.data.name} (${e.data.path})`);
 			this._resumeSubagentForEvent(e);
 			if (this._shouldDropUnmappedSubagentEvent(e, 'skill.invoked')) {
 				return;
@@ -6518,7 +6518,7 @@ export class CopilotAgentSession extends Disposable {
 
 		this._register(wrapper.onSubagentStarted(e => {
 			if (this._dropLateRootTurnEvents) {
-				this._logService.error(`[Copilot:${sessionId}] subagent.started emitted after cancellation; dropping`);
+				this._logService.error(`[AI:${sessionId}] subagent.started emitted after cancellation; dropping`);
 				return;
 			}
 			const tracked = this._activeToolCalls.get(e.data.toolCallId);
@@ -6531,7 +6531,7 @@ export class CopilotAgentSession extends Disposable {
 			if (this._currentTurn.value) {
 				this._rootTurnIdBySubagentToolCallId.set(e.data.toolCallId, this._currentTurn.value.id);
 			}
-			this._logService.info(`[Copilot:${sessionId}] Subagent started: toolCallId=${e.data.toolCallId}, agent=${e.data.agentName}`);
+			this._logService.info(`[AI:${sessionId}] Subagent started: toolCallId=${e.data.toolCallId}, agent=${e.data.agentName}`);
 			this._onDidSessionProgress.fire({
 				kind: 'subagent_started',
 				chat: this._chatChannelUri,
@@ -6553,7 +6553,7 @@ export class CopilotAgentSession extends Disposable {
 		this._register(wrapper.onSubagentConfigured(e => {
 			const parentToolCallId = this._parentToolCallIdForSubagentEvent(e);
 			if (!parentToolCallId) {
-				this._logService.warn(`[Copilot:${sessionId}] Unable to attribute model configuration for unknown subagent agentId=${e.agentId}`);
+				this._logService.warn(`[AI:${sessionId}] Unable to attribute model configuration for unknown subagent agentId=${e.agentId}`);
 				return;
 			}
 			this._updateSubagentModel(parentToolCallId, e.data.model);
@@ -6576,10 +6576,10 @@ export class CopilotAgentSession extends Disposable {
 			}
 			const turn = this._currentTurn.value;
 			if (!e.agentId && turn && turn === this._resumingTurnAwaitingProviderStart && !turn.providerTurnStarted) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring error from the failed execution while resumed turn ${turn.id} awaits provider start`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring error from the failed execution while resumed turn ${turn.id} awaits provider start`);
 				return;
 			}
-			this._logService.error(`[Copilot:${sessionId}] Session error: ${e.data.errorType} - ${e.data.message}`);
+			this._logService.error(`[AI:${sessionId}] Session error: ${e.data.errorType} - ${e.data.message}`);
 			if (isCopilotSdkAuthRejection(e.data)) {
 				this._onDidRequireAuth.fire();
 			}
@@ -6618,7 +6618,7 @@ export class CopilotAgentSession extends Disposable {
 			}
 			this._lastSeenModelId = e.data.chosenModel;
 			const turnId = this._turnId;
-			this._logService.info(`[Copilot:${sessionId}] Auto mode resolved to ${e.data.chosenModel}${e.data.reasoningBucket ? ` (${e.data.reasoningBucket})` : ''}`);
+			this._logService.info(`[AI:${sessionId}] Auto mode resolved to ${e.data.chosenModel}${e.data.reasoningBucket ? ` (${e.data.reasoningBucket})` : ''}`);
 			// A subagent's routing is recorded against its tool call, so unlike the
 			// parent's it does not need an active root turn to attach to.
 			if (!turnId && !e.agentId) {
@@ -6650,7 +6650,7 @@ export class CopilotAgentSession extends Disposable {
 			if (e.agentId) {
 				const subagentToolCallId = this._parentToolCallIdForSubagentEvent(e);
 				if (!subagentToolCallId) {
-					this._logService.warn(`[Copilot:${sessionId}] Unable to attribute Auto mode resolution for unknown subagent agentId=${e.agentId}; leaving the parent turn's routing untouched`);
+					this._logService.warn(`[AI:${sessionId}] Unable to attribute Auto mode resolution for unknown subagent agentId=${e.agentId}; leaving the parent turn's routing untouched`);
 				} else {
 					this._autoModeResolvedByToolCallId.set(subagentToolCallId, e.data);
 					this._updateSubagentModel(subagentToolCallId, e.data.chosenModel);
@@ -6696,7 +6696,7 @@ export class CopilotAgentSession extends Disposable {
 				this._rootTurnIdBySubagentToolCallId.set(e.data.parentToolCallId, this._currentTurn.value.id);
 			}
 			if (isUnmappedSubagent) {
-				this._logService.warn(`[Copilot:${sessionId}] Unable to attribute direct assistant.usage for unknown subagent agentId=${e.agentId}; retaining inclusive root usage`);
+				this._logService.warn(`[AI:${sessionId}] Unable to attribute direct assistant.usage for unknown subagent agentId=${e.agentId}; retaining inclusive root usage`);
 			}
 			if (!parentToolCallId && !e.agentId) {
 				this._promptCacheRefreshGeneration++;
@@ -7028,7 +7028,7 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onReasoningDelta(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Reasoning delta: ${e.data.deltaContent.length} chars`);
+			this._logService.trace(`[AI:${sessionId}] Reasoning delta: ${e.data.deltaContent.length} chars`);
 			this._resumeSubagentForEvent(e);
 			if (this._shouldDropUnmappedSubagentEvent(e, 'assistant.reasoning_delta')) {
 				return;
@@ -7045,10 +7045,10 @@ export class CopilotAgentSession extends Disposable {
 			// emit their own `session.mode_changed` events carrying an
 			// `agentId`.
 			if (e.agentId) {
-				this._logService.trace(`[Copilot:${sessionId}] Ignoring subagent session.mode_changed: agentId=${e.agentId}, ${e.data.previousMode} -> ${e.data.newMode}`);
+				this._logService.trace(`[AI:${sessionId}] Ignoring subagent session.mode_changed: agentId=${e.agentId}, ${e.data.previousMode} -> ${e.data.newMode}`);
 				return;
 			}
-			this._logService.info(`[Copilot:${sessionId}] session.mode_changed: ${e.data.previousMode} -> ${e.data.newMode}`);
+			this._logService.info(`[AI:${sessionId}] session.mode_changed: ${e.data.previousMode} -> ${e.data.newMode}`);
 			const newMode = e.data.newMode;
 			if (newMode !== 'interactive' && newMode !== 'plan' && newMode !== 'autopilot') {
 				return;
@@ -7065,9 +7065,9 @@ export class CopilotAgentSession extends Disposable {
 		// agent host's OTLP log stream and the per-server Output channels.
 		this._register(wrapper.onMcpServersLoaded(() => {
 			// The SDK re-emits a cached loaded snapshot on later turns, not live connection state.
-			this._logService.trace(`[Copilot:${sessionId}] MCP server inventory invalidated by session.mcp_servers_loaded; refreshing rpc.mcp.list`);
+			this._logService.trace(`[AI:${sessionId}] MCP server inventory invalidated by session.mcp_servers_loaded; refreshing rpc.mcp.list`);
 			void this._refreshMcpServersFromRpc().catch(err => {
-				this._logService.warn(`[Copilot:${sessionId}] Failed to refresh MCP server inventory after session.mcp_servers_loaded`, err);
+				this._logService.warn(`[AI:${sessionId}] Failed to refresh MCP server inventory after session.mcp_servers_loaded`, err);
 			});
 		}));
 		this._register(wrapper.onMcpServerStatusChanged(e => {
@@ -7121,7 +7121,7 @@ export class CopilotAgentSession extends Disposable {
 	 */
 	private _seedMcpServersFromRpc(): void {
 		this._refreshMcpServersFromRpc().catch(err => {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to seed MCP server inventory`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to seed MCP server inventory`, err);
 		});
 	}
 
@@ -7142,7 +7142,7 @@ export class CopilotAgentSession extends Disposable {
 				return;
 			}
 			if (lifecycleVersion !== this._mcpLifecycleVersion) {
-				this._logService.trace(`[Copilot:${this.sessionId}] Retrying MCP server inventory after a newer lifecycle update`);
+				this._logService.trace(`[AI:${this.sessionId}] Retrying MCP server inventory after a newer lifecycle update`);
 				continue;
 			}
 			this._logMcpServersSnapshot(result.servers.map(s => ({
@@ -7197,7 +7197,7 @@ export class CopilotAgentSession extends Disposable {
 			allowAuthRequiredToStarting: true,
 		});
 		void this._refreshMcpServersFromRpc().catch(error => {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to refresh MCP server inventory after OAuth token delivery`, error);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to refresh MCP server inventory after OAuth token delivery`, error);
 		});
 	}
 
@@ -7250,7 +7250,7 @@ export class CopilotAgentSession extends Disposable {
 		if (state.kind === McpServerStatus.Error) { attributes.errorType = state.error.errorType; }
 
 		const detail = server.error ? `: ${server.error}` : '';
-		const message = `[Copilot:${this.sessionId}] MCP server '${server.name}' ${server.status} (${state.kind})${detail}`;
+		const message = `[AI:${this.sessionId}] MCP server '${server.name}' ${server.status} (${state.kind})${detail}`;
 		if (server.status === 'failed') {
 			this._logService.error(message, new OtelData(attributes));
 		} else {
@@ -7403,22 +7403,22 @@ export class CopilotAgentSession extends Disposable {
 	private async _handleExitPlanModeRequest(data: ExitPlanModeRequest, _invocation: { sessionId: string }): Promise<CopilotExitPlanModeResponse> {
 		const turnId = this._currentTurn.value?.id;
 		if (!turnId) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Rejecting plan review request without an active turn`);
+			this._logService.warn(`[AI:${this.sessionId}] Rejecting plan review request without an active turn`);
 			return { approved: false };
 		}
 		const requestId = generateUuid();
 		const questionId = generateUuid();
-		this._logService.info(`[Copilot:${this.sessionId}] exitPlanMode.request: rpcId=${requestId}, actions=[${data.actions.join(',')}], recommended=${data.recommendedAction}`);
+		this._logService.info(`[AI:${this.sessionId}] exitPlanMode.request: rpcId=${requestId}, actions=[${data.actions.join(',')}], recommended=${data.recommendedAction}`);
 
 		let planPath: string | null = null;
 		try {
 			const planRead = await this._wrapper.session.rpc.plan.read();
 			planPath = planRead.path ?? null;
 		} catch (err) {
-			this._logService.warn(`[Copilot:${this.sessionId}] rpc.plan.read failed for exit_plan_mode: ${err instanceof Error ? err.message : String(err)}`);
+			this._logService.warn(`[AI:${this.sessionId}] rpc.plan.read failed for exit_plan_mode: ${err instanceof Error ? err.message : String(err)}`);
 		}
 		if (this._currentTurn.value?.id !== turnId) {
-			this._logService.warn(`[Copilot:${this.sessionId}] Rejecting plan review request after its turn ended`);
+			this._logService.warn(`[AI:${this.sessionId}] Rejecting plan review request after its turn ended`);
 			return { approved: false };
 		}
 
@@ -7478,7 +7478,7 @@ export class CopilotAgentSession extends Disposable {
 		try {
 			return await pendingPlanReview;
 		} catch (err) {
-			this._logService.error(err, `[Copilot:${this.sessionId}] exitPlanMode.request handler failed: rpcId=${requestId}`);
+			this._logService.error(err, `[AI:${this.sessionId}] exitPlanMode.request handler failed: rpcId=${requestId}`);
 			return { approved: false };
 		}
 	}
@@ -7524,7 +7524,7 @@ export class CopilotAgentSession extends Disposable {
 				try {
 					sources = (await wrapper.session.rpc.instructions.getSources()).sources;
 				} catch (err) {
-					this._logService.trace(`[Copilot:${sessionId}] Failed to fetch instruction sources for telemetry: ${getErrorMessage(err)}`);
+					this._logService.trace(`[AI:${sessionId}] Failed to fetch instruction sources for telemetry: ${getErrorMessage(err)}`);
 					return;
 				}
 
@@ -7588,7 +7588,7 @@ export class CopilotAgentSession extends Disposable {
 					claudeMdCount,
 				});
 			})().catch(err => {
-				this._logService.trace(`[Copilot:${sessionId}] instructionsCollected telemetry failed: ${getErrorMessage(err)}`);
+				this._logService.trace(`[AI:${sessionId}] instructionsCollected telemetry failed: ${getErrorMessage(err)}`);
 			});
 		}));
 	}
@@ -7744,8 +7744,8 @@ export class CopilotAgentSession extends Disposable {
 		this._provisionalFusionToolStarts.delete(toolCallId);
 		this._surfacedProvisionalFusionToolCallIds.add(toolCallId);
 		this._logService.info(synthesized
-			? `[Copilot:${this.sessionId}] Surfacing client tool whose start Fusion staged: ${toolCallId} (${start.data.toolName})`
-			: `[Copilot:${this.sessionId}] Surfacing provisional Fusion tool call: ${toolCallId}`);
+			? `[AI:${this.sessionId}] Surfacing client tool whose start Fusion staged: ${toolCallId} (${start.data.toolName})`
+			: `[AI:${this.sessionId}] Surfacing provisional Fusion tool call: ${toolCallId}`);
 		this._surfaceProvisionalFusionToolStart(start);
 		return true;
 	}
@@ -7783,7 +7783,7 @@ export class CopilotAgentSession extends Disposable {
 
 	private _bufferFusionEvent(event: CopilotFusionEvent): void {
 		if (this._pendingFusionEvents.length >= 256) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Fusion ownership buffer full; dropping ${event.type}`);
+			this._logService.trace(`[AI:${this.sessionId}] Fusion ownership buffer full; dropping ${event.type}`);
 			return;
 		}
 		// Keep progress metadata, never private model output or provider error details.
@@ -7809,7 +7809,7 @@ export class CopilotAgentSession extends Disposable {
 		let ownerTurnId = this._fusionEventTurnIds.get(key);
 		if (ownerTurnId === undefined && sdkTurnId) {
 			if (this._reassignedFusionSdkTurnIds.has(sdkTurnId)) {
-				this._logService.trace(`[Copilot:${this.sessionId}] Ignoring Fusion event with ambiguous SDK turn ownership: ${event.type}`);
+				this._logService.trace(`[AI:${this.sessionId}] Ignoring Fusion event with ambiguous SDK turn ownership: ${event.type}`);
 				return;
 			}
 			ownerTurnId = this._hostTurnIdsBySdkTurnId.get(sdkTurnId);
@@ -7822,13 +7822,13 @@ export class CopilotAgentSession extends Disposable {
 			if (sdkTurnId || this._pendingFusionEvents.some(pending => getFusionEventKey(pending) === key)) {
 				this._bufferFusionEvent(event);
 			} else {
-				this._logService.trace(`[Copilot:${this.sessionId}] Ignoring Fusion event without request ownership after cancellation: ${event.type}`);
+				this._logService.trace(`[AI:${this.sessionId}] Ignoring Fusion event without request ownership after cancellation: ${event.type}`);
 			}
 			return;
 		}
 		this._fusionEventTurnIds.set(key, ownerTurnId ?? turn.id);
 		if (ownerTurnId !== undefined && ownerTurnId !== turn.id) {
-			this._logService.trace(`[Copilot:${this.sessionId}] Ignoring Fusion event for an earlier turn: ${event.type}`);
+			this._logService.trace(`[AI:${this.sessionId}] Ignoring Fusion event for an earlier turn: ${event.type}`);
 			return;
 		}
 		if (this._shouldDropLateRootTurnEvent(event.type, true)) {
@@ -7869,15 +7869,15 @@ export class CopilotAgentSession extends Disposable {
 			const loggedEvent = e.type.startsWith('session.fusion_') || e.type.startsWith('assistant.fusion_')
 				? { type: e.type, id: e.id, timestamp: e.timestamp, parentId: e.parentId, ephemeral: e.ephemeral, agentId: e.agentId }
 				: e;
-			this._logService.trace(`[Copilot:${sessionId}] Unhandled SDK event: ${safeStringify(loggedEvent)}`);
+			this._logService.trace(`[AI:${sessionId}] Unhandled SDK event: ${safeStringify(loggedEvent)}`);
 		}));
 
 		this._register(wrapper.onSessionStart(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Session started: model=${e.data.selectedModel ?? 'default'}, producer=${e.data.producer}`);
+			this._logService.trace(`[AI:${sessionId}] Session started: model=${e.data.selectedModel ?? 'default'}, producer=${e.data.producer}`);
 		}));
 
 		this._register(wrapper.onSessionResume(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Session resumed: eventCount=${e.data.eventCount}`);
+			this._logService.trace(`[AI:${sessionId}] Session resumed: eventCount=${e.data.eventCount}`);
 		}));
 
 		this._register(wrapper.onSessionInfo(e => {
@@ -7885,7 +7885,7 @@ export class CopilotAgentSession extends Disposable {
 			if (e.data.tip) {
 				attributes.tip = e.data.tip;
 			}
-			const message = `[Copilot:${sessionId}] [${e.data.infoType}]: ${e.data.message}`;
+			const message = `[AI:${sessionId}] [${e.data.infoType}]: ${e.data.message}`;
 			const otelData = new OtelData(attributes);
 			if (e.data.infoType === 'mcp') {
 				this._logService.info(message, otelData);
@@ -7895,11 +7895,11 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onSessionWarning(e => {
-			this._logService.warn(`[Copilot:${sessionId}] ${e.data.message}`, new OtelData({ warningType: e.data.warningType }));
+			this._logService.warn(`[AI:${sessionId}] ${e.data.message}`, new OtelData({ warningType: e.data.warningType }));
 		}));
 
 		this._register(wrapper.onSessionModelChange(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Model changed: ${e.data.previousModel ?? '(none)'} -> ${e.data.newModel}`);
+			this._logService.trace(`[AI:${sessionId}] Model changed: ${e.data.previousModel ?? '(none)'} -> ${e.data.newModel}`);
 			if (e.agentId) {
 				const parentToolCallId = this._parentToolCallIdForSubagentEvent(e);
 				if (parentToolCallId) {
@@ -7921,54 +7921,54 @@ export class CopilotAgentSession extends Disposable {
 			if (!e.agentId) {
 				void this._managedSettingsResolved.complete();
 			}
-			this._logService.info(`[Copilot:${sessionId}] Managed settings resolved: source=${e.data.source}, managedKeys=${e.data.managedKeys.join(',') || '(none)'}, bypassPermissionsDisabled=${e.data.bypassPermissionsDisabled}, failClosed=${e.data.failClosed}`);
+			this._logService.info(`[AI:${sessionId}] Managed settings resolved: source=${e.data.source}, managedKeys=${e.data.managedKeys.join(',') || '(none)'}, bypassPermissionsDisabled=${e.data.bypassPermissionsDisabled}, failClosed=${e.data.failClosed}`);
 		}));
 
 		this._register(wrapper.onManagedSettingsEnforced(e => {
-			this._logService.warn(`[Copilot:${sessionId}] Managed settings enforced: action=${e.data.action}, setting=${e.data.setting}, escalation=${e.data.escalation ?? '(none)'}, failClosed=${e.data.failClosed}, message=${e.data.message}`);
+			this._logService.warn(`[AI:${sessionId}] Managed settings enforced: action=${e.data.action}, setting=${e.data.setting}, escalation=${e.data.escalation ?? '(none)'}, failClosed=${e.data.failClosed}, message=${e.data.message}`);
 		}));
 
 		this._register(wrapper.onSessionHandoff(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Session handoff: sourceType=${e.data.sourceType}, remoteSessionId=${e.data.remoteSessionId ?? '(none)'}`);
+			this._logService.trace(`[AI:${sessionId}] Session handoff: sourceType=${e.data.sourceType}, remoteSessionId=${e.data.remoteSessionId ?? '(none)'}`);
 		}));
 
 		this._register(wrapper.onSessionTruncation(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Session truncation: removed ${e.data.tokensRemovedDuringTruncation} tokens, ${e.data.messagesRemovedDuringTruncation} messages`);
+			this._logService.trace(`[AI:${sessionId}] Session truncation: removed ${e.data.tokensRemovedDuringTruncation} tokens, ${e.data.messagesRemovedDuringTruncation} messages`);
 		}));
 
 		this._register(wrapper.onSessionSnapshotRewind(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Snapshot rewind: upTo=${e.data.upToEventId}, eventsRemoved=${e.data.eventsRemoved}`);
+			this._logService.trace(`[AI:${sessionId}] Snapshot rewind: upTo=${e.data.upToEventId}, eventsRemoved=${e.data.eventsRemoved}`);
 		}));
 
 		this._register(wrapper.onSessionShutdown(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Session shutdown: type=${e.data.shutdownType}, apiDuration=${e.data.totalApiDurationMs}ms`);
+			this._logService.trace(`[AI:${sessionId}] Session shutdown: type=${e.data.shutdownType}, apiDuration=${e.data.totalApiDurationMs}ms`);
 		}));
 
 		this._register(wrapper.onSessionUsageInfo(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Usage info: ${e.data.currentTokens}/${e.data.tokenLimit} tokens, ${e.data.messagesLength} messages`);
+			this._logService.trace(`[AI:${sessionId}] Usage info: ${e.data.currentTokens}/${e.data.tokenLimit} tokens, ${e.data.messagesLength} messages`);
 		}));
 
 		this._register(wrapper.onSessionCompactionStart(() => {
-			this._logService.trace(`[Copilot:${sessionId}] Compaction started`);
+			this._logService.trace(`[AI:${sessionId}] Compaction started`);
 		}));
 
 		this._register(wrapper.onSessionCompactionComplete(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Compaction complete: success=${e.data.success}, tokensRemoved=${e.data.tokensRemoved ?? '?'}`);
+			this._logService.trace(`[AI:${sessionId}] Compaction complete: success=${e.data.success}, tokensRemoved=${e.data.tokensRemoved ?? '?'}`);
 		}));
 
 		this._register(wrapper.onUserMessage(e => {
-			this._logService.trace(`[Copilot:${sessionId}] User message: ${e.data.content.length} chars, ${e.data.attachments?.length ?? 0} attachments`);
+			this._logService.trace(`[AI:${sessionId}] User message: ${e.data.content.length} chars, ${e.data.attachments?.length ?? 0} attachments`);
 			// Restricted `conversation.messageText` (source=user): the raw user prompt text. Emit only
 			// for genuine human prompts on the main agent — skip subagent turns (driven by the parent)
 			// and SDK-injected synthetic messages (skill/harness injections carry a non-`user` source,
 			// matching `isSyntheticUserMessage`) so injected content is not reported as the user's prompt.
 			if (!e.agentId && (!e.data.source || e.data.source.toLowerCase() === 'user')) {
-				void this._telemetryReporter.userMessageText(this.resourceUri.toString(), this._chatChannelUri.toString(), this._currentTurn.value?.clientType ?? AgentHostClientType.Unknown, e.data.content, this._turnOrdinal).catch(err => this._logService.trace(`[Copilot:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
+				void this._telemetryReporter.userMessageText(this.resourceUri.toString(), this._chatChannelUri.toString(), this._currentTurn.value?.clientType ?? AgentHostClientType.Unknown, e.data.content, this._turnOrdinal).catch(err => this._logService.trace(`[AI:${this.sessionId}] Telemetry emission failed: ${getErrorMessage(err)}`));
 			}
 		}));
 
 		this._register(wrapper.onPendingMessagesModified(() => {
-			this._logService.trace(`[Copilot:${sessionId}] Pending messages modified`);
+			this._logService.trace(`[AI:${sessionId}] Pending messages modified`);
 		}));
 
 		this._register(wrapper.onBackgroundTasksChanged(() => {
@@ -7989,7 +7989,7 @@ export class CopilotAgentSession extends Disposable {
 					this._resumingTurnAwaitingProviderStart = undefined;
 				}
 			}
-			this._logService.trace(`[Copilot:${sessionId}] Turn started: ${e.data.turnId}`);
+			this._logService.trace(`[AI:${sessionId}] Turn started: ${e.data.turnId}`);
 			this._resumeSubagentForEvent(e);
 			if (!e.agentId) {
 				if (this._currentTurn.value) {
@@ -8023,16 +8023,16 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onIntent(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Intent: ${e.data.intent}`);
+			this._logService.trace(`[AI:${sessionId}] Intent: ${e.data.intent}`);
 			this._publishActivity('intent', e.data.intent || undefined);
 		}));
 
 		this._register(wrapper.onReasoning(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Reasoning: ${e.data.content.length} chars`);
+			this._logService.trace(`[AI:${sessionId}] Reasoning: ${e.data.content.length} chars`);
 		}));
 
 		this._register(wrapper.onTurnEnd(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Turn ended: ${e.data.turnId}`);
+			this._logService.trace(`[AI:${sessionId}] Turn ended: ${e.data.turnId}`);
 			if (e.agentId) {
 				this._refreshSubagentTaskStatuses();
 			}
@@ -8043,7 +8043,7 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onAbort(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Aborted: ${e.data.reason}`);
+			this._logService.trace(`[AI:${sessionId}] Aborted: ${e.data.reason}`);
 			if (!e.agentId) {
 				this._cancelFusionEvents();
 				const update = this._fusionProgress.interrupt(e.timestamp);
@@ -8061,11 +8061,11 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onToolUserRequested(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Tool user-requested: ${e.data.toolName} (${e.data.toolCallId})`);
+			this._logService.trace(`[AI:${sessionId}] Tool user-requested: ${e.data.toolName} (${e.data.toolCallId})`);
 		}));
 
 		this._register(wrapper.onToolPartialResult(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Tool partial result: ${e.data.toolCallId} (${e.data.partialOutput.length} chars)`);
+			this._logService.trace(`[AI:${sessionId}] Tool partial result: ${e.data.toolCallId} (${e.data.partialOutput.length} chars)`);
 			const tracked = this._activeToolCalls.get(e.data.toolCallId);
 			if (!tracked || !isShellTool(tracked.toolName)) {
 				return;
@@ -8093,41 +8093,41 @@ export class CopilotAgentSession extends Disposable {
 		}));
 
 		this._register(wrapper.onToolProgress(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Tool progress: ${e.data.toolCallId} - ${e.data.progressMessage}`);
+			this._logService.trace(`[AI:${sessionId}] Tool progress: ${e.data.toolCallId} - ${e.data.progressMessage}`);
 		}));
 
 		this._register(wrapper.onSkillInvoked(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Skill invoked: ${e.data.name} (${e.data.path})`);
+			this._logService.trace(`[AI:${sessionId}] Skill invoked: ${e.data.name} (${e.data.path})`);
 		}));
 
 		this._register(wrapper.onSubagentStarted(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Subagent started: ${e.data.agentName} (${e.data.agentDisplayName})`);
+			this._logService.trace(`[AI:${sessionId}] Subagent started: ${e.data.agentName} (${e.data.agentDisplayName})`);
 		}));
 
 		this._register(wrapper.onSubagentCompleted(e => {
 			this._seedSubagentDisplayNames([e]);
-			this._logService.trace(`[Copilot:${sessionId}] Subagent completed: ${e.data.agentName}`);
+			this._logService.trace(`[AI:${sessionId}] Subagent completed: ${e.data.agentName}`);
 		}));
 
 		this._register(wrapper.onSubagentFailed(e => {
 			this._seedSubagentDisplayNames([e]);
-			this._logService.error(`[Copilot:${sessionId}] Subagent failed: ${e.data.agentName} - ${e.data.error}`);
+			this._logService.error(`[AI:${sessionId}] Subagent failed: ${e.data.agentName} - ${e.data.error}`);
 		}));
 
 		this._register(wrapper.onSubagentSelected(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Subagent selected: ${e.data.agentName}`);
+			this._logService.trace(`[AI:${sessionId}] Subagent selected: ${e.data.agentName}`);
 		}));
 
 		this._register(wrapper.onHookStart(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Hook started: ${e.data.hookType} (${e.data.hookInvocationId})`);
+			this._logService.trace(`[AI:${sessionId}] Hook started: ${e.data.hookType} (${e.data.hookInvocationId})`);
 		}));
 
 		this._register(wrapper.onHookEnd(e => {
-			this._logService.trace(`[Copilot:${sessionId}] Hook ended: ${e.data.hookType} (${e.data.hookInvocationId}), success=${e.data.success}`);
+			this._logService.trace(`[AI:${sessionId}] Hook ended: ${e.data.hookType} (${e.data.hookInvocationId}), success=${e.data.success}`);
 		}));
 
 		this._register(wrapper.onSystemMessage(e => {
-			this._logService.trace(`[Copilot:${sessionId}] System message [${e.data.role}]: ${e.data.content.length} chars`);
+			this._logService.trace(`[AI:${sessionId}] System message [${e.data.role}]: ${e.data.content.length} chars`);
 		}));
 	}
 
@@ -8153,7 +8153,7 @@ export class CopilotAgentSession extends Disposable {
 			return persistedEventId;
 		}
 
-		this._logService.info(`[Copilot:${this.sessionId}] Fork boundary after turn ${turnId} is active turn ${activeTurnId}; waiting for its SDK event id`);
+		this._logService.info(`[AI:${this.sessionId}] Fork boundary after turn ${turnId} is active turn ${activeTurnId}; waiting for its SDK event id`);
 		try {
 			return await activeTurnEventId;
 		} catch (err) {
@@ -8185,9 +8185,9 @@ export class CopilotAgentSession extends Disposable {
 	 *        deleted from the DB. If omitted, all turns are deleted.
 	 */
 	async truncateAtEventId(eventId: string, keepTurnId?: string): Promise<void> {
-		this._logService.info(`[Copilot:${this.sessionId}] Truncating via SDK RPC at eventId=${eventId}`);
+		this._logService.info(`[AI:${this.sessionId}] Truncating via SDK RPC at eventId=${eventId}`);
 		const result = await this._awaitControlPlaneRpc('rpc.history.truncate', this._wrapper.session.rpc.history.truncate({ eventId }));
-		this._logService.info(`[Copilot:${this.sessionId}] SDK truncation removed ${result.eventsRemoved} events`);
+		this._logService.info(`[AI:${this.sessionId}] SDK truncation removed ${result.eventsRemoved} events`);
 
 		// Clean up stale turns from our DB so getNextTurnEventId doesn't
 		// return event IDs for turns that no longer exist in the SDK.
@@ -8247,7 +8247,7 @@ export class CopilotAgentSession extends Disposable {
 		}
 		this._pendingEditContentUris.delete(toolCallId);
 		this._fileService.del(uri).catch(err => {
-			this._logService.warn(`[Copilot:${this.sessionId}] Failed to delete pending edit content: ${uri.toString()}`, err);
+			this._logService.warn(`[AI:${this.sessionId}] Failed to delete pending edit content: ${uri.toString()}`, err);
 		});
 	}
 

@@ -1,6 +1,6 @@
 ---
 name: flaky-smoke-tests
-description: Diagnose intermittent VS Code Electron smoke-test failures from the Azure DevOps Flaky Smoke Tests pipeline (definition 700). Covers finding failed iterations, downloading task logs and platform artifacts with Azure CLI, correlating cumulative runner logs, tracing the introducing commit, and queueing focused validation runs.
+description: Diagnose intermittent Vertex Electron smoke-test failures from the Azure DevOps Flaky Smoke Tests pipeline (definition 700). Covers finding failed iterations, downloading task logs and platform artifacts with Azure CLI, correlating cumulative runner logs, tracing the introducing commit, and queueing focused validation runs.
 ---
 
 # Diagnosing Flaky Smoke Tests
@@ -13,7 +13,7 @@ Use this skill for failures from the Azure DevOps **Flaky Smoke Tests** pipeline
 - Pipeline YAML: `build/azure-pipelines/product-smoke-flaky.yml`
 - Scheduled runs: twice daily on `main`
 
-The pipeline builds VS Code from source and runs the complete Electron smoke suite once per entry in the `iterations` parameter. Each platform runs its iterations sequentially in one job.
+The pipeline builds Vertex from source and runs the complete Electron smoke suite once per entry in the `iterations` parameter. Each platform runs its iterations sequentially in one job.
 
 ## Important Pipeline Behavior
 
@@ -187,7 +187,7 @@ Useful files include:
 
 - `window*/exthost/<extension>/<extension>.log`
 - `main.log`, `renderer.log`, and `agenthost.log`
-- `copilot-runtime-logs/process-*.log` — the Copilot runtime (`@github/copilot` CLI) process logs, captured by `dumpFailureDiagnostics` when a Copilot-runtime session fails. Check these first for a **hang or "Timed out waiting for response"**: they are the SDK/CLI's own record (startup, auth, model request, turn lifecycle, panics, out-of-order or protocol errors) and explain a timeout the test error alone does not. A tail is also mirrored into `smoke-test-runner.log`. **Agent Host** sessions (Agents Window / local AgentHost) write a full log run at `trace`; Chat Sessions editor (Copilot CLI / Claude) and Local sessions write only a minimal startup log here (whether the runtime came up), with their detailed diagnostics in `GitHub Copilot Chat.log`. (Claude / Codex sessions use a different runtime and are not captured here.)
+- `copilot-runtime-logs/process-*.log` — the AI runtime (`@github/copilot` CLI) process logs, captured by `dumpFailureDiagnostics` when a AI-runtime session fails. Check these first for a **hang or "Timed out waiting for response"**: they are the SDK/CLI's own record (startup, auth, model request, turn lifecycle, panics, out-of-order or protocol errors) and explain a timeout the test error alone does not. A tail is also mirrored into `smoke-test-runner.log`. **Agent Host** sessions (Agents Window / local AgentHost) write a full log run at `trace`; Chat Sessions editor (AI CLI / Claude) and Local sessions write only a minimal startup log here (whether the runtime came up), with their detailed diagnostics in `Vertex AI Chat.log`. (Claude / Codex sessions use a different runtime and are not captured here.)
 - `playwright-screenshot-*.png`
 - Playwright trace archives
 

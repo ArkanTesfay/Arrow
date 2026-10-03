@@ -13,12 +13,12 @@ Analyze `.cpuprofile` files (V8 sampling profiler) and DevTools trace files (`Tr
 - Finding what functions consume the most time
 - Comparing "before/after" or "old/new" implementations in a single profile
 - Investigating layout thrashing, long tasks, or rendering bottlenecks (trace files)
-- Analyzing VS Code user timing marks like `code/didResolveTextFileEditorModel` (trace files)
+- Analyzing Vertex user timing marks like `code/didResolveTextFileEditorModel` (trace files)
 - Understanding multi-process behavior (Browser, Renderer, GPU processes in trace files)
 
 ## Detecting File Type
 
-- **`.cpuprofile`**: Top-level JSON with `nodes`, `samples`, `timeDeltas` keys. Created by the VS Code profiler.
+- **`.cpuprofile`**: Top-level JSON with `nodes`, `samples`, `timeDeltas` keys. Created by the Vertex profiler.
 - **`Trace-*.json`**: Top-level JSON with `traceEvents` array (and optional `metadata`). Created by Chrome/Electron DevTools (Performance tab). These are richer than `.cpuprofile` -- they contain CPU samples, layout/paint events, user timing marks, GC events, input events, and multi-process data.
 
 ## Key Concepts
@@ -39,7 +39,7 @@ A `.cpuprofile` is JSON with these top-level keys:
 - `samples`: Array of node IDs -- one per profiler tick, referencing the leaf (innermost) frame
 - `timeDeltas`: Array of microsecond deltas between consecutive samples
 - `startTime` / `endTime`: Absolute timestamps in microseconds
-- `$vscode`: Optional VS Code metadata
+- `$vscode`: Optional Vertex metadata
 
 ### Procedure
 
@@ -140,7 +140,7 @@ Present results as:
 
 ## Part 2: DevTools Trace Files (`Trace-*.json`)
 
-DevTools traces are the future of perf tracing for VS Code. They are created from the built-in Electron/Chrome DevTools Performance tab and contain far more information than `.cpuprofile` files.
+DevTools traces are the future of perf tracing for Vertex. They are created from the built-in Electron/Chrome DevTools Performance tab and contain far more information than `.cpuprofile` files.
 
 ### Trace Format
 
@@ -192,7 +192,7 @@ Each event in `traceEvents` follows the Chrome Trace Event Format:
 |----------|-----------------|
 | `disabled-by-default-devtools.timeline` | `RunTask`, `EvaluateScript`, `TracingStartedInBrowser` -- core task scheduling |
 | `devtools.timeline` | `FunctionCall`, `EventDispatch`, `TimerInstall/Fire`, `PrePaint`, `Paint` -- main thread activity |
-| `blink.user_timing` | VS Code performance marks (e.g. `code/willResolveTextFileEditorModel`, `code/didResolveTextFileEditorModel`) |
+| `blink.user_timing` | Vertex performance marks (e.g. `code/willResolveTextFileEditorModel`, `code/didResolveTextFileEditorModel`) |
 | `blink,devtools.timeline` | `UpdateLayoutTree`, `HitTest`, `IntersectionObserver`, `ParseAuthorStyleSheet` -- layout/rendering |
 | `disabled-by-default-v8.cpu_profiler` | `Profile`, `ProfileChunk` -- embedded CPU profile data (same as `.cpuprofile` but chunked) |
 | `v8` | `v8.callFunction`, `v8.newInstance`, `V8.DeoptimizeCode` -- V8 engine events |
@@ -209,7 +209,7 @@ Trace files contain events from multiple processes:
 
 | Process | Role | Key Thread |
 |---------|------|------------|
-| **Renderer** (pid varies) | VS Code's renderer process -- where JS runs | `CrRendererMain` (main thread) |
+| **Renderer** (pid varies) | Vertex's renderer process -- where JS runs | `CrRendererMain` (main thread) |
 | **Browser** (pid varies) | Electron's main/browser process | `CrBrowserMain` |
 | **GPU Process** (pid varies) | GPU compositing and rendering | `CrGpuMain`, `VizCompositorThread` |
 
@@ -222,7 +222,7 @@ const threadNames = events.filter(e => e.name === 'thread_name');
 // => [{args: {name: 'CrRendererMain'}, pid: 3406, tid: 7534980}, ...]
 ```
 
-For VS Code perf analysis, focus on the **Renderer process, CrRendererMain thread** -- this is where JavaScript execution, layout, and painting happen.
+For Vertex perf analysis, focus on the **Renderer process, CrRendererMain thread** -- this is where JavaScript execution, layout, and painting happen.
 
 ### Procedure
 
@@ -272,7 +272,7 @@ const mainEvents = events.filter(e => e.pid === rendererPid && e.tid === mainTid
 
 #### 4. Analyze User Timing Marks
 
-VS Code emits `performance.mark()` calls that appear as `blink.user_timing` events. These are the most direct way to measure VS Code-specific milestones:
+Vertex emits `performance.mark()` calls that appear as `blink.user_timing` events. These are the most direct way to measure Vertex-specific milestones:
 
 ```javascript
 const userTimings = events.filter(e => e.cat?.includes('blink.user_timing') && !e.cat.includes('rail'));
@@ -353,7 +353,7 @@ const longHandlers = dispatches.filter(e => e.dur > 50000).sort((a, b) => b.dur 
 
 Present results as:
 - **Timeline**: When each activity region occurred relative to trace start
-- **User timing marks**: VS Code milestone events and their timestamps
+- **User timing marks**: Vertex milestone events and their timestamps
 - **Long tasks**: Tasks > 50ms that block the main thread
 - **Top functions by duration**: Where CPU time was spent, with source locations
 - **Layout/rendering**: Expensive style recalculations and paints
@@ -513,5 +513,5 @@ function parseTraceFromBuffer(buf) {
 - Clean up any analysis scripts you create when done.
 - Trace files are large (50-200MB). Always filter to the relevant process/thread before analysis to reduce memory and noise.
 - When a trace file contains embedded `ProfileChunk` events, prefer analyzing those over asking for a separate `.cpuprofile` -- the data is equivalent but already correlated with other trace events.
-- Use `args.data.url` in `FunctionCall` and `EvaluateScript` events to map back to VS Code source files (paths like `vscode-file://vscode-app/Users/.../out/vs/...`).
+- Use `args.data.url` in `FunctionCall` and `EvaluateScript` events to map back to Vertex source files (paths like `vscode-file://vscode-app/Users/.../out/vs/...`).
 - The `dur` field is wall-clock duration; `tdur` is thread-time duration. The difference reveals time the thread was suspended (e.g. waiting for I/O or preempted).

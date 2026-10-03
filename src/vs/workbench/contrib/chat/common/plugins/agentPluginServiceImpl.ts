@@ -680,7 +680,7 @@ export class ConfiguredAgentPluginDiscovery extends AbstractAgentPluginDiscovery
 			}
 			for (const resource of await this._resolvePluginPath(trimmed, userHome)) {
 				if (isEqualOrParent(resource, copilotCliRoot)) {
-					this._logService.debug(`[ConfiguredAgentPluginDiscovery] Skipping redundant Copilot CLI cache path: ${resource.toString()}`);
+					this._logService.debug(`[ConfiguredAgentPluginDiscovery] Skipping redundant AI CLI cache path: ${resource.toString()}`);
 					continue;
 				}
 				await this._addPluginSource(sources, resource, 'plugin path', () => this._removePluginPath(key));

@@ -41,17 +41,17 @@ remote-agenthost.log
 The basic flow is:
 
 ```text
-Window/client <-> AHP <-> Agent Host process <-> Copilot SDK
+Window/client <-> AHP <-> Agent Host process <-> AI SDK
 ```
 
 | Path | What it shows |
 |---|---|
-| `events.jsonl` | Persisted Copilot SDK events for the selected session: turns, messages, tools, permissions, hooks, skills, and subagents. It can cover a much longer period than the other logs. |
+| `events.jsonl` | Persisted AI SDK events for the selected session: turns, messages, tools, permissions, hooks, skills, and subagents. It can cover a much longer period than the other logs. |
 | `usage.jsonl` | Client-captured token/credit usage, one record per model call (`turnId`, model, input/output/cache tokens, cumulative `totalNanoAiu`). The SDK's `assistant.usage` event is ephemeral and never reaches `events.jsonl`, so this is the only per-call usage record. Present only when agent-host debug logging was on. |
 | `customizations.json` | Snapshot of the skills/hooks/agents/MCP servers loaded for the session. The SDK's `session.*_loaded` events are ephemeral, so this is the only record of what was actually active. Present only when agent-host debug logging was on. |
 | `ahp/*.jsonl` | AHP traffic for a client connection. `_ahpLog.dir` is `c2s` or `s2c`; `_ahpLog.ts` is the wire timestamp. Use this to see requests, responses, subscriptions, actions, notifications, and client-visible ordering. |
 | `agenthost*.log` | Local or server Agent Host process behavior: startup, auth, sessions, provider events, tools, Git/worktrees, and host-side errors. Numbered files are older rotated segments. |
-| `copilot-logs/*.log` | Copilot SDK process logs that mention the selected session ID. A process log may contain other sessions too. |
+| `copilot-logs/*.log` | AI SDK process logs that mention the selected session ID. A process log may contain other sessions too. |
 | `vscode-logs/Window/*` | Current and rotated files from the Window log group, including renderer/client behavior, network activity, views, and other window-owned logs. |
 | `vscode-logs/Shared/*` | Current and rotated files from the Shared log group. Usually secondary evidence and often noisy. |
 | `Agent Host (<name>).log` | Forwarded logs from a named remote Agent Host. |
@@ -72,7 +72,7 @@ Window/client <-> AHP <-> Agent Host process <-> Copilot SDK
 
 Useful correlation fields include the raw session ID, session/chat URI, `turnId`, `interactionId`, tool/request IDs, JSON-RPC request `id`, AHP `serverSeq`, and event `id`/`parentId`.
 
-## Copilot Session Refresh Failures
+## AI Session Refresh Failures
 
 At the default Info log level, `agenthost*.log` records the refresh operation, configuration and SDK session IDs, chat, turn, and first matching `reason`. Only the first matching trigger is reported, preserving the restart checks' short-circuit order. Structural reasons distinguish client tools, client plugins, and root MCP configuration without logging their contents.
 
@@ -80,8 +80,8 @@ Follow `Preparing SDK session` and the paired `SDK resumeSession started` / `set
 
 ## Important Tips
 
-- `events.jsonl`, Copilot SDK logs, and AHP timestamps are normally UTC. The plain `.log` files may use local machine time; remote logs may use another timezone.
-- An AHP log is connection-scoped and can contain multiple sessions. A Copilot SDK process log can also contain multiple sessions.
+- `events.jsonl`, AI SDK logs, and AHP timestamps are normally UTC. The plain `.log` files may use local machine time; remote logs may use another timezone.
+- An AHP log is connection-scoped and can contain multiple sessions. A AI SDK process log can also contain multiple sessions.
 - AHP files rotate as `.jsonl`, `.1.jsonl`, `.2.jsonl`, and so on. Use `_ahpLog.ts` to reconstruct order.
 - A `subscribe` result can contain a full snapshot; its contents did not necessarily change at subscription time.
 - `_ahpLog.truncated: true` means large values were omitted from that log record.

@@ -219,7 +219,7 @@ export class MsalAuthProvider implements AuthenticationProvider {
 			}
 			const message = userCancelled
 				? l10n.t('Having trouble logging in? Would you like to try a different way? ({0})', mode)
-				: l10n.t('You have not yet finished authorizing this extension to use your Microsoft Account. Would you like to try a different way? ({0})', mode);
+				: l10n.t('You have not yet finished authorizing this extension to use your Vertex Account. Would you like to try a different way? ({0})', mode);
 			const result = await window.showWarningMessage(message, yes, no);
 			if (result !== yes) {
 				throw new CancellationError();
@@ -357,7 +357,7 @@ export class MsalAuthProvider implements AuthenticationProvider {
 			}
 			const message = userCancelled
 				? l10n.t('Having trouble logging in? Would you like to try a different way? ({0})', mode)
-				: l10n.t('You have not yet finished authorizing this extension to use your Microsoft Account. Would you like to try a different way? ({0})', mode);
+				: l10n.t('You have not yet finished authorizing this extension to use your Vertex Account. Would you like to try a different way? ({0})', mode);
 			const result = await window.showWarningMessage(message, yes, no);
 			if (result !== yes) {
 				throw new CancellationError();

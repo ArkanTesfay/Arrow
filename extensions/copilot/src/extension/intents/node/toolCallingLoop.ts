@@ -356,7 +356,7 @@ export abstract class ToolCallingLoop<TOptions extends IToolCallingLoopOptions =
 	private readonly reportedVoiceProgress = new Set<VoiceProgressPhase>();
 
 	/**
-	 * Running total of Copilot credits across every model call in the current
+	 * Running total of AI credits across every model call in the current
 	 * turn. Each fetch reports the credits for that single call, but the context
 	 * usage widget and `IChatModel.sessionCost` treat the per-request value as the
 	 * whole turn, so we accumulate here and emit the running total — mirroring the
@@ -1242,7 +1242,7 @@ export abstract class ToolCallingLoop<TOptions extends IToolCallingLoopOptions =
 	}
 
 	public async run(outputStream: ChatResponseStream | undefined, token: CancellationToken): Promise<IToolCallLoopResult> {
-		const agentName = this.agentName ?? 'GitHub Copilot Chat';
+		const agentName = this.agentName ?? 'Vertex AI Chat';
 
 		// Extract custom mode name for debug logging (kept separate from agentName to avoid metric cardinality)
 		const modeInstructions = (this.options.request as { modeInstructions2?: { name?: string; isBuiltin?: boolean } }).modeInstructions2;
@@ -1264,7 +1264,7 @@ export abstract class ToolCallingLoop<TOptions extends IToolCallingLoopOptions =
 				return ctx;
 			})();
 
-		// Get the VS Code chat session ID from the CapturingToken (same mechanism as old debug panel)
+		// Get the Vertex chat session ID from the CapturingToken (same mechanism as old debug panel)
 		const chatSessionId = getCurrentCapturingToken()?.chatSessionId;
 		const parentChatSessionId = getCurrentCapturingToken()?.parentChatSessionId;
 		const debugLogLabel = getCurrentCapturingToken()?.debugLogLabel;
@@ -1459,7 +1459,7 @@ export abstract class ToolCallingLoop<TOptions extends IToolCallingLoopOptions =
 				}
 			}
 
-			// Check if VS Code has requested we gracefully yield before starting the next iteration.
+			// Check if Vertex has requested we gracefully yield before starting the next iteration.
 			// In autopilot mode, don't yield until the task is actually complete.
 			if (lastResult && this.options.yieldRequested?.()) {
 				if (this.options.request.permissionLevel !== 'autopilot' || this.taskCompleted) {
@@ -1696,9 +1696,9 @@ export abstract class ToolCallingLoop<TOptions extends IToolCallingLoopOptions =
 	private hitToolCallLimit(stream: ChatResponseStream | undefined, lastResult: IToolCallSingleResult) {
 		if (stream && this.options.onHitToolCallLimit === ToolCallLimitBehavior.Confirm) {
 			const messageString = new MarkdownString(l10n.t({
-				message: 'Copilot has been working on this problem for a while. It can continue to iterate, or you can send a new message to refine your prompt. [Configure max requests]({0}).',
+				message: 'AI has been working on this problem for a while. It can continue to iterate, or you can send a new message to refine your prompt. [Configure max requests]({0}).',
 				args: [`command:workbench.action.openSettings?${encodeURIComponent('["chat.agent.maxRequests"]')}`],
-				comment: 'Link to workbench settings for chat.maxRequests, which controls the maximum number of requests Copilot will make before stopping. This is used in the tool calling loop to determine when to stop iterating on a problem.'
+				comment: 'Link to workbench settings for chat.maxRequests, which controls the maximum number of requests AI will make before stopping. This is used in the tool calling loop to determine when to stop iterating on a problem.'
 			}));
 			messageString.isTrusted = { enabledCommands: ['workbench.action.openSettings'] };
 

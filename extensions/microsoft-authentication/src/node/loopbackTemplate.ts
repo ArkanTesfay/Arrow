@@ -8,7 +8,7 @@ export const loopbackTemplate = `
 
 <head>
 	<meta charset="utf-8" />
-	<title>Microsoft Account - Sign In</title>
+	<title>Vertex Account - Sign In</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		html {
@@ -112,7 +112,7 @@ export const loopbackTemplate = `
 
 <body>
 	<a class="branding" href="https://code.visualstudio.com/">
-		Visual Studio Code
+		Vertex
 	</a>
 	<div class="message-container">
 		<div class="message">

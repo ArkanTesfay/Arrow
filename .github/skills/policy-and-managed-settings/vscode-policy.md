@@ -1,16 +1,16 @@
-# VS Code Configuration Policy
+# Vertex Configuration Policy
 
-Use this path only when the governed behavior belongs to the editor/workbench, such as editor UI, updates, extension management, or other VS Code-native behavior.
+Use this path only when the governed behavior belongs to the editor/workbench, such as editor UI, updates, extension management, or other Vertex-native behavior.
 
 ## Delivery
 
-VS Code configuration policy can arrive from:
+Vertex configuration policy can arrive from:
 
 - OS policy (`NativePolicyService` on Windows/macOS, `FilePolicyService` on Linux);
 - existing GitHub account data (`AccountPolicyService` via `IPolicyData`, deprecated for new properties);
-- Copilot managed-settings projection (native MDM > server > file, per key).
+- AI managed-settings projection (native MDM > server > file, per key).
 
-`MultiplexPolicyService` combines the applicable policy services. Managed-settings keys must be declared before they can project into VS Code configuration.
+`MultiplexPolicyService` combines the applicable policy services. Managed-settings keys must be declared before they can project into Vertex configuration.
 
 ## Declaration
 
@@ -38,15 +38,15 @@ Rules:
 - Localize all text.
 - For string enums, provide one localized `enumDescriptions` entry per value.
 - Preserve existing `value(policyData)` callbacks when maintaining historical GitHub account policies; return the restrictive value to override and `undefined` otherwise.
-- Read [github-managed-settings.md](./github-managed-settings.md) before projecting a managed-settings key into VS Code configuration.
+- Read [github-managed-settings.md](./github-managed-settings.md) before projecting a managed-settings key into Vertex configuration.
 
-Do not add new GitHub-token entitlement or policy fields to `IPolicyData` / `AccountPolicyService`. Use managed settings for new Copilot enterprise controls.
+Do not add new GitHub-token entitlement or policy fields to `IPolicyData` / `AccountPolicyService`. Use managed settings for new AI enterprise controls.
 
 ### Existing GitHub preview-feature policies
 
 Some existing preview-feature policies use the historical `policyData.chat_preview_features_enabled` token entitlement. When maintaining one, compare with `=== false` (not negation), return the setting's restrictive value when false, and return `undefined` otherwise. Do not use this pattern for a new control.
 
-If one policy controls multiple VS Code settings, one setting owns `policy`; the others use `policyReference: { name }`.
+If one policy controls multiple Vertex settings, one setting owns `policy`; the others use `policyReference: { name }`.
 
 - A setting cannot declare both `policy` and `policyReference`.
 - Exactly one setting owns the policy metadata.

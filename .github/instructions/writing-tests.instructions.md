@@ -1,5 +1,5 @@
 ---
-description: VS Code test writing guidelines — unit tests, integration tests, snapshot tests, and clean teardown patterns. Reference when writing or updating tests.
+description: Vertex test writing guidelines — unit tests, integration tests, snapshot tests, and clean teardown patterns. Reference when writing or updating tests.
 applyTo: "{src/vs/**/test/**,src/vs/**/*.test.ts,src/vs/**/*.integrationTest.ts}"
 ---
 
@@ -21,7 +21,7 @@ Canonical reference: https://github.com/microsoft/vscode/wiki/Writing-Tests
   - Filter: `--grep <pattern>`
   - Glob: `--runGlob **/myFile.test.js`
 - **Integration tests:** `scripts/test-integration.sh` or `scripts/test-integration.bat`
-- **VS Code UI:** Use the [Selfhost Test Provider](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-selfhost-test-provider)
+- **Vertex UI:** Use the [Selfhost Test Provider](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-selfhost-test-provider)
 
 ## Writing Unit Tests
 

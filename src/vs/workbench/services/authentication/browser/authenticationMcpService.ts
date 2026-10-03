@@ -370,7 +370,7 @@ export class AuthenticationMcpService extends Disposable implements IAuthenticat
 		quickPick.title = nls.localize(
 			{
 				key: 'selectAccount',
-				comment: ['The placeholder {0} is the name of a MCP server. {1} is the name of the type of account, such as Microsoft or GitHub.']
+				comment: ['The placeholder {0} is the name of a MCP server. {1} is the name of the type of account, such as Vertex or GitHub.']
 			},
 			"The MCP server '{0}' wants to access a {1} account",
 			mcpServerName,

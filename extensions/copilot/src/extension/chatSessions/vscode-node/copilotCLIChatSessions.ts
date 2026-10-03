@@ -95,8 +95,8 @@ function getIssueRuntimeInfo(): { readonly platform: string; readonly vscodeInfo
 
 function getSessionLoadFailureIssueInfo(invalidSessionMessage: string): { readonly issueBody: string; readonly issueUrl: string } {
 	const runtimeInfo = getIssueRuntimeInfo();
-	const issueTitle = '[Copilot CLI] Failed to load chat session';
-	const issueBody = `## Description\n\nFailed to load a Copilot CLI chat session.\n\n## Environment\n\n- Platform: ${runtimeInfo.platform}\n- VS Code: ${runtimeInfo.vscodeInfo}\n- Chat Extension Version: ${runtimeInfo.extensionVersion}\n\n## Error\n\n\`\`\`\n${invalidSessionMessage}\n\`\`\``;
+	const issueTitle = '[AI CLI] Failed to load chat session';
+	const issueBody = `## Description\n\nFailed to load a AI CLI chat session.\n\n## Environment\n\n- Platform: ${runtimeInfo.platform}\n- Vertex: ${runtimeInfo.vscodeInfo}\n- Chat Extension Version: ${runtimeInfo.extensionVersion}\n\n## Error\n\n\`\`\`\n${invalidSessionMessage}\n\`\`\``;
 	const issueUrl = `https://github.com/microsoft/vscode/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
 
 	return { issueBody, issueUrl };
@@ -976,7 +976,7 @@ export class CopilotCLIChatSessionParticipant extends Disposable {
 		const { workspaceInfo, cancelled } = await this.sessionInitializer.initializeWorkingDirectory(undefined, { stream, isolation: IsolationMode.Worktree, newBranch: branchNamePromise }, request.toolInvocationToken, token);
 
 		if (cancelled || token.isCancellationRequested) {
-			stream.markdown(l10n.t('Copilot CLI delegation cancelled.'));
+			stream.markdown(l10n.t('AI CLI delegation cancelled.'));
 			return {};
 		}
 		const { prompt, attachments, references } = await this.promptResolver.resolvePrompt(request, await requestPromptPromise, (otherReferences || []).concat([]), workspaceInfo, [], token);
@@ -998,10 +998,10 @@ export class CopilotCLIChatSessionParticipant extends Disposable {
 			attachedContext: references.map(ref => convertReferenceToVariable(ref, attachments))
 		}).then(undefined, error => {
 			clearPendingCopilotCLIRequestContext(session.object.sessionId);
-			this.logService.error(error, '[CopilotCLIChatSessionContentProvider] Failed to open Copilot CLI session');
+			this.logService.error(error, '[CopilotCLIChatSessionContentProvider] Failed to open AI CLI session');
 		});
 
-		stream.markdown(l10n.t('A Copilot CLI session has begun working on your request. Follow its progress in the sessions list.'));
+		stream.markdown(l10n.t('A AI CLI session has begun working on your request. Follow its progress in the sessions list.'));
 
 		return {};
 	}
@@ -1210,19 +1210,19 @@ export function registerCLIChatCommands(
 
 	const createCopilotCLITerminal = async (location: TerminalOpenLocation = 'editor', name?: string, cwd?: string): Promise<void> => {
 		// TODO@rebornix should be set by CLI
-		const terminalName = name || process.env.COPILOTCLI_TERMINAL_TITLE || l10n.t('Copilot CLI');
+		const terminalName = name || process.env.COPILOTCLI_TERMINAL_TITLE || l10n.t('AI CLI');
 		await terminalIntegration.openTerminal(terminalName, [], cwd, location);
 	};
 
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.newSession', async () => {
-		await createCopilotCLITerminal('editor', l10n.t('Copilot CLI'));
+		await createCopilotCLITerminal('editor', l10n.t('AI CLI'));
 	}));
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.newSessionToSide', async () => {
-		await createCopilotCLITerminal('editorBeside', l10n.t('Copilot CLI'));
+		await createCopilotCLITerminal('editorBeside', l10n.t('AI CLI'));
 	}));
 	disposableStore.add(vscode.commands.registerCommand(OPEN_IN_COPILOT_CLI_COMMAND_ID, async (sourceControlContext?: unknown) => {
 		const rootUri = getSourceControlRootUri(sourceControlContext);
-		await createCopilotCLITerminal('editor', l10n.t('Copilot CLI'), rootUri?.fsPath);
+		await createCopilotCLITerminal('editor', l10n.t('AI CLI'), rootUri?.fsPath);
 	}));
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.sessions.openWorktreeInNewWindow', async (sessionItem?: vscode.ChatSessionItem) => {
 		if (!sessionItem?.resource) {
@@ -1659,7 +1659,7 @@ export function registerCLIChatCommands(
 		}
 
 		if (!message) {
-			message = `Copilot CLI session ${sessionId} changes`;
+			message = `AI CLI session ${sessionId} changes`;
 		}
 
 		await gitService.commit(repository.rootUri, message, { all: true, noVerify: true, signCommit: false });

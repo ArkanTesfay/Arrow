@@ -61,10 +61,10 @@ export function migrateThemeSettingsId(settingsId: string): string {
 		case 'Default Dark+': return 'Dark+';
 		case 'Default Light+': return 'Light+';
 		case 'Experimental Dark':
-		case 'VS Code Dark':
+		case 'Vertex Dark':
 			return ThemeSettingDefaults.COLOR_THEME_DARK;
 		case 'Experimental Light':
-		case 'VS Code Light':
+		case 'Vertex Light':
 			return ThemeSettingDefaults.COLOR_THEME_LIGHT;
 	}
 	return settingsId;

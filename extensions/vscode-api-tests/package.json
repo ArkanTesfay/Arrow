@@ -1,6 +1,6 @@
 {
   "name": "vscode-api-tests",
-  "description": "API tests for VS Code",
+  "description": "API tests for Vertex",
   "version": "0.0.1",
   "publisher": "vscode",
   "license": "MIT",
@@ -77,7 +77,7 @@
       },
       {
         "vendor": "copilot",
-        "displayName": "Test Copilot LM Vendor"
+        "displayName": "Test AI LM Vendor"
       }
     ],
     "chatParticipants": [

@@ -102,7 +102,7 @@ async function getMacMachineId(errorLogger: (error: Error) => void): Promise<str
 	}
 }
 
-const SQM_KEY: string = 'Software\\Microsoft\\SQMClient';
+const SQM_KEY: string = 'Software\\Vertex\\SQMClient';
 export async function getSqmMachineId(errorLogger: (error: Error) => void): Promise<string> {
 	if (isWindows) {
 		const Registry = await import('@vscode/windows-registry');

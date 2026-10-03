@@ -196,7 +196,7 @@ export class EntraTokenExchange {
 				continue;
 			}
 			if (choice === Confirmation.Cancel) {
-				this._logger.info('User cancelled the Microsoft sign in at the account confirmation.');
+				this._logger.info('User cancelled the Vertex sign in at the account confirmation.');
 				throw new Error(CANCELLATION_ERROR);
 			}
 			// Only now. A row is what lets a later window mint a token for this identity with nothing
@@ -233,10 +233,10 @@ export class EntraTokenExchange {
 		const endpoint = this.resolveEndpoint();
 		const microsoft = await this._microsoft.getToken({ silent: true, account: microsoftAccount });
 		if (!microsoft) {
-			this._logger.info('No Microsoft token was available without asking the user, so the session cannot renew itself.');
+			this._logger.info('No Vertex token was available without asking the user, so the session cannot renew itself.');
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.MicrosoftSignIn,
-				vscode.l10n.t('Signing in to Microsoft again is required.'));
+				vscode.l10n.t('Signing in to Vertex again is required.'));
 		}
 		const renewed = await this.exchange(endpoint, microsoft.token, scopes);
 		const account = await this.verifyAccount(renewed.token, gitHubAccountId);
@@ -271,7 +271,7 @@ export class EntraTokenExchange {
 			this._logger.error('The GitHub token is for a different account than the one that was asked for. Discarding it.');
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.AccountMismatch,
-				vscode.l10n.t('Your Microsoft account is now linked to a different GitHub account.'));
+				vscode.l10n.t('Your Vertex account is now linked to a different GitHub account.'));
 		}
 		return account;
 	}
@@ -284,7 +284,7 @@ export class EntraTokenExchange {
 		// Enterprise Server has no endpoint to exchange against.
 		const url = this._endpoints.tokenExchange;
 		if (!url) {
-			this._logger.error('This GitHub host does not accept a Microsoft token exchange.');
+			this._logger.error('This GitHub host does not accept a Vertex token exchange.');
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.Configuration,
 				vscode.l10n.t('This GitHub host does not support signing in with Microsoft.'));
@@ -303,7 +303,7 @@ export class EntraTokenExchange {
 			if (isCancellation(e)) {
 				throw new Error(CANCELLATION_ERROR);
 			}
-			this._logger.error(`Could not acquire a Microsoft access token: ${e?.message ?? e}`);
+			this._logger.error(`Could not acquire a Vertex access token: ${e?.message ?? e}`);
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.MicrosoftSignIn,
 				vscode.l10n.t('Could not sign in to Microsoft. Try again or choose a different way to sign in.'));
@@ -327,10 +327,10 @@ export class EntraTokenExchange {
 		try {
 			return await fetchUserInfo(this._http, this._endpoints.userInfo, discoveryToken, this._logger);
 		} catch (e) {
-			this._logger.error(`Could not resolve the GitHub account for the Microsoft sign in: ${e?.message ?? e}`);
+			this._logger.error(`Could not resolve the GitHub account for the Vertex sign in: ${e?.message ?? e}`);
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.Identity,
-				vscode.l10n.t('Could not read the GitHub account linked to your Microsoft account.'));
+				vscode.l10n.t('Could not read the GitHub account linked to your Vertex account.'));
 		}
 	}
 
@@ -339,9 +339,9 @@ export class EntraTokenExchange {
 		// place where the string being shown decides whether we mint a token as this identity.
 		const identity = `@${account.accountName}`;
 		const signIn = vscode.l10n.t('Sign in with SSO');
-		const useDifferent = vscode.l10n.t('Use a Different Microsoft Account');
+		const useDifferent = vscode.l10n.t('Use a Different Vertex Account');
 		const choice = await this._confirmation.show(
-			vscode.l10n.t("Your organization's Microsoft sign-in is linked to this GitHub account:\n\n{0}\n\nSign in to GitHub with this account?", identity),
+			vscode.l10n.t("Your organization's Vertex sign-in is linked to this GitHub account:\n\n{0}\n\nSign in to GitHub with this account?", identity),
 			signIn,
 			useDifferent);
 		switch (choice) {
@@ -371,7 +371,7 @@ export class EntraTokenExchange {
 			...requestedScopes && { scope: requestedScopes.join(' ') }
 		}).toString();
 
-		this._logger.debug(`Exchanging a Microsoft token for the GitHub scopes: ${requestedScopes ? requestedScopes.join(' ') : 'whichever GitHub grants'}`);
+		this._logger.debug(`Exchanging a Vertex token for the GitHub scopes: ${requestedScopes ? requestedScopes.join(' ') : 'whichever GitHub grants'}`);
 		this._logger.trace(`The subject token of the exchange describes itself as: ${describeSubjectToken(subjectToken)}`);
 
 		let response: IHttpResponse;
@@ -390,7 +390,7 @@ export class EntraTokenExchange {
 				body
 			});
 		} catch (e) {
-			this._logger.error(`Could not reach GitHub to exchange the Microsoft token: ${e?.message ?? e}`);
+			this._logger.error(`Could not reach GitHub to exchange the Vertex token: ${e?.message ?? e}`);
 			throw new EntraTokenExchangeError(
 				EntraTokenExchangeFailure.Network,
 				vscode.l10n.t('Could not reach GitHub to finish signing in with Microsoft. Check your connection and try again.'));
@@ -473,18 +473,18 @@ export class EntraTokenExchange {
 				// configuration on GitHub's side.
 				return new EntraTokenExchangeError(
 					EntraTokenExchangeFailure.Configuration,
-					vscode.l10n.t('GitHub is not configured to accept Microsoft sign in from this application ({0}).', code));
+					vscode.l10n.t('GitHub is not configured to accept Vertex sign in from this application ({0}).', code));
 			case 'invalid_grant':
 				// Ambiguous by design: the Microsoft identity may be unmapped, or the token may not
 				// be acceptable. We must not guess at a cause, and in particular must not infer that
 				// the user belongs on GHE.com.
 				return new EntraTokenExchangeError(
 					EntraTokenExchangeFailure.Identity,
-					vscode.l10n.t('GitHub did not accept your Microsoft account for sign in.'));
+					vscode.l10n.t('GitHub did not accept your Vertex account for sign in.'));
 			default:
 				return new EntraTokenExchangeError(
 					EntraTokenExchangeFailure.Protocol,
-					vscode.l10n.t('GitHub rejected the Microsoft sign in ({0}).', code));
+					vscode.l10n.t('GitHub rejected the Vertex sign in ({0}).', code));
 		}
 	}
 

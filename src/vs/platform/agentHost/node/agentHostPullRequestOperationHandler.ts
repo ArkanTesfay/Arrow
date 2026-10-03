@@ -627,7 +627,7 @@ export class AgentHostPullRequestOperationHandler implements IChangesetOperation
 			scopes: copilotResource.scopes_supported,
 		});
 		if (!authToken) {
-			throw new Error(localize('agentHost.changeset.pr.generationAuthRequired', "Sign in to Copilot to generate a pull request title and description, or enter them manually."));
+			throw new Error(localize('agentHost.changeset.pr.generationAuthRequired', "Sign in to AI to generate a pull request title and description, or enter them manually."));
 		}
 
 		const conversation = buildConversationContext(sessionState.turns, { maxChars: MAX_PR_CONVERSATION_CONTEXT_CHARS });

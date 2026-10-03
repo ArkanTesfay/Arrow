@@ -30,7 +30,7 @@ type TodoStoreOperationClassification = IAgentHostEventClassification & {
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The agent host session identifier.' };
 	isSubagentSession: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Whether the todo storage operation belongs to a subagent session.' };
 	owner: 'amunger';
-	comment: 'Tracks successful Copilot CLI SQL operations that access todo item or dependency storage.';
+	comment: 'Tracks successful AI CLI SQL operations that access todo item or dependency storage.';
 };
 
 interface ITodoStoreOperationData {

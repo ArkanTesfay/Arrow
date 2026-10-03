@@ -56,7 +56,7 @@
 		],
 		"properties": {
 			"question": {
-				"description": "The user question to send to Copilot.",
+				"description": "The user question to send to AI.",
 				"type": "string"
 			},
 			"stateFile": {

@@ -485,7 +485,7 @@ The protocol's tool-call state machine ([sessionState.ts:60-65](../../common/sta
 1. **`Streaming`** — `SessionToolCallStart` + 0..N `SessionToolCallDelta`. The mapper drives this purely from stream events.
 2. **`PendingConfirmation`** — `SessionToolCallReady` lands the assembled tool-call state and triggers the confirmation UI.
 
-The hop from Streaming → PendingConfirmation is the host's call. The host's `_translateToolCallSignal` (existing infrastructure on `AgentService`, used by Copilot today) handles the `pending_confirmation` signal by either (a) auto-approving and dispatching `SessionToolCallReady` with `confirmed: NotNeeded`, or (b) dispatching `SessionToolCallReady` with confirmation options. Either way the action is the host's, not the mapper's. See [agentService.ts:299-330](../../common/agentService.ts#L299) for the contract — the comment is explicit: "the host applies auto-approval logic over `permissionKind` / `permissionPath` and then dispatches the appropriate `SessionToolCallReady` action".
+The hop from Streaming → PendingConfirmation is the host's call. The host's `_translateToolCallSignal` (existing infrastructure on `AgentService`, used by AI today) handles the `pending_confirmation` signal by either (a) auto-approving and dispatching `SessionToolCallReady` with `confirmed: NotNeeded`, or (b) dispatching `SessionToolCallReady` with confirmation options. Either way the action is the host's, not the mapper's. See [agentService.ts:299-330](../../common/agentService.ts#L299) for the contract — the comment is explicit: "the host applies auto-approval logic over `permissionKind` / `permissionPath` and then dispatches the appropriate `SessionToolCallReady` action".
 
 Mapper emits `Start` and `Delta`. Session emits `pending_confirmation`. Host emits `Ready`. Mapper emits `Complete`.
 
@@ -958,7 +958,7 @@ The five candidates that survived the council fan-out were resolved during the g
 
 **Decision.** Phase 7 emits `pastTenseMessage: \`${displayName} finished\`` (e.g. `"Read file finished"`). Phase 8 refines per-tool ("Read package.json (240 lines)", "Wrote 12 lines to foo.ts", etc.).
 
-**Why.** Per-tool past-tense strings need access to the tool's *result* shape (line counts, diff summaries) — that data only enters the mapper alongside Phase 8's edit-tracking work. Forcing meaningful strings in Phase 7 means duplicating Phase-8-shape parsers in the mapper. The workbench has rendered generic past-tense strings since the Copilot agent shipped; nothing UX-critical depends on richer text in this phase.
+**Why.** Per-tool past-tense strings need access to the tool's *result* shape (line counts, diff summaries) — that data only enters the mapper alongside Phase 8's edit-tracking work. Forcing meaningful strings in Phase 7 means duplicating Phase-8-shape parsers in the mapper. The workbench has rendered generic past-tense strings since the AI agent shipped; nothing UX-critical depends on richer text in this phase.
 
 **`invocationMessage` parity.** Same posture: ship `\`${displayName}\`` for Phase 7. Phase 8's per-tool helpers will replace both at the same site.
 

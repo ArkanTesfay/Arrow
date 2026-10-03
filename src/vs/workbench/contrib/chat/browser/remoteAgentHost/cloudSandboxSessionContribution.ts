@@ -632,7 +632,7 @@ export abstract class CloudSandboxSessionContribution<T extends ICloudSandboxSes
 	 */
 	async connect(options: ICloudSandboxConnectOptions): Promise<string> {
 		if (!this._isEnabled()) {
-			throw new Error('Copilot cloud sandbox connections are not enabled.');
+			throw new Error('AI cloud sandbox connections are not enabled.');
 		}
 		const address = cloudSandboxAddress(options.environmentId);
 		this._ensureProvider({ environmentId: options.environmentId, sessionId: options.sessionId, name: options.name });

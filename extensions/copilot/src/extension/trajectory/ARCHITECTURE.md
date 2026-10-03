@@ -1,6 +1,6 @@
 # Trajectory Logging Architecture
 
-This document explains the architecture of trajectory logging in VS Code Copilot Chat, 
+This document explains the architecture of trajectory logging in Vertex AI Chat, 
 including how it relates to the existing request logging system.
 
 ## Overview
@@ -185,13 +185,13 @@ The adapter determines session IDs with the following priority:
 │                    Session ID Priority                          │
 ├─────────────────────────────────────────────────────────────────┤
 │  1. token.subAgentInvocationId  │  Explicit subagent linking   │
-│  2. token.chatSessionId         │  VS Code chat session ID     │
+│  2. token.chatSessionId         │  Vertex chat session ID     │
 │  3. generateSessionId(label)    │  Fallback: hash + timestamp  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 This enables:
-- **Main trajectories**: Use VS Code's chat session ID for 1:1 mapping
+- **Main trajectories**: Use Vertex's chat session ID for 1:1 mapping
 - **Subagent trajectories**: Use pre-assigned invocation ID for parent↔child linking
 - **Parent references child**: Tool call observation includes `subagent_trajectory_ref`
 
@@ -371,7 +371,7 @@ src/
   "schema_version": "ATIF-v1.5",
   "session_id": "chat-session-abc123",
   "agent": {
-    "name": "GitHub Copilot Chat",
+    "name": "Vertex AI Chat",
     "version": "1.0.0",
     "tool_definitions": [...]
   },

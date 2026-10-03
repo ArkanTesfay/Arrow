@@ -78,10 +78,10 @@ export class LoggingActionsContrib {
 			const nodeFetchConfig = getShadowedConfig<boolean>(this.configurationService, this.experimentationService, ConfigKey.Shared.DebugUseNodeFetchFetcher, ConfigKey.TeamInternal.DebugExpUseNodeFetchFetcher);
 			const ext = vscode.extensions.getExtension(EXTENSION_ID);
 			const product = require(path.join(vscode.env.appRoot, 'product.json'));
-			await appendText(editor, `## GitHub Copilot Chat
+			await appendText(editor, `## Vertex AI Chat
 
 - Extension: ${this.envService.getVersion()} (${this.envService.getBuildType()})
-- VS Code: ${vscode.version} (${product.commit || 'out-of-source'})
+- Vertex: ${vscode.version} (${product.commit || 'out-of-source'})
 - OS: ${os.platform()} ${os.release()} ${os.arch()}${vscode.env.remoteName ? `
 - Remote Name: ${vscode.env.remoteName}` : ''}${vscode.env.remoteName && ext ? `
 - Extension Kind: ${vscode.ExtensionKind[ext.extensionKind]}` : ''}
@@ -283,13 +283,13 @@ User Settings:
 			const activeFetcherName = fetchers.find(entry => entry.fetcher?.getUserAgentLibrary() === activeFetcher)?.name ?? activeFetcher;
 			const notes = [`- Active fetcher: ${activeFetcherName}.`];
 			if (currentFetcher.fetcher.getUserAgentLibrary() !== activeFetcher) {
-				notes.push(`- The active fetcher differs from the configured fetcher (${currentFetcher.name}). This can happen after a recent configuration change or an automatic fallback; reload the window or restart VS Code to apply the configured fetcher.`);
+				notes.push(`- The active fetcher differs from the configured fetcher (${currentFetcher.name}). This can happen after a recent configuration change or an automatic fallback; reload the window or restart Vertex to apply the configured fetcher.`);
 			}
 			const proxySupport = vscode.workspace.getConfiguration().get<string>('http.proxySupport');
 			if (proxySupport !== 'override') {
 				notes.push(`- The \`"http.proxySupport"\` setting is set to \`"${proxySupport}"\`. The recommended default is \`"override"\`, which generally works best.`);
 			}
-			notes.push(`- For corporate networks also see: [Troubleshooting firewall settings for GitHub Copilot](https://docs.github.com/en/copilot/troubleshooting-github-copilot/troubleshooting-firewall-settings-for-github-copilot).`);
+			notes.push(`- For corporate networks also see: [Troubleshooting firewall settings for Vertex AI](https://docs.github.com/en/copilot/troubleshooting-github-copilot/troubleshooting-firewall-settings-for-github-copilot).`);
 			await appendText(editor, `
 ## Notes
 
@@ -769,7 +769,7 @@ class NetworkStatus extends Disposable {
 	constructor(private readonly _fetcherService: IFetcherService, private readonly _configurationService: IConfigurationService, private readonly _experimentationService: IExperimentationService) {
 		super();
 		this._statusBarItem = this._register(vscode.window.createStatusBarItem('copilot.networkStatus', vscode.StatusBarAlignment.Right, -1000));
-		this._statusBarItem.name = 'Copilot Network Status';
+		this._statusBarItem.name = 'AI Network Status';
 		this._register(_configurationService.onDidChangeConfiguration(e => {
 			if (e.affectsConfiguration(ConfigKey.TeamInternal.DebugShowNetworkStatus.fullyQualifiedId)) {
 				this._update();
@@ -807,7 +807,7 @@ class NetworkStatus extends Disposable {
 		}
 		const latest = [...latestById.values()];
 		const errors = latest.filter(e => e.outcome === 'error');
-		this._statusBarItem.text = `Copilot Network: ${errors.length} errors / ${latest.length} total`;
+		this._statusBarItem.text = `AI Network: ${errors.length} errors / ${latest.length} total`;
 
 		const byHostname = new Map<string, { total: number; errors: number; cancellations: number }>();
 		for (const e of latest) {

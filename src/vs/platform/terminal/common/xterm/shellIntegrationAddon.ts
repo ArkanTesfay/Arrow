@@ -205,7 +205,7 @@ const enum VSCodeOscPt {
 	RightPromptEnd = 'I',
 
 	/**
-	 * Set the value of an arbitrary property, only known properties will be handled by VS Code.
+	 * Set the value of an arbitrary property, only known properties will be handled by Vertex.
 	 *
 	 * Format: `OSC 633 ; P ; <Property>=<Value> ST`
 	 *
@@ -220,7 +220,7 @@ const enum VSCodeOscPt {
 	 * - `HasRichCommandDetection` - Reports whether the shell has rich command line detection,
 	 *   meaning that sequences A, B, C, D and E are exactly where they're meant to be. In
 	 *   particular, {@link CommandLine} must happen immediately before {@link CommandExecuted} so
-	 *   VS Code knows the command line when the execution begins.
+	 *   Vertex knows the command line when the execution begins.
 	 *
 	 * WARNING: Any other properties may be changed and are not guaranteed to work in the future.
 	 */
@@ -409,7 +409,7 @@ export class ShellIntegrationAddon extends Disposable implements IShellIntegrati
 		}
 
 		// Pass the sequence along to the capability
-		// It was considered to disable the common protocol in order to not confuse the VS Code
+		// It was considered to disable the common protocol in order to not confuse the Vertex
 		// shell integration if both happen for some reason. This doesn't work for powerlevel10k
 		// when instant prompt is enabled though. If this does end up being a problem we could pass
 		// a type flag through the capability calls

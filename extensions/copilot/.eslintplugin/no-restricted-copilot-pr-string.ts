@@ -9,7 +9,7 @@ export default new class NoBadGDPRComment implements eslint.Rule.RuleModule {
 	readonly meta: eslint.Rule.RuleMetaData = {
 		type: 'problem',
 		docs: {
-			description: 'Ensure "Generate with Copilot" string in GitHubPullRequestProviders is never changed',
+			description: 'Ensure "Generate with AI" string in GitHubPullRequestProviders is never changed',
 			category: 'Best Practices'
 		},
 		schema: [
@@ -26,7 +26,7 @@ export default new class NoBadGDPRComment implements eslint.Rule.RuleModule {
 	create(context: eslint.Rule.RuleContext): eslint.Rule.RuleListener {
 		const options = context.options[0] || {};
 		const className = options.className || 'GitHubPullRequestProviders';
-		const requiredString = options.string || 'Copilot';
+		const requiredString = options.string || 'AI';
 
 		let inTargetClass = false;
 
@@ -46,7 +46,7 @@ export default new class NoBadGDPRComment implements eslint.Rule.RuleModule {
 					if (!node.value.includes(requiredString)) {
 						context.report({
 							node,
-							message: `String literal in ${className} must include the word "Copilot" as the string is referenced in the GitHub Pull Request extension. Talk to alexr00 if you need to change it.`
+							message: `String literal in ${className} must include the word "AI" as the string is referenced in the GitHub Pull Request extension. Talk to alexr00 if you need to change it.`
 						});
 					}
 				}

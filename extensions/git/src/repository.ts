@@ -1500,7 +1500,7 @@ export class Repository implements Disposable {
 		commands.executeCommand('_aiEdits.clearAiContributions', resources);
 	}
 
-	private static readonly AI_CO_AUTHOR_TRAILER = 'Co-authored-by: Copilot <copilot@github.com>';
+	private static readonly AI_CO_AUTHOR_TRAILER = 'Co-authored-by: AI <copilot@github.com>';
 
 	private async appendAICoAuthorTrailer(
 		message: string | undefined,

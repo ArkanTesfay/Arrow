@@ -24,7 +24,7 @@ const CLAUDE_MODEL_SELECTION_PREFIX = '@provider=';
  * url-encoded so provider/model names containing `:` or `/` round-trip cleanly.
  *
  * The same model name under two providers yields two distinct ids, which is
- * what lets "a model via Copilot" and "the same model via Anthropic" appear as
+ * what lets "a model via AI" and "the same model via Anthropic" appear as
  * separately selectable picker rows.
  */
 export function toClaudeModelSelectionId(provider: string, modelId: string): string {

@@ -120,7 +120,7 @@ function calculateAutoModelInfo(endpoint: IChatEndpoint, sessionToken: string, d
 		},
 		requestHeaders: {
 			...(originalModelInfo.requestHeaders || {}),
-			'Copilot-Session-Token': sessionToken
+			'AI-Session-Token': sessionToken
 		}
 	};
 	return newModelInfo;

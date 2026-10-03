@@ -218,7 +218,7 @@ export async function enumerateAgentHostLogSources(
 		if (copilotLogsDir) {
 			sources.push({
 				id: 'cliLog',
-				label: localize('agentHostLogs.cliLog', "Copilot Logs"),
+				label: localize('agentHostLogs.cliLog', "AI Logs"),
 				kind: AgentHostLogSourceKind.CliLog,
 				isRemote: !isLocal,
 				cliLogs: { dir: copilotLogsDir, rawSessionId },
@@ -373,7 +373,7 @@ export async function readCopilotLogsForSession(
 				: await fileService.readFile(log.resource, { limits: { size: MAX_COPILOT_LOG_VIEW_FILE_SIZE } });
 			files.push({ path: log.path, contents: content.value.toString() });
 		} catch (error) {
-			logService.warn(`[AgentHostLogSources] Failed to read Copilot log '${log.resource.path}': ${error instanceof Error ? error.message : String(error)}`);
+			logService.warn(`[AgentHostLogSources] Failed to read AI log '${log.resource.path}': ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 	return files;
@@ -411,7 +411,7 @@ export async function findRelevantCopilotLogs(
 					files.push(candidate);
 				}
 			} catch (error) {
-				logService.warn(`[AgentHostLogSources] Failed to scan Copilot log '${candidate.path}': ${error instanceof Error ? error.message : String(error)}`);
+				logService.warn(`[AgentHostLogSources] Failed to scan AI log '${candidate.path}': ${error instanceof Error ? error.message : String(error)}`);
 			}
 		}
 	}

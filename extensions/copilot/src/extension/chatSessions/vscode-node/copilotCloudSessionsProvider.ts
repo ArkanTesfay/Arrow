@@ -418,7 +418,7 @@ interface UserSelectedRepository {
 
 // TODO: No API from GH yet.
 const HARDCODED_PARTNER_AGENTS: { id: string; name: string; at?: string; assignableActorLogin?: string; codiconId?: string }[] = [
-	{ id: DEFAULT_PARTNER_AGENT_ID, name: 'Copilot', assignableActorLogin: 'copilot-swe-agent', codiconId: 'copilot' },
+	{ id: DEFAULT_PARTNER_AGENT_ID, name: 'AI', assignableActorLogin: 'copilot-swe-agent', codiconId: 'copilot' },
 	{ id: '2246796', name: 'Claude', at: 'claude[agent]', assignableActorLogin: 'anthropic-code-agent', codiconId: 'claude' },
 	{ id: '2248422', name: 'Codex', at: 'codex[agent]', assignableActorLogin: 'openai-code-agent', codiconId: 'openai' }
 ];
@@ -1019,7 +1019,7 @@ export class CopilotCloudSessionsProvider extends Disposable implements vscode.C
 			return vscode.l10n.t('Cloud agent is unable to create pull requests in this repository. Please verify repository rules allow this operation.');
 		}
 		if (result.statusCode === 401) {
-			return vscode.l10n.t('Cloud agent is not authorized to run on this repository. This may be because the Copilot coding agent is disabled for your organization, or your active GitHub account does not have push access to the target repository.');
+			return vscode.l10n.t('Cloud agent is not authorized to run on this repository. This may be because the AI coding agent is disabled for your organization, or your active GitHub account does not have push access to the target repository.');
 		}
 		// Default to 403 'disabled' message
 		const settingsUrl = `https://${host}/settings/copilot/coding_agent`;
@@ -1907,7 +1907,7 @@ export class CopilotCloudSessionsProvider extends Disposable implements vscode.C
 		if (selection.includes(this.AUTHORIZE.toUpperCase())) {
 			stream.progress(vscode.l10n.t('Authorizing'));
 			try {
-				await this._authenticationService.getGitHubSession('permissive', { createIfNone: { detail: l10n.t('Sign in to GitHub with additional permissions to use Copilot cloud sessions.') } });
+				await this._authenticationService.getGitHubSession('permissive', { createIfNone: { detail: l10n.t('Sign in to GitHub with additional permissions to use AI cloud sessions.') } });
 				if (!this._authenticationService.permissiveGitHubSession) {
 					throw new Error('Failed to obtain permissive GitHub session');
 				}
@@ -2362,11 +2362,11 @@ export class CopilotCloudSessionsProvider extends Disposable implements vscode.C
 		/* __GDPR__
 			"copilotcloud.chat.invoke" : {
 				"owner": "joshspicer",
-				"comment": "Event sent when a Copilot Cloud chat request is made.",
+				"comment": "Event sent when a AI Cloud chat request is made.",
 				"chatRequestId": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The unique chat request ID." },
 				"hasChatSessionItem": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Invoked with a chat session item." },
 				"isUntitled": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Indicates if the chat session is untitled." },
-				"partnerAgent": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The partner agent name (e.g., Copilot, Claude, Codex)." },
+				"partnerAgent": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The partner agent name (e.g., AI, Claude, Codex)." },
 				"model": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The selected model ID." }
 			}
 		*/
@@ -2675,7 +2675,7 @@ export class CopilotCloudSessionsProvider extends Disposable implements vscode.C
 		try {
 			return await this._ownership.record(taskId);
 		} catch (e) {
-			this.logService.warn(`Failed to record cloud task ${taskId} as started from VS Code: ${e}`);
+			this.logService.warn(`Failed to record cloud task ${taskId} as started from Vertex: ${e}`);
 			return false;
 		}
 	}

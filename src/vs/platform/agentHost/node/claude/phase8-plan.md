@@ -9,7 +9,7 @@
 
 ## Goal
 
-Expose file reads/writes/edits as `ToolResultFileEditContent` in `SessionToolCallComplete` signals so the workbench can render before/after diffs and support per-file accept/reject undo. Mirrors the behavior of `FileEditTracker` in the Copilot path.
+Expose file reads/writes/edits as `ToolResultFileEditContent` in `SessionToolCallComplete` signals so the workbench can render before/after diffs and support per-file accept/reject undo. Mirrors the behavior of `FileEditTracker` in the AI path.
 
 This phase also promotes `FileEditTracker` (and its session-db URI helpers) out of `node/copilot/` into `node/shared/`, fixing pre-existing cross-folder imports in `agentService.ts` and `sessionDiffAggregator.ts`.
 
@@ -34,14 +34,14 @@ This phase also promotes `FileEditTracker` (and its session-db URI helpers) out 
 
 - Phase 7 DONE: `SessionToolCallComplete` already emitted, `ClaudeMapperState` carries cross-message `tool_use_id` → `turnId`/`toolName` maps, `canUseTool` wired.
 - `FileEditTracker`, `buildSessionDbUri`, `parseSessionDbUri` exist at `node/copilot/fileEditTracker.ts`.
-- `ISessionDataService.openDatabase(sessionUri)` returns a ref-counted `IReference<ISessionDatabase>` (Copilot pattern at `copilotAgentSession.ts:264`).
+- `ISessionDataService.openDatabase(sessionUri)` returns a ref-counted `IReference<ISessionDatabase>` (AI pattern at `copilotAgentSession.ts:264`).
 - `IInstantiationService` is needed to construct `FileEditTracker` with DI-injected `IFileService`, `IDiffComputeService`, `ILogService`.
 
 ## Approach
 
 Wire `ClaudeFileEditObserver` to the existing SDK message stream boundary. On assistant messages with file-edit tool uses (`Write`, `Edit`, `MultiEdit`, `NotebookEdit`), the observer snapshots before-state via `FileEditTracker.trackEditStart(filePath)` and records `tool_use_id → path`. On subsequent user messages with matching `tool_result` entries, it calls `completeEdit` + `takeCompletedEdit` and caches `ToolResultFileEditContent` on `ClaudeMapperState` keyed by `tool_use_id`. `mapUserMessage` remains synchronous and appends whatever staged file-edit content is available for that tool call.
 
-The `FileEditTracker` is moved to `node/shared/` (not copied) because `agentService.ts` and `sessionDiffAggregator.ts` already import it from the Copilot folder — fixing these cross-folder imports is low-risk scope that removes an existing layering smell.
+The `FileEditTracker` is moved to `node/shared/` (not copied) because `agentService.ts` and `sessionDiffAggregator.ts` already import it from the AI folder — fixing these cross-folder imports is low-risk scope that removes an existing layering smell.
 
 Per-file undo is DB-backed: the workbench reads before/after content via `resourceRead` on `session-db:` URIs, then writes the before-content back to disk to reject an edit. The SDK's `rewindFiles` is not used in the production path (wrong granularity for selective per-file undo).
 
@@ -404,7 +404,7 @@ get _currentTurnId(): string {
 
 | Action | File | Purpose |
 |--------|------|---------|
-| **Move** | `node/copilot/fileEditTracker.ts` → `node/shared/fileEditTracker.ts` | Promote shared utility out of Copilot folder |
+| **Move** | `node/copilot/fileEditTracker.ts` → `node/shared/fileEditTracker.ts` | Promote shared utility out of AI folder |
 | **Modify** | `node/agentService.ts` | Update import from `./copilot/fileEditTracker.js` → `./shared/fileEditTracker.js` |
 | **Modify** | `node/sessionDiffAggregator.ts` | Update import same as above |
 | **Modify** | `node/copilot/copilotAgentSession.ts` | Update import same as above |
@@ -427,7 +427,7 @@ Resolved during council synthesis + grill pass. All five decisions are binding f
 
 - **D1 — FileEditTracker location: move to `node/shared/`** — `agentService.ts` and `sessionDiffAggregator.ts` already import from `node/copilot/fileEditTracker.ts`; these are non-Copilot files making a cross-folder import (confirmed via `grep`). Moving to `node/shared/` is four import-path updates and fixes the existing layering smell. NOT copied into `node/claude/` (would duplicate 200 lines of identical logic) and NOT left in `node/copilot/` (cross-agent import would propagate the smell). GPT initially disagreed (calling it import churn), but this import already exists outside the copilot path — moving is net-negative churn.
 
-- **D2 — Undo mechanism: DB snapshots only, not `rewindFiles`** — `Query.rewindFiles(userMessageId)` rewinds ALL tracked files at once. Selective per-file undo requires either `rewindFiles` + re-apply accepted files, or direct `IFileService.write(beforeContent)`. The DB-backed snapshot path (already implemented in `FileEditTracker`) provides before/after content as `session-db:` URIs; the workbench reads them via `resourceRead` and writes the before-content to disk on reject. This is the same mechanism the Copilot path uses. `rewindFiles` is deferred to a follow-up if the team wants bulk-rewind support.
+- **D2 — Undo mechanism: DB snapshots only, not `rewindFiles`** — `Query.rewindFiles(userMessageId)` rewinds ALL tracked files at once. Selective per-file undo requires either `rewindFiles` + re-apply accepted files, or direct `IFileService.write(beforeContent)`. The DB-backed snapshot path (already implemented in `FileEditTracker`) provides before/after content as `session-db:` URIs; the workbench reads them via `resourceRead` and writes the before-content to disk on reject. This is the same mechanism the AI path uses. `rewindFiles` is deferred to a follow-up if the team wants bulk-rewind support.
 
 - **D3 — `enableFileCheckpointing: true` in Options** — Set it now as forward-compatible prep. It doesn't affect the DB-backed undo path. A unit test validates the SDK's `rewindFiles` API shape doesn't throw (`dryRun: true`) so future phases can adopt it without guessing. If enabling it causes test failures (subprocess overhead, unexpected file mutations), flip to `false` and document.
 
@@ -506,7 +506,7 @@ None at plan-acceptance time. All five council candidates from the planning pass
 - Related context: `./CONTEXT.md`
 - Prior plan: `./phase7-plan.md` (tool calls + permission)
 - Production reference (not using `enableFileCheckpointing`): `extensions/copilot/src/extension/chatSessions/claude/node/claudeCodeAgent.ts`
-- Copilot tracker (reference impl): `src/vs/platform/agentHost/node/copilot/fileEditTracker.ts`
+- AI tracker (reference impl): `src/vs/platform/agentHost/node/copilot/fileEditTracker.ts`
 - SDK type definitions: `node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts` lines 726, 733, 1262, 1299, 1934, 1965, 2153, 2247
 - E2E skills: `launch` (personal), `code-oss-logs` (repo)
 

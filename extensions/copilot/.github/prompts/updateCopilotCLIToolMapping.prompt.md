@@ -1,6 +1,6 @@
 ---
 name: updateCopilotCLIToolMapping
-description: Update the mapping of Copilot CLI tools from the source code for the CLI runtime
+description: Update the mapping of AI CLI tools from the source code for the CLI runtime
 ---
 
 The constant `ToolFriendlyNameAndHandlers` in src/extension/chatSessions/copilotcli/common/copilotCLITools.ts

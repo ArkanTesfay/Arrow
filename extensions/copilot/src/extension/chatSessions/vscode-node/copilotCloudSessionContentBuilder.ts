@@ -84,7 +84,7 @@ export function extractTaskErrorDetail(events: readonly AgentTaskSessionEvent[])
 }
 
 /**
- * The notice shown for a terminally-stopped task: `Copilot stopped: <reason>`. The reason is
+ * The notice shown for a terminally-stopped task: `AI stopped: <reason>`. The reason is
  * the concrete error detail when one is available (`session.error`/`session.shutdown`), otherwise a
  * word derived from the terminal task state — "cancelled" for a user/agent cancellation and "timed
  * out" for a timeout, neither of which emits an error event. Failed tasks with no detail fall back
@@ -92,7 +92,7 @@ export function extractTaskErrorDetail(events: readonly AgentTaskSessionEvent[])
  */
 export function formatTaskStoppedMessage(state: AgentTaskState, detail: string | undefined): string {
 	const reason = detail ?? defaultStopReasonForState(state);
-	return vscode.l10n.t('Copilot stopped: {0}', reason);
+	return vscode.l10n.t('AI stopped: {0}', reason);
 }
 
 function defaultStopReasonForState(state: AgentTaskState): string {
@@ -190,7 +190,7 @@ export class ChatSessionContentBuilder {
 				}
 
 				// Only the latest turn can still be in-progress. When the task terminally stopped,
-				// surface a "Copilot stopped: <reason>" notice instead of a stuck progress spinner —
+				// surface a "AI stopped: <reason>" notice instead of a stuck progress spinner —
 				// the latest session state can still read as active (e.g. "Failed to launch agent"
 				// or a cancelled turn). Detail is extracted from the full event list because a
 				// bootstrap `session.error` is suppressed from the rendered turns above; a cancelled

@@ -24,7 +24,7 @@ export class CopilotConnectorsRequestChannel implements IServerChannel {
 
 	call<T>(context: unknown, command: string, args: unknown, token: CancellationToken = CancellationToken.None): Promise<T> {
 		if (command !== 'request' || !Array.isArray(args) || args.length !== 2 || !isRequest(args[0]) || typeof args[1] !== 'string' || !args[1]) {
-			throw new Error('Invalid Copilot connectors request');
+			throw new Error('Invalid AI connectors request');
 		}
 		return this.service.value.request(args[0], args[1], token) as Promise<T>;
 	}

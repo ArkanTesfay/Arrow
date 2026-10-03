@@ -197,7 +197,7 @@ export class PromptFileContextContribution extends Disposable {
 							``,
 							'```md',
 							`---`,
-							`description: This custom agent researches and plans new features for VS Code extensions.`,
+							`description: This custom agent researches and plans new features for Vertex extensions.`,
 							`model: GPT-4.1`,
 							`tools: [${toolNamesList}]`,
 							`handoffs:`,
@@ -228,15 +228,15 @@ export class PromptFileContextContribution extends Disposable {
 		if (copilotExtension === undefined) {
 			return undefined;
 		}
-		this.logService.info('Copilot extension found');
+		this.logService.info('AI extension found');
 		try {
 			const api = await copilotExtension.activate();
 			return api.getContextProviderAPI('v1');
 		} catch (error) {
 			if (error instanceof Error) {
-				this.logService.error('Error activating Copilot extension:', error.message);
+				this.logService.error('Error activating AI extension:', error.message);
 			} else {
-				this.logService.error('Error activating Copilot extension: Unknown error.');
+				this.logService.error('Error activating AI extension: Unknown error.');
 			}
 			return undefined;
 		}

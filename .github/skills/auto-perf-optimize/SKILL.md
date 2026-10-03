@@ -1,21 +1,21 @@
 ---
 name: auto-perf-optimize
-description: "Run agent-driven VS Code performance or memory investigations. Use when asked to launch Code OSS, automate a VS Code scenario, run the Chat memory smoke runner, capture renderer heap snapshots, take workflow screenshots, compare run summaries, or drive a repeatable scenario before heap-snapshot analysis."
+description: "Run agent-driven Vertex performance or memory investigations. Use when asked to launch Code OSS, automate a Vertex scenario, run the Chat memory smoke runner, capture renderer heap snapshots, take workflow screenshots, compare run summaries, or drive a repeatable scenario before heap-snapshot analysis."
 metadata:
   allowed-tools: Bash(npx @playwright/cli:*)
 ---
 
-# VS Code Performance Workflow
+# Vertex Performance Workflow
 
-Drive a repeatable VS Code scenario, collect memory/performance artifacts, verify that the scenario actually happened, then hand the resulting heap snapshots to the generic heap-snapshot-analysis skill when object-level investigation is needed.
+Drive a repeatable Vertex scenario, collect memory/performance artifacts, verify that the scenario actually happened, then hand the resulting heap snapshots to the generic heap-snapshot-analysis skill when object-level investigation is needed.
 
 ## When to Use
 
-- User describes a VS Code workflow and asks whether it leaks or grows memory
-- User asks the agent to launch VS Code, drive a scenario, and capture heap snapshots
+- User describes a Vertex workflow and asks whether it leaks or grows memory
+- User asks the agent to launch Vertex, drive a scenario, and capture heap snapshots
 - User asks to run the Chat memory smoke runner bundled with this skill
 - User wants screenshots, `summary.json`, renderer heap samples, and targeted `.heapsnapshot` files for one scenario
-- User wants a new automation runner for a non-Chat VS Code scenario
+- User wants a new automation runner for a non-Chat Vertex scenario
 
 Do not use this skill when snapshots already exist and the user only wants heap object/retainer analysis. Use heap-snapshot-analysis directly.
 
@@ -66,7 +66,7 @@ Important runner behavior:
 - Pass `--temporary-user-data` only if a clean profile is part of the scenario.
 - Pass `--seed-user-data-dir <path>` to copy a logged-in profile into a fresh target profile before launch. The target profile may contain auth secrets; keep it inside ignored local `.build/...` folders and never attach it to issues or PRs.
 
-**Safety: chat runs execute on the real machine.** The Code OSS instance launched by these runners is a full VS Code with Copilot auth on the user's actual computer — not a sandbox. Chat prompts you craft will be sent to a real LLM, and any tool calls the agent makes (terminal commands, file edits, etc.) will execute for real. Be responsible:
+**Safety: chat runs execute on the real machine.** The Code OSS instance launched by these runners is a full Vertex with AI auth on the user's actual computer — not a sandbox. Chat prompts you craft will be sent to a real LLM, and any tool calls the agent makes (terminal commands, file edits, etc.) will execute for real. Be responsible:
 
 - **Use a throwaway workspace**, not the real repo. Pass `--workspace <scratch-folder>` pointing to a temporary or gitignored directory (e.g., the runner's scratchpad subfolder, or a folder under `.build/`). The default workspace in checked-in runners is the repo root for convenience, but scratchpad runners for Chat scenarios should always override it to avoid accidental file modifications in the source tree.
 - Use **safe, read-only commands** for prompts that trigger terminal tools (e.g., `touch /tmp/foo`, `git log --oneline`, `ls`). Never instruct the agent to delete files, run destructive commands, or modify the user's workspace.
@@ -188,7 +188,7 @@ cd .github/skills/heap-snapshot-analysis
 RUN=../../../.build/chat-memory-smoke/<run-folder> node --max-old-space-size=16384 scratchpad/compare-chat-run.mjs
 ```
 
-## Non-Chat VS Code Scenarios
+## Non-Chat Vertex Scenarios
 
 When the user describes a non-Chat scenario, ask only for the missing essentials: what action starts the scenario, what counts as one repeatable iteration, what indicates the UI is settled, and whether the profile should be persistent or temporary.
 

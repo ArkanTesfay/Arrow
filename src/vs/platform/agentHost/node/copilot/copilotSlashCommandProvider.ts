@@ -38,7 +38,7 @@ export class CopilotSlashCommandProvider {
 			const catalog = await this._getRuntimeSlashCommandCatalog(maxWaitMs === undefined ? undefined : Math.max(0, maxWaitMs));
 			commands = catalog.commands;
 		} catch (err) {
-			this._logService.warn(`[Copilot] rpc.commands.list failed`, err);
+			this._logService.warn(`[AI] rpc.commands.list failed`, err);
 		}
 		return [copilotSandboxPolicyCommand, ...commands.filter(command => this._normalizeSlashCommandKey(command.name) !== copilotSandboxPolicyCommand.name)];
 	}

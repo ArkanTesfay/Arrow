@@ -1,5 +1,5 @@
 ---
-description: VS Code best practices — reusing common UI primitives and patterns. Reference when writing or reviewing code.
+description: Vertex best practices — reusing common UI primitives and patterns. Reference when writing or reviewing code.
 applyTo: src/vs/**
 ---
 

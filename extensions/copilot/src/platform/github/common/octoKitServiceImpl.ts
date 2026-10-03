@@ -299,7 +299,7 @@ export class OctoKitService extends BaseOctoKitService implements IOctoKitServic
 				}
 			}, { type: RequestType.CCAModelsList });
 			if (!response.ok) {
-				this._logService.trace(`Failed to fetch Copilot agent models: ${response.statusText}`);
+				this._logService.trace(`Failed to fetch AI agent models: ${response.statusText}`);
 				return [];
 			}
 			const data = await response.json() as { data?: CCAModel[] };

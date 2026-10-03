@@ -24,7 +24,7 @@ const MATERIALIZATION_POLL_INTERVAL_MS = 100;
  *
  * @github/copilot bundles the node-pty code and it is no longer possible to shim the package
  * via Node module resolution from a marketplace install location (which lives outside VS
- * Code's app tree). For built-in installs `require('node-pty')` walks up into VS Code's
+ * Code's app tree). For built-in installs `require('node-pty')` walks up into Vertex's
  * own `node_modules` and this shim is a no-op (the `shims.txt` placeholder skips it). For
  * marketplace installs we copy VS Code's pre-built `pty.node` into the SDK's expected
  * relative `./prebuilds/{platform}-{arch}` lookup path so the bundled fallback in

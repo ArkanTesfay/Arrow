@@ -1,14 +1,14 @@
 # Monitoring Agent Usage with OpenTelemetry
 
-Local Copilot Chat can export **traces**, **metrics**, and **events** via [OpenTelemetry](https://opentelemetry.io/) (OTel) — giving you real-time visibility into extension-host agent interactions, LLM calls, tool executions, and token usage.
+Local AI Chat can export **traces**, **metrics**, and **events** via [OpenTelemetry](https://opentelemetry.io/) (OTel) — giving you real-time visibility into extension-host agent interactions, LLM calls, tool executions, and token usage.
 
-This document covers only the local Copilot Chat pipeline configured by `github.copilot.chat.otel.*`. Agent Host sessions for Copilot, Claude, and Codex run in a separate process, use `chat.agentHost.otel.*`, and are documented in [`src/vs/platform/agentHost/OTEL.md`](../../../../src/vs/platform/agentHost/OTEL.md).
+This document covers only the local AI Chat pipeline configured by `github.copilot.chat.otel.*`. Agent Host sessions for AI, Claude, and Codex run in a separate process, use `chat.agentHost.otel.*`, and are documented in [`src/vs/platform/agentHost/OTEL.md`](../../../../src/vs/platform/agentHost/OTEL.md).
 
 Standard `gen_ai.*` signals follow the [OTel GenAI Semantic Conventions](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/gen-ai/). Extension-specific signals use the `github.copilot.*` and legacy `copilot_chat.*` namespaces. All signals can be exported to OTel-compatible backends such as Jaeger, Grafana, Azure Monitor, Datadog, Honeycomb, and more.
 
 ## User-perceived first progress
 
-The shared VS Code UI timer also emits the content-free metadata span
+The shared Vertex UI timer also emits the content-free metadata span
 `vscode.chat.user_perceived_time_to_first_progress` through this extension's
 OTel pipeline. Its `vscode.chat.user_interaction.timeToFirstProgress` attribute
 is UI submission to meaningful visible text, reasoning, or tool progress plus
@@ -16,7 +16,7 @@ two animation frames, in milliseconds. This is a rendering approximation,
 not model TTFT or exact screen paint. Read the attribute, not the export span's
 duration.
 
-OTel must be enabled, but content capture and VS Code product telemetry need not
+OTel must be enabled, but content capture and Vertex product telemetry need not
 be enabled. The internal `github.copilot.chat.otel.recordUserInteraction` command
 validates and allowlists the shared renderer record. Normal OTel processors
 export it to the configured destination and SQLite store. The command waits for
@@ -33,12 +33,12 @@ its own exporter rather than this command.
 
 ## Quick Start
 
-The fastest way to see Copilot Chat traces locally — no cloud account required. This guide uses the [Aspire Dashboard](https://aspire.dev/dashboard/standalone/), a lightweight container image from Microsoft that provides a trace viewer with a built-in OTLP endpoint. It can be used standalone, without the rest of .NET Aspire.
+The fastest way to see AI Chat traces locally — no cloud account required. This guide uses the [Aspire Dashboard](https://aspire.dev/dashboard/standalone/), a lightweight container image from Vertex that provides a trace viewer with a built-in OTLP endpoint. It can be used standalone, without the rest of .NET Aspire.
 
 ### Prerequisites
 
 - **Docker** installed
-- **VS Code** with the GitHub Copilot Chat extension
+- **Vertex** with the Vertex AI Chat extension
 
 ### 1. Start the Aspire Dashboard
 
@@ -52,7 +52,7 @@ docker run --rm -d \
 
 This exposes the dashboard UI on port `18888` and an OTLP (HTTP) endpoint on port `4318`.
 
-### 2. Configure VS Code
+### 2. Configure Vertex
 
 Open **Settings** (`Ctrl+,`) and add:
 
@@ -63,11 +63,11 @@ Open **Settings** (`Ctrl+,`) and add:
 }
 ```
 
-> **Note:** You can also use environment variables instead of VS Code settings (see [Configuration](#configuration)). Environment variables can still override some legacy policy-backed settings; identity capture and managed resource attributes enforce policy precedence. See [governed identity capture](#governed-identity-capture) and the [activation limitations](#activation).
+> **Note:** You can also use environment variables instead of Vertex settings (see [Configuration](#configuration)). Environment variables can still override some legacy policy-backed settings; identity capture and managed resource attributes enforce policy precedence. See [governed identity capture](#governed-identity-capture) and the [activation limitations](#activation).
 
 ### 3. Generate Telemetry
 
-Open Copilot Chat and send any message — for example, ask a question in Agent mode.
+Open AI Chat and send any message — for example, ask a question in Agent mode.
 
 ### 4. View Traces
 
@@ -87,7 +87,7 @@ docker stop aspire-dashboard
 
 ## Configuration
 
-### VS Code Settings
+### Vertex Settings
 
 Open **Settings** (`Ctrl+,`) and search for `copilot otel`:
 
@@ -110,10 +110,10 @@ Open **Settings** (`Ctrl+,`) and search for `copilot otel`:
 
 Except for governed identity and managed resource attributes, environment variables retain
 their existing precedence. When enterprise OTel configuration is
-recognized through the application-scoped policy defaults, the entire Copilot OTel settings
+recognized through the application-scoped policy defaults, the entire AI OTel settings
 block comes from those policy values and schema defaults. Personal `settings.json` values are
 not used to fill omitted fields: headers and resource attributes default to empty maps, not
-the user's maps. Other VS Code settings are unaffected.
+the user's maps. Other Vertex settings are unaffected.
 
 An identity-only managed block (including `telemetry.capture.identity: false`) is
 recognizable enterprise OTel configuration. It therefore also replaces personally
@@ -193,14 +193,14 @@ be recalled, and an export already handed to its transport cannot be cancelled.
 The nullable default preserves omission versus explicit managed `false` through
 the editor's configuration API; it does not enable capture.
 
-This applies to the legacy Local extension-host harness. The native Copilot runtime
+This applies to the legacy Local extension-host harness. The native AI runtime
 owns its own managed identity enforcement. The message-content environment bridge
 does not enable identity or forward account/OS/host values.
 
 ### Activation
 
-When late enterprise OTel settings turn on external export after Copilot's telemetry service
-started without it, Copilot can restart the extension hosts for that window to recover. It shows
+When late enterprise OTel settings turn on external export after AI's telemetry service
+started without it, AI can restart the extension hosts for that window to recover. It shows
 a progress notification before requesting the restart; that notice clears automatically when
 the host restarts or the attempt ends. Successful recovery is logged without another toast.
 Restarting also interrupts other extensions in the window. If the restart is unavailable,
@@ -265,17 +265,17 @@ OTel is **off by default** with zero overhead. It activates when:
 
 > ### Attribute namespaces & dual-emit policy
 >
-> Copilot Chat emits OTel attributes under three namespaces:
+> AI Chat emits OTel attributes under three namespaces:
 >
 > - **`gen_ai.*`** — [OTel GenAI Semantic Conventions](https://github.com/open-telemetry/semantic-conventions/blob/main/docs/gen-ai/). Use these whenever a standard key exists.
-> - **`github.copilot.*`** — Canonical Copilot-specific namespace. Prefer this for new dashboards and alerts.
-> - **`copilot_chat.*`** — Original VS Code extension namespace. Several keys (notably `copilot_chat.repo.*` and `gen_ai.usage.reasoning_tokens`) are now **dual-emitted alongside the `github.copilot.*` equivalents**. Tables below mark these rows as **Legacy** with a pointer to the preferred key.
+> - **`github.copilot.*`** — Canonical AI-specific namespace. Prefer this for new dashboards and alerts.
+> - **`copilot_chat.*`** — Original Vertex extension namespace. Several keys (notably `copilot_chat.repo.*` and `gen_ai.usage.reasoning_tokens`) are now **dual-emitted alongside the `github.copilot.*` equivalents**. Tables below mark these rows as **Legacy** with a pointer to the preferred key.
 >
 > Legacy keys continue to emit indefinitely so existing collectors, dashboards, and downstream consumers (Agent Debug Log, Chronicle, SQLite span store) keep working without changes. There is no sunset date.
 
 ### Traces
 
-Copilot Chat emits a hierarchical span tree for each agent interaction:
+AI Chat emits a hierarchical span tree for each agent interaction:
 
 ```
 invoke_agent copilot                           [~15s]
@@ -325,7 +325,7 @@ Inline chat uses the same invocation shape, with `invoke_agent Inline Chat` as t
 | `gen_ai.request.model` | Required | `gpt-4o` |
 | `gen_ai.conversation.id` | Session correlation (when a session is available) | `a1b2c3d4-...` |
 | `copilot_chat.session_id` | Session correlation | `a1b2c3d4-...` |
-| `copilot_chat.chat_session_id` | Session correlation | VS Code chat session ID |
+| `copilot_chat.chat_session_id` | Session correlation | Vertex chat session ID |
 | `gen_ai.request.max_tokens` | Always | `2048` |
 | `gen_ai.request.temperature` | When set | `0.1` |
 | `gen_ai.request.top_p` | When set | `0.95` |
@@ -356,7 +356,7 @@ Inline chat uses the same invocation shape, with `invoke_agent Inline Chat` as t
 | `gen_ai.tool.name` | Required | `readFile` |
 | `gen_ai.conversation.id` | Session correlation | `a1b2c3d4-...` |
 | `copilot_chat.session_id` | Session correlation | `a1b2c3d4-...` |
-| `copilot_chat.chat_session_id` | Session correlation | VS Code chat session ID |
+| `copilot_chat.chat_session_id` | Session correlation | Vertex chat session ID |
 | `gen_ai.tool.type` | Required | `function` or `extension` (MCP tools) |
 | `gen_ai.tool.call.id` | Recommended | `call_abc123` |
 | `gen_ai.tool.description` | When available | `Read the contents of a file` |
@@ -454,7 +454,7 @@ Inline chat uses the same invocation shape, with `invoke_agent Inline Chat` as t
 
 #### Agent Activity & Outcome Metrics
 
-These metrics track activity and outcomes reported through the Copilot Chat extension's OTel service.
+These metrics track activity and outcomes reported through the AI Chat extension's OTel service.
 
 | Metric | Type | Unit | Description |
 |---|---|---|---|
@@ -639,7 +639,7 @@ All signals carry:
 |---|---|
 | `service.name` | `copilot-chat` (override via the `github.copilot.chat.otel.serviceName` setting, `OTEL_SERVICE_NAME`, or enterprise policy) |
 | `service.version` | Extension version |
-| `session.id` | Unique per VS Code window |
+| `session.id` | Unique per Vertex window |
 
 Add custom resource attributes with `OTEL_RESOURCE_ATTRIBUTES`:
 
@@ -667,7 +667,7 @@ The `captureContent` setting controls content on individual LLM `chat` spans and
 
 Foreground `invoke_agent`, `execute_tool`, and `execute_hook` spans still retain content needed by the Agent Debug Log and the separate local SQLite exporter, regardless of this setting. Primary file export is not the SQLite debug exporter. Identity filtering applies to both paths independently.
 
-To include these content attributes in primary exports and capture full LLM request and response content, add to your VS Code settings:
+To include these content attributes in primary exports and capture full LLM request and response content, add to your Vertex settings:
 
 ```json
 {
@@ -740,7 +740,7 @@ The exporter preserves attributes already captured by instrumentation; see [Cont
 
 ## Subagent Trace Propagation
 
-When an agent invokes a subagent (e.g., via the `runSubagent` tool), Copilot Chat automatically propagates the trace context so the subagent's `invoke_agent` span is parented to the calling agent's `execute_tool` span. This produces a connected trace tree:
+When an agent invokes a subagent (e.g., via the `runSubagent` tool), AI Chat automatically propagates the trace context so the subagent's `invoke_agent` span is parented to the calling agent's `execute_tool` span. This produces a connected trace tree:
 
 ```
 invoke_agent copilot                           [~30s]
@@ -779,7 +779,7 @@ First successful span export is logged to the console (`[OTel] First span batch 
 
 ## Backend Setup Guides
 
-Copilot Chat's OTel data works with any OTLP-compatible backend. This section provides step-by-step setup guides for recommended backends.
+AI Chat's OTel data works with any OTLP-compatible backend. This section provides step-by-step setup guides for recommended backends.
 
 ### Aspire Dashboard
 
@@ -813,7 +813,7 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:4328/v1/traces \
   -X POST -H "Content-Type: application/json" -d '{"resourceSpans":[]}'
 ```
 
-**3. Configure VS Code:**
+**3. Configure Vertex:**
 
 Open **Settings** (`Ctrl+,`) and add:
 
@@ -835,7 +835,7 @@ Optionally, to capture full prompt/response content:
 
 > **Warning:** Content capture includes prompts, code, and file contents. Only enable in trusted environments.
 
-**4. Generate telemetry** — Open Copilot Chat and send any message (e.g., use Agent mode).
+**4. Generate telemetry** — Open AI Chat and send any message (e.g., use Agent mode).
 
 **5. Verify data:**
 
@@ -900,7 +900,7 @@ service:
 docker run -d --name jaeger -p 16686:16686 -p 4318:4318 jaegertracing/jaeger:latest
 ```
 
-**2. Configure VS Code:**
+**2. Configure Vertex:**
 
 ```json
 {
@@ -941,7 +941,7 @@ Replace `<public-key>` and `<secret-key>` with your Langfuse API keys from **Set
 
 ### Other Backends
 
-Any OTLP-compatible backend works with Copilot Chat's OTel output. Some options:
+Any OTLP-compatible backend works with AI Chat's OTel output. Some options:
 
 | Backend | Description |
 |---|---|

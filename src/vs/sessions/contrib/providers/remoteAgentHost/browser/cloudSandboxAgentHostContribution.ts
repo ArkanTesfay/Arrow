@@ -49,7 +49,7 @@ const CLOUD_SANDBOX_CONNECTION_LABELS: IAgentHostConnectionLabels = {
 	reconnecting: localize('cloudSandbox.reconnecting', "Reconnecting..."),
 	reconnectingIn: seconds => localize('cloudSandbox.reconnectingIn', "Reconnecting in {0}s", seconds),
 	incompatibleTitle: localize('cloudSandbox.incompatibleTitle', "Cannot Connect to the Environment"),
-	incompatible: localize('cloudSandbox.incompatible', "This environment is incompatible with this version of Visual Studio Code."),
+	incompatible: localize('cloudSandbox.incompatible', "This environment is incompatible with this version of Vertex."),
 };
 
 export interface ICloudSandboxProvisionedSession extends ICloudSandboxCreatedSession {
@@ -124,7 +124,7 @@ export class CloudSandboxAgentHostContribution extends CloudSandboxSessionContri
 
 	async provisionSession(request: ICloudSandboxCreateSessionRequest, token: CancellationToken): Promise<ICloudSandboxProvisionedSession> {
 		if (!this._isEnabled()) {
-			throw new Error('Copilot cloud sandbox connections are not enabled.');
+			throw new Error('AI cloud sandbox connections are not enabled.');
 		}
 		const accountKey = await this._apiService.getAccountKey();
 		if (!this._isEnabled() || token.isCancellationRequested) {

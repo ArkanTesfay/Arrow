@@ -144,7 +144,7 @@ export class OpenAIEndpoint extends ChatEndpoint {
 	/**
 	 * BYOK endpoints supply their own credential (`api-key` / `Authorization`)
 	 * via {@link getExtraHeaders}, so the chat fetcher must not fall back to the
-	 * CAPI Copilot bearer token nor raise a missing-key error for these requests.
+	 * CAPI AI bearer token nor raise a missing-key error for these requests.
 	 */
 	public readonly ownsAuthorization = true;
 

@@ -561,7 +561,7 @@ export class LanguageModelAccess extends Disposable implements IExtensionContrib
 	): Promise<void> {
 		const isCoreOnlyModel = dictationCleanupAliases.has(model.id) || (model.id === DICTATION_CLEANUP_LUNA_MODEL_ID && this._utilityAliasEndpoints.has(model.id));
 		if (isCoreOnlyModel && options.requestInitiator !== 'core') {
-			throw new Error(`Model ${model.id} is only available to VS Code core.`);
+			throw new Error(`Model ${model.id} is only available to Vertex core.`);
 		}
 		let endpoint = await this._getEndpointForModel(model, buildAutoRoutingContext(messages, options));
 		if (!endpoint) {
@@ -635,7 +635,7 @@ export class LanguageModelAccess extends Disposable implements IExtensionContrib
 
 	private async _getToken(): Promise<CopilotToken | undefined> {
 		if (!this._authenticationService.hasCopilotTokenSource) {
-			this._logService.warn('[LanguageModelAccess] LanguageModel/Embeddings are not available without a Copilot token source');
+			this._logService.warn('[LanguageModelAccess] LanguageModel/Embeddings are not available without a AI token source');
 			return undefined;
 		}
 

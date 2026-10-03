@@ -2,7 +2,7 @@
 
 ## Overview
 
-`IAuthenticationService` manages GitHub and Copilot authentication. It provides GitHub sessions (OAuth tokens) and Copilot tokens (CAPI tokens).
+`IAuthenticationService` manages GitHub and AI authentication. It provides GitHub sessions (OAuth tokens) and AI tokens (CAPI tokens).
 
 ## Choosing a Session Kind
 
@@ -58,7 +58,7 @@ For non-blocking checks (no network, no UI), use the cached properties:
 
 - `authService.anyGitHubSession` — cached `'any'` session or `undefined`
 - `authService.permissiveGitHubSession` — cached `'permissive'` session or `undefined`
-- `authService.copilotToken` — cached Copilot token (without the raw token string) or `undefined`
+- `authService.copilotToken` — cached AI token (without the raw token string) or `undefined`
 
 React to `onDidAuthenticationChange` for identity changes (sign in/out, account switch).
 React to `onDidCopilotTokenChange` for token-level updates (quota, feature flags, routine ~20-minute refreshes).
@@ -72,7 +72,7 @@ Both built-in GitHub providers supply the proposed
 The generic API field is optional, but these built-in sessions require it.
 Missing provenance is an incompatible session, not permission to infer a host.
 The extension manifest enables `authIssuers`. A branded product that overrides
-Copilot's proposal allowlist must append it to the complete existing list;
+AI's proposal allowlist must append it to the complete existing list;
 an `authIssuers`-only override would disable the other required proposals.
 Use `resolveGitHubSessionUri` to validate and derive the deployment base; never
 parse an account's display label or infer its host from its ID. The selected
@@ -80,7 +80,7 @@ provider still determines public versus enterprise routing: a public session
 having an issuer does not make it enterprise. Callers requesting a specific-account
 scope upgrade must pass that account and issuer explicitly. The authentication
 service does not infer those hints from its cache.
-Only the authentication provider owns enterprise host configuration. Copilot
+Only the authentication provider owns enterprise host configuration. AI
 neither reads nor watches those settings: even a disagreeing setting cannot
 retarget a returned credential. There is no configured-host cross-check, legacy
 fallback, or inferred-session map. An unresolved enterprise session must not use
@@ -97,10 +97,10 @@ routing without reading provider settings or depending on the authentication ser
 The store does not retain GitHub sessions. Token bootstrap checks that its session
 matches the published URI before making requests.
 Token responses and explicit debug overrides remain authoritative for the final
-Copilot API URL. Enterprise MCP definitions include the issuer and reject stale
+AI API URL. Enterprise MCP definitions include the issuer and reject stale
 definitions before and after acquiring permissions, without adding account-rebinding policy.
 
-## Copilot Tokens
+## AI Tokens
 
 Most callers just need a valid CAPI token. `getCopilotToken()` handles refresh automatically:
 
@@ -118,8 +118,8 @@ When `authService.isMinimalMode` is `true`, the service will not fetch permissiv
 
 There are three states a user can be in:
 
-1. **Not signed in** — No `'any'` session exists. The user has no GitHub session at all. An interactive `createIfNone` call will show VS Code's built-in sign-in dialog.
+1. **Not signed in** — No `'any'` session exists. The user has no GitHub session at all. An interactive `createIfNone` call will show Vertex's built-in sign-in dialog.
 
-2. **Signed in from VS Code** — The user explicitly signed in through VS Code (e.g., via Accounts menu or a `createIfNone` prompt). In this case, VS Code automatically acquires the permissive token since it requests the broader scopes upfront. Both `'any'` and `'permissive'` sessions are available.
+2. **Signed in from Vertex** — The user explicitly signed in through Vertex (e.g., via Accounts menu or a `createIfNone` prompt). In this case, Vertex automatically acquires the permissive token since it requests the broader scopes upfront. Both `'any'` and `'permissive'` sessions are available.
 
-3. **Signed in passively** (e.g., via Settings Sync) — The user is signed into GitHub through a passive mechanism that only grants minimal scopes. Copilot Chat works with the `'any'` token, but no `'permissive'` token is available. A `'permissive'` call with `createIfNone` will prompt the user to grant additional permissions.
+3. **Signed in passively** (e.g., via Settings Sync) — The user is signed into GitHub through a passive mechanism that only grants minimal scopes. AI Chat works with the `'any'` token, but no `'permissive'` token is available. A `'permissive'` call with `createIfNone` will prompt the user to grant additional permissions.

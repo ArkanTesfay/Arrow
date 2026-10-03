@@ -359,8 +359,8 @@ export async function fetchPwshHistory(accessor: ServicesAccessor): Promise<IShe
 	let sourceLabel: string;
 	if (isFileWindows) {
 		folderPrefix = env['APPDATA'];
-		filePath = 'Microsoft\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt';
-		sourceLabel = `$APPDATA\\Microsoft\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt`;
+		filePath = 'Vertex\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt';
+		sourceLabel = `$APPDATA\\Vertex\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt`;
 	} else {
 		folderPrefix = remoteEnvironment?.userHome?.fsPath ?? env['HOME'];
 		filePath = '.local/share/powershell/PSReadline/ConsoleHost_history.txt';

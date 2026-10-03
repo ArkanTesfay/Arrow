@@ -112,10 +112,10 @@ export class BYOKContrib extends Disposable implements IExtensionContribution {
 		// Use this for testing with changes from a local file. Don't check in
 		// const data = JSON.parse((await this._fileSystemService.readFile(URI.file('/Users/roblou/code/vscode-engineering/chat/copilotChat.json'))).toString());
 		if (data.version !== 1) {
-			this._logService.warn('BYOK: Copilot Chat known models list is not in the expected format. Defaulting to empty list.');
+			this._logService.warn('BYOK: AI Chat known models list is not in the expected format. Defaulting to empty list.');
 			return {};
 		}
-		this._logService.info('BYOK: Copilot Chat known models list fetched successfully.');
+		this._logService.info('BYOK: AI Chat known models list fetched successfully.');
 		return data.modelInfo;
 	}
 }

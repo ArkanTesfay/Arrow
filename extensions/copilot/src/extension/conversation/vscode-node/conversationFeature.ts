@@ -107,7 +107,7 @@ export class ConversationFeature implements IExtensionContribution {
 		};
 
 		if (authenticationService.copilotToken) {
-			this.logService.info(`ConversationFeature: Copilot token already available`);
+			this.logService.info(`ConversationFeature: AI token already available`);
 		} else {
 			markChatExtGlobal(ChatExtGlobalPerfMark.WillWaitForCopilotToken);
 			this.logService.info(`ConversationFeature: Waiting for copilot token or BYOK model to activate conversation feature`);
@@ -274,7 +274,7 @@ export class ConversationFeature implements IExtensionContribution {
 		const disposables = new DisposableStore();
 
 		[
-			vscode.commands.registerCommand('github.copilot.interactiveSession.feedback', () => vscode.commands.executeCommand('github.copilot.report', 'Copilot chat feedback')),
+			vscode.commands.registerCommand('github.copilot.interactiveSession.feedback', () => vscode.commands.executeCommand('github.copilot.report', 'AI chat feedback')),
 			vscode.commands.registerCommand('github.copilot.chat.compact', () => vscode.commands.executeCommand('workbench.action.chat.open', { query: '/compact', preserveInput: true })),
 			vscode.commands.registerCommand('github.copilot.terminal.explainTerminalLastCommand', async () => this.triggerTerminalChat({ query: `/${TerminalExplainIntent.intentName} #terminalLastCommand` })),
 			vscode.commands.registerCommand('github.copilot.terminal.fixTerminalLastCommand', async () => generateTerminalFixes(this.instantiationService)),
@@ -402,11 +402,11 @@ export class ConversationFeature implements IExtensionContribution {
 					return [
 						{
 							command: 'github.copilot.terminal.fixTerminalLastCommand',
-							title: vscode.l10n.t('Fix using Copilot')
+							title: vscode.l10n.t('Fix using AI')
 						},
 						{
 							command: 'github.copilot.terminal.explainTerminalLastCommand',
-							title: vscode.l10n.t('Explain using Copilot')
+							title: vscode.l10n.t('Explain using AI')
 						}
 					];
 				}

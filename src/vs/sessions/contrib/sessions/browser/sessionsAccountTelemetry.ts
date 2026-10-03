@@ -26,8 +26,8 @@ interface ISessionsAccountTelemetryData {
 type SessionsAccountStateClassification = {
 	owner: 'benibenj';
 	comment: 'Reports account and quota context once per Agents window after startup data resolves, waiting at most 30 seconds before reporting available fields.';
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU at startup, including anonymous access, or signedOut or unknown when no SKU is available.' };
-	copilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot account state at startup: signedIn, signedOut, or unknown while resolving entitlement.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU at startup, including anonymous access, or signedOut or unknown when no SKU is available.' };
+	copilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI account state at startup: signedIn, signedOut, or unknown while resolving entitlement.' };
 	copilotQuotaPercentRemaining: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Remaining percentage (0-100) of the monthly premium chat quota, falling back to the monthly chat quota if absent. Omitted for unresolved, unlimited, invalid, or expired quotas.' };
 	chatgptAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'ChatGPT account state at startup: unknown, downloading, signedIn, signedOut, unavailable, or error. Does not contain an account identifier.' };
 	chatgptQuotaPercentRemaining: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Remaining percentage (0-100) of the ChatGPT seven-day quota. Omitted unless signed in with an available, valid, unexpired weekly limit.' };
@@ -42,15 +42,15 @@ type SessionsAccountStateChangedEvent = ISessionsAccountTelemetryData & {
 
 type SessionsAccountStateChangedClassification = {
 	owner: 'benibenj';
-	comment: 'Reports Agents window sign-in, sign-out, and Copilot SKU changes, and quotas first becoming available after startup or an account change. Routine quota consumption does not emit an event.';
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Current Copilot entitlement SKU, including anonymous access, or signedOut or unknown when no SKU is available.' };
-	copilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot account state: signedIn, signedOut, or unknown while resolving entitlement.' };
+	comment: 'Reports Agents window sign-in, sign-out, and AI SKU changes, and quotas first becoming available after startup or an account change. Routine quota consumption does not emit an event.';
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Current AI entitlement SKU, including anonymous access, or signedOut or unknown when no SKU is available.' };
+	copilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI account state: signedIn, signedOut, or unknown while resolving entitlement.' };
 	copilotQuotaPercentRemaining: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Remaining percentage (0-100) of the monthly premium chat quota, falling back to the monthly chat quota if absent. Omitted for unresolved, unlimited, invalid, or expired quotas.' };
 	chatgptAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'ChatGPT account state: unknown, downloading, signedIn, signedOut, unavailable, or error. Does not contain an account identifier.' };
 	chatgptQuotaPercentRemaining: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Remaining percentage (0-100) of the ChatGPT seven-day quota. Omitted unless signed in with an available, valid, unexpired weekly limit.' };
-	changeReason: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Whether an account state or Copilot SKU changed, or a previously unavailable quota resolved.' };
-	previousCopilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU before the change, or signedOut or unknown.' };
-	previousCopilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot account state before the change.' };
+	changeReason: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Whether an account state or AI SKU changed, or a previously unavailable quota resolved.' };
+	previousCopilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU before the change, or signedOut or unknown.' };
+	previousCopilotAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI account state before the change.' };
 	previousChatgptAccountState: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'ChatGPT account state before the change.' };
 };
 

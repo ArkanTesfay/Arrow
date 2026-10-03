@@ -179,9 +179,9 @@ export function getSourceDescription(source: PromptFileSource): string | undefin
 		case PromptFileSource.AgentsPersonal:
 			return localize('source.agentsPersonal', "Global");
 		case PromptFileSource.GitHubWorkspace:
-			return localize('source.githubWorkspace', "Workspace (only used by Copilot agents)");
+			return localize('source.githubWorkspace', "Workspace (only used by AI agents)");
 		case PromptFileSource.CopilotPersonal:
-			return localize('source.copilotPersonal', "Global (only used by Copilot agents)");
+			return localize('source.copilotPersonal', "Global (only used by AI agents)");
 		case PromptFileSource.ClaudeWorkspace:
 			return localize('source.claudeWorkspace', "Workspace (only used by Claude agents)");
 		case PromptFileSource.ClaudeWorkspaceLocal:
@@ -189,7 +189,7 @@ export function getSourceDescription(source: PromptFileSource): string | undefin
 		case PromptFileSource.ClaudePersonal:
 			return localize('source.claudePersonal', "Global (only used by Claude agents)");
 		case PromptFileSource.UserData:
-			return localize('source.userData', "Global (roams with Settings Sync, only used by VS Code)");
+			return localize('source.userData', "Global (roams with Settings Sync, only used by Vertex)");
 		case PromptFileSource.ConfigWorkspace:
 			return localize('source.configWorkspace', "Workspace (contributed from settings)");
 		case PromptFileSource.ConfigPersonal:

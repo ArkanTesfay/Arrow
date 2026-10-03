@@ -404,6 +404,6 @@ export function editorVersionHeaders(accessor: ServicesAccessor): { [key: string
 	return {
 		'Editor-Version': formatNameAndVersion(info.getEditorInfo()),
 		'Editor-Plugin-Version': formatNameAndVersion(info.getEditorPluginInfo()),
-		'Copilot-Language-Server-Version': BuildInfo.getVersion(),
+		'AI-Language-Server-Version': BuildInfo.getVersion(),
 	};
 }

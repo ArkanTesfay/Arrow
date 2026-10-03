@@ -107,7 +107,7 @@ export class CopilotCLIModels extends Disposable implements ICopilotCLIModels {
 
 	private _fetchAndCacheModels(): void {
 		if (!this._authenticationService.hasCopilotTokenSource) {
-			this.logService.info('[CopilotCLIModels] Skipping model fetch since there is no Copilot token source');
+			this.logService.info('[CopilotCLIModels] Skipping model fetch since there is no AI token source');
 			return;
 		}
 		const availableModels = this._availableModels = this._getAvailableModels();

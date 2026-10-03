@@ -27,7 +27,7 @@ Previous findings can bias the analysis toward suspects that are no longer relev
 
 ## Workflow
 
-If the user needs the agent to launch VS Code, drive a scenario, and capture snapshots first, use the VS Code performance workflow skill before returning here for low-level snapshot analysis.
+If the user needs the agent to launch Vertex, drive a scenario, and capture snapshots first, use the Vertex performance workflow skill before returning here for low-level snapshot analysis.
 
 ### 1. Parse Snapshots
 
@@ -142,7 +142,7 @@ The `.heapsnapshot` file is JSON with these key sections:
 
 **Always skip `weak` edges when tracing retainer paths.** WeakMap entries show up as edges from key → backing array, but they don't prevent collection — they're red herrings.
 
-### Common VS Code Retention Patterns
+### Common Vertex Retention Patterns
 
 1. **RowCache templates**: ListView's `RowCache` stores template rows. Templates have `currentElement` pointing to old viewmodel items. If not cleared on session switch, retains entire model chains.
 

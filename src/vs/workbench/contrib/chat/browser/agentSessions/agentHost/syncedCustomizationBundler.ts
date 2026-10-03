@@ -27,14 +27,14 @@ import { IgnoreFile } from '../../../../../../workbench/services/search/common/i
 // Re-export so existing consumers don't need to change their import source.
 export { SYNCED_CUSTOMIZATION_SCHEME };
 
-const DISPLAY_NAME = 'VS Code Synced Data';
+const DISPLAY_NAME = 'Vertex Synced Data';
 const FILE_OPERATION_CONCURRENCY = 10;
 const SKILL_DIRECTORY_IGNORE = new IgnoreFile('.git\nnode_modules\n', '/', undefined, true);
 const bundleSequencer = new SequencerByKey<string>();
 
 const MANIFEST_CONTENT = JSON.stringify({
 	name: DISPLAY_NAME,
-	description: 'Customization data synced from VS Code',
+	description: 'Customization data synced from Vertex',
 }, null, '\t');
 
 /**
@@ -179,7 +179,7 @@ interface IBundleResult {
  *
  * ```
  * .plugin/plugin.json
- * .mcp.json        ← MCP servers configured in VS Code
+ * .mcp.json        ← MCP servers configured in Vertex
  * rules/          ← instruction files
  * commands/       ← prompt files
  * agents/         ← agent files

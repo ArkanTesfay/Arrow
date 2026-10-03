@@ -26,7 +26,7 @@ async function collectNetworkDiagnostics(connectionsService: IAgentHostConnectio
 	let output = '# Agent Host Network Diagnostics\n\n';
 	output += await formatLocalProxyConfig(nativeHostService);
 	output += `- Connections: ${connections.length} (1 local, ${remoteCount} remote)\n\n`;
-	output += 'Connectivity probes run inside each agent host process (local or remote), so results reflect the environment the Copilot SDK actually connects from.\n\n';
+	output += 'Connectivity probes run inside each agent host process (local or remote), so results reflect the environment the AI SDK actually connects from.\n\n';
 
 	for (const info of connections) {
 		const heading = info.isAmbient ? 'Local agent host' : `Remote: ${info.name}`;

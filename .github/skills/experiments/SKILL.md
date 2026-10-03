@@ -1,6 +1,6 @@
 ---
 name: experiments
-description: Use when adding, changing, or reviewing a VS Code A/B experiment, either an experiment-controlled setting or a treatment read with the assignment service, and when deciding whether and where to log an `experimentTrigger` event for a triggered ExP scorecard.
+description: Use when adding, changing, or reviewing a Vertex A/B experiment, either an experiment-controlled setting or a treatment read with the assignment service, and when deciding whether and where to log an `experimentTrigger` event for a triggered ExP scorecard.
 ---
 
 # Experiments

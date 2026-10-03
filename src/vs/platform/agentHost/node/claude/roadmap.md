@@ -5,9 +5,9 @@
 A `ClaudeAgent` implementing `IAgent`, registered alongside the existing
 `CopilotAgent`, that uses the **Claude Agent SDK** to drive Anthropic-format
 tool-using sessions — but with all `messages` API traffic **proxied through a
-local server** that translates Anthropic requests into calls to GitHub Copilot's
+local server** that translates Anthropic requests into calls to Vertex AI's
 CAPI via `ICopilotApiService`. Users authenticate once with their GitHub
-Copilot credentials and get Claude models without ever talking to Anthropic
+AI credentials and get Claude models without ever talking to Anthropic
 directly.
 
 ## Architecture (target)
@@ -44,7 +44,7 @@ directly.
 
 `ClaudeAgent` (Phase 4+) sits on top of the SDK and implements the same
 `IAgent` surface as `CopilotAgent`, so the workbench / sessions UI doesn't
-need to know whether it's talking to Copilot or Claude.
+need to know whether it's talking to AI or Claude.
 
 ### Reference implementations (verified, with caveats)
 
@@ -132,7 +132,7 @@ live mapper exists and can be factored to share with the replay path.
 
 ### Phase 1 — `ICopilotApiService` ✅ **DONE**
 
-Foundational gateway to the Copilot CAPI: token mint + cache + invalidation,
+Foundational gateway to the AI CAPI: token mint + cache + invalidation,
 `messages` (streaming + non-streaming), `models`, abort propagation, SSE body
 cancellation. Lives at `node/shared/copilotApiService.ts`. Fully unit-tested
 (70 tests). Council-reviewed and hardened (C1/C2/S1/S2 fixes applied).
@@ -166,7 +166,7 @@ interface ICopilotApiService {
 
 **Learnings from implementation:**
 
-1. **VS Code DI constructor ordering:** `GetLeadingNonServiceArgs` strips
+1. **Vertex DI constructor ordering:** `GetLeadingNonServiceArgs` strips
    `BrandedService`-decorated params from the **end** of the tuple, so
    non-service params (like `fetchFn`) must come **first** in the constructor.
    Putting them after service params causes `createInstance` to select the
@@ -266,7 +266,7 @@ calls.
 
 ### Phase 3 — Ground the SDK contract in the production reference ✅ **DONE**
 
-The Copilot extension already ships a working integration of
+The AI extension already ships a working integration of
 `@anthropic-ai/claude-agent-sdk` 0.2.112 with a local proxy. That implementation
 is our highest-fidelity evidence for what the SDK does and does not need; an
 ad-hoc spike cannot beat a production user.
@@ -409,7 +409,7 @@ Scope (just enough surface for the agent to be discoverable):
   optional methods* (`truncateSession?`, `setPendingMessages?`,
   `getCustomizations?`, etc.). This is how the workbench discovers what an
   agent supports.
-- `getProtectedResources()` — same github.com resource the Copilot agent
+- `getProtectedResources()` — same github.com resource the AI agent
   declares.
 - `authenticate(resource, token)` — store the GitHub token, push it into the
   proxy's GitHub-token slot.
@@ -541,7 +541,7 @@ machinery from `claudeCodeAgent.ts`:**
   as text), and passes `turnId` through to the request queue for transcript
   association. Mirror how `copilotAgent.ts:730` handles this.
 - Map SDK events → `AgentSignal`s on `onDidSessionProgress`, mirroring
-  `mapSessionEvents.ts` in the Copilot folder.
+  `mapSessionEvents.ts` in the AI folder.
 
 SDK options pinned in this phase (matching the reference):
 
@@ -621,10 +621,10 @@ response in the UI.
 > message and `phase6-plan.md` §8.1, but **executed after Phase 13** because
 > the clean fix shares Phase 13's transcript reconstruction.
 
-**Why deferred — structural mismatch.** Copilot's fork path
+**Why deferred — structural mismatch.** AI's fork path
 ([`copilotAgent.ts:660-714`](../copilot/copilotAgent.ts)) calls
 `sourceEntry.getNextTurnEventId(turnId) → toEventId`, an O(1) primitive the
-Copilot SDK provides natively. The Claude SDK has no equivalent: `forkSession`
+AI SDK provides natively. The Claude SDK has no equivalent: `forkSession`
 takes `upToMessageId` — an SDK message UUID, INCLUSIVE per
 [`sdk.d.ts:558`](../../../../../../node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts) —
 not a protocol turn id, and offers no helper to translate one to the other.
@@ -692,7 +692,7 @@ solution backed by Phase 13's mapper.
   remains unimplemented; revisit only if a caching layer becomes worth
   the abstraction cost.
 
-**Architectural model:** Copilot's `getNextTurnEventId(turnId)`. Phase 6.5
+**Architectural model:** AI's `getNextTurnEventId(turnId)`. Phase 6.5
 is the Claude-side equivalent — except Claude derives the lookup on demand
 from the JSONL transcript, rather than persisting it.
 
@@ -708,7 +708,7 @@ the forked `workingDirectory` from `getSessionInfo` and returns; the
 `Query` materialises lazily on the first `sendMessage`, which resumes
 from disk via `_resumeSession`. This matches CONTEXT M9's "`forkSession`
 only writes the new session file; it does not start a `Query` … the SDK
-`Query` is still not started until the first `sendMessage`" and Copilot,
+`Query` is still not started until the first `sendMessage`" and AI,
 whose resume path likewise never fires the materialize event.
 
 **Workbench client behavior.** The Agents-window "Fork conversation from
@@ -720,7 +720,7 @@ session truncated to that turn INCLUSIVE, which accepts new turns via
 Tests (when this phase lands): unit tests for the mapping ingest (turn end
 → persisted row), unit tests for `createSession({ fork })` looking up the
 mapping and calling `forkSession` with the right uuid, integration test
-parallel to Copilot's fork tests (create → N turns → fork at N-1 →
+parallel to AI's fork tests (create → N turns → fork at N-1 →
 new turn on fork → verify prefix turns intact).
 
 Exit criteria: fork is contract-based (no JSONL shape inference), works
@@ -761,7 +761,7 @@ flag.
   and dispatches `ActionType.ChatTruncated` on the **existing** session
   channel. `AgentSideEffects`
   ([`agentSideEffects.ts:~911`](../agentSideEffects.ts)) routes that to the
-  provider's optional `IAgent.truncateSession(session, turnId)`. Copilot
+  provider's optional `IAgent.truncateSession(session, turnId)`. AI
   implements it in place via the SDK RPC `history.truncate({ eventId })`
   ([`copilotAgent.ts:~1987`](../copilot/copilotAgent.ts) →
   `copilotAgentSession.truncateAtEventId`), keeping the **same** session id
@@ -807,7 +807,7 @@ transcript probe (2026-06-24):
    reconstructed history. So from the host's perspective the conversation is
    genuinely truncated, even though the JSONL retains dead lines.
 
-**Approach — mirror Copilot's shape, no alias indirection.**
+**Approach — mirror AI's shape, no alias indirection.**
 
 1. **Resolve the anchor.** Reuse Phase 6.5's resolver exactly:
    `getSessionMessages(sessionId, { includeSystemMessages: true })` →
@@ -816,7 +816,7 @@ transcript probe (2026-06-24):
    same translation Phase 6.5 already encodes (CONTEXT M9: protocol `turnId` =
    the user msg that *started* turn T → the uuid of the *last* SessionMessage
    of turn T). Protocol semantics: `turnId` = **last turn to KEEP**
-   (`[0..turnId]` INCLUSIVE), matching the workbench and Copilot.
+   (`[0..turnId]` INCLUSIVE), matching the workbench and AI.
 2. **Restart the `Query` at the anchor, same id.** Tear down the live `Query`
    and re-resume with `Options.resume = sessionId` **plus**
    `Options.resumeSessionAt = <anchorUuid>`. The session id / URI is preserved;
@@ -828,7 +828,7 @@ transcript probe (2026-06-24):
    `copilotAgentSession.truncateAtEventId`) so future `getNextTurnEventId` /
    anchor lookups don't reference dropped turns. No metadata id rebinding is
    needed — the id is unchanged.
-4. **Serialize** the whole operation through `_sessionSequencer` (as Copilot
+4. **Serialize** the whole operation through `_sessionSequencer` (as AI
    does) so it can't race an in-flight `sendMessage` / `disposeSession`.
    Provisional sessions short-circuit (nothing to truncate).
 
@@ -852,7 +852,7 @@ even here.)
   written **lazily on the next user message**, via
   `insertMessageChain` → `materializeSessionFile()` (re-opens the same
   `<id>.jsonl` in **append** mode — the old tail is still present) →
-  `appendEntry`. (Contrast Copilot's `truncateAtEventId`, which rewrites the
+  `appendEntry`. (Contrast AI's `truncateAtEventId`, which rewrites the
   on-disk transcript **immediately**.)
   - **Chosen behavior (option (a), decided):** lean into this. If a user
     restores a checkpoint and then **restarts / reloads without sending a
@@ -899,7 +899,7 @@ even here.)
 **Doc consistency (required when this lands).** CONTEXT M10 must be corrected:
 its "Claude: deliberately not implemented" subsection, the "no in-place
 transcript-mutation primitive" table (which lists only `forkSession`,
-`Query.interrupt()`, compaction), the Copilot-vs-Claude asymmetry row, and the
+`Query.interrupt()`, compaction), the AI-vs-Claude asymmetry row, and the
 "rewind must compose with fork at the UI layer" note are all now wrong —
 `resumeSessionAt` is the missing primitive. Update them to describe the
 `resumeSessionAt` mechanism and point at this phase.
@@ -914,9 +914,9 @@ transcript-mutation primitive" table (which lists only `forkSession`,
   `IClaudeAgentSdkService` `Options` (add `resumeSessionAt` passthrough), and
   the session-data DB prune helper.
 
-**Architectural model:** Copilot's `truncateSession` →
-`truncateAtEventId` (CONTEXT M10 §"Copilot: in-place via SDK RPC"). Phase 6.7
-is the Claude-side equivalent: where Copilot rewrites the transcript via its
+**Architectural model:** AI's `truncateSession` →
+`truncateAtEventId` (CONTEXT M10 §"AI: in-place via SDK RPC"). Phase 6.7
+is the Claude-side equivalent: where AI rewrites the transcript via its
 session-mutation RPC, Claude restarts the `Query` with `resume +
 resumeSessionAt` — both keep the same session id / URI.
 
@@ -924,7 +924,7 @@ Tests: unit test that `truncateSession(session, turnId)` resolves the right
 anchor (reuses `resolveForkAnchorUuid`) and restarts the `Query` with
 `resumeSessionAt = <anchorUuid>` and unchanged id; unit test that
 `turnId === undefined` takes the fresh-provisional remove-all path; integration
-test parallel to Copilot's truncate path (create → N turns → truncate at turn K
+test parallel to AI's truncate path (create → N turns → truncate at turn K
 → **send a new turn** → assert the new turn continues from turn K, turns
 `(K, N]` are gone from a fresh `getSessionMessages`, and the session URI is
 unchanged — the `getSessionMessages` assertion runs *after* the new turn, per
@@ -1033,11 +1033,11 @@ client-side accept of one and reject of the other behaves correctly.
 Exit criteria: file diffs render in the workbench; per-file accept/reject
 works.
 
-### Phase 8.5 — Rich tool-call rendering parity with Copilot ✅ **DONE**
+### Phase 8.5 — Rich tool-call rendering parity with AI ✅ **DONE**
 
 Claude's tool-call cards today only carry the static display name from
 [`claudeToolDisplay.ts`](./claudeToolDisplay.ts) (`"Run shell command"`,
-`"Find files"`, ...). Copilot's [`copilotToolDisplay.ts`](../copilot/copilotToolDisplay.ts)
+`"Find files"`, ...). AI's [`copilotToolDisplay.ts`](../copilot/copilotToolDisplay.ts)
 formats the actual `tool_use.input` into the row title and tags the row
 with a `toolKind` so the workbench renders terminal / search /
 subagent specially. Phase 12 already laid the `_meta.toolKind:
@@ -1051,7 +1051,7 @@ renderers.
 
 Scope:
 
-- **Port the Copilot helper shape** into
+- **Port the AI helper shape** into
   [`claudeToolDisplay.ts`](./claudeToolDisplay.ts), keyed off the SDK's
   `tool_use.input` schemas:
   - `getClaudeInvocationMessage(toolName, displayName, input)` →
@@ -1124,7 +1124,7 @@ Manual E2E:
   terminal / search style as the live rows.
 
 Exit criteria: Claude tool-call cards (live and replayed) match
-Copilot's rendering quality — permission cards show the actual
+AI's rendering quality — permission cards show the actual
 invocation, terminal tools render in the terminal renderer, search
 tools render in the search renderer. Adding a new SDK tool means
 adding one row to `TOOL_ROWS` and updating the snapshot test.
@@ -1208,7 +1208,7 @@ SDK setters at the same yield boundary, `'max'` mid-session demotes to
 `'xhigh'` on the runtime path (and reaches genuine `'max'` only via
 restart), killed subprocess triggers recovery.
 
-Exit criteria: parity with Copilot agent on stop / steer / switch model.
+Exit criteria: parity with AI agent on stop / steer / switch model.
 
 ### Phase 10 — Client-provided tools (in-process MCP) ✅ **DONE**
 
@@ -1440,7 +1440,7 @@ Scope:
 - **`getSessionMessages(subagentUri)`** — return the subagent's transcript
   via SDK's `getSubagentMessages` (`claudeCodeSdkService.ts:65–74`).
 - **`listSessions()` filter** — decide whether subagents appear in the
-  top-level session list (Copilot's behavior is the reference).
+  top-level session list (AI's behavior is the reference).
 - Restore subagent associations on agent host restart.
 
 Tests: trigger a subagent, verify the signal fires with a valid URI,
@@ -2109,7 +2109,7 @@ couple-lines follow-up gated on the upstream SDK fix.
 > headless/SDK mode (verified empirically). The Phase 19.1 native-binary-path
 > override was explored and removed — it only selects which `claude` build
 > runs, never the credentials. This is the first phase that lets the Claude
-> provider talk to Anthropic **without** the Copilot proxy in the path —
+> provider talk to Anthropic **without** the AI proxy in the path —
 > using whatever credentials the user already has (an `ANTHROPIC_API_KEY`,
 > a `claude login` OAuth session in `~/.claude`, or a Bedrock/Vertex
 > configuration). It also adds the agent-host config switch that selects
@@ -2118,15 +2118,15 @@ couple-lines follow-up gated on the upstream SDK fix.
 
 #### Motivation
 
-Today the Claude provider is *Copilot-routed Claude*: every `/v1/messages`
-call is minted against a GitHub Copilot token, translated by
+Today the Claude provider is *AI-routed Claude*: every `/v1/messages`
+call is minted against a Vertex AI token, translated by
 `ClaudeProxyService`, and billed through CAPI. That is the right default
-for Copilot subscribers, but it excludes two populations:
+for AI subscribers, but it excludes two populations:
 
 1. Users who have a **direct Anthropic relationship** (API key or Claude
    subscription via `claude login`) and want to spend *that* quota, not
-   their Copilot entitlement.
-2. Users on networks / orgs where the Copilot CAPI path is unavailable but
+   their AI entitlement.
+2. Users on networks / orgs where the AI CAPI path is unavailable but
    Anthropic (or a Bedrock/Vertex endpoint) is reachable.
 
 This phase makes the proxy **optional**, selected by an agent-host config
@@ -2184,7 +2184,7 @@ available in native mode" decision.
      memoized, `startup() → query(neverYield) → supportedModels()` →
      dispose, ephemeral `CLAUDE_CONFIG_DIR`) that Phase 18 deferred.
    - **No commercial-metadata overlay in native mode** — multiplier /
-     policy / default ordering are Copilot/CAPI concepts; native
+     policy / default ordering are AI/CAPI concepts; native
      `IAgentModelInfo` entries omit them.
    - Native ids are SDK-canonical end to end (`m.value`); `toSdkModelId`
      is an identity at the native seam.
@@ -2206,7 +2206,7 @@ available in native mode" decision.
      CAPI is not billing. The relevant signal is the SDK's own `result`
      message: token `usage` and `total_cost_usd` (an Anthropic-list-price
      estimate; M8). Native turns surface **SDK usage / cost** instead of
-     Copilot credits:
+     AI credits:
      - `recordTurnCredits` / `_enrichSignalWithCredits` are **proxy-only**
        and must no-op in native mode (the agent simply never wires the
        `onDidReportCredits` subscription when the session's transport is
@@ -2229,16 +2229,16 @@ available in native mode" decision.
    - *Proxied (today):* `authenticate()` requires the
      `GITHUB_COPILOT_PROTECTED_RESOURCE` token; without it
      `_ensureAuthenticated()` throws `AHP_AUTH_REQUIRED` and the proxy is
-     never started. `getProtectedResources()` advertises GitHub Copilot +
+     never started. `getProtectedResources()` advertises Vertex AI +
      GitHub repo.
-   - *Native (this phase):* the GitHub Copilot token is **not** required to
+   - *Native (this phase):* the Vertex AI token is **not** required to
      reach Anthropic. The provider must not block session creation behind a
-     Copilot sign-in it will never use. Decisions:
+     AI sign-in it will never use. Decisions:
      - `getProtectedResources()` in native mode drops
        `GITHUB_COPILOT_PROTECTED_RESOURCE` (keep
        `GITHUB_REPO_PROTECTED_RESOURCE`, which is about repo access for
        git operations, not model auth). The workbench renders auth prompts
-       from this list, so dropping it removes the spurious Copilot
+       from this list, so dropping it removes the spurious AI
        sign-in.
      - `_ensureAuthenticated()` becomes mode-aware: native mode is
        "authenticated" once the agent is constructed (the SDK owns its own
@@ -2274,7 +2274,7 @@ pattern:
   workbench preference that has to be marshalled across the process
   boundary. `ClaudeAgent` already injects `IAgentConfigurationService`
   and reads other root values; it reads this one the same way — **no new
-  VS Code setting, no `VSCODE_AGENT_HOST_*` env var, no
+  Vertex setting, no `VSCODE_AGENT_HOST_*` env var, no
   `nodeAgentHostStarter` forwarding.**
 - **It works identically for local and remote/headless hosts.** A remote
   operator edits `agent-host-config.json` (or any AHP client writes it via
@@ -2292,11 +2292,11 @@ Concretely:
   'claudeUseCopilotProxy'`) declared in
   [`agentHostCustomizationConfig.ts`](../../common/agentHostCustomizationConfig.ts)
   with a `schemaProperty<boolean>({ ..., default: true })`, **default
-  `true`** so existing Copilot users are unaffected. It joins the schema
+  `true`** so existing AI users are unaffected. It joins the schema
   merged into `rootState.config` by the `AgentConfigurationService`
   constructor.
   - *Naming open question:* the key is Claude-specific today, but the
-    "use the Copilot proxy vs. bring-your-own credentials" axis may
+    "use the AI proxy vs. bring-your-own credentials" axis may
     generalise to Codex later. Decide whether to namespace it
     (`claudeUseCopilotProxy`) or model a more general transport key now.
     Leaning Claude-specific for v1 to avoid speculative generality.
@@ -2311,7 +2311,7 @@ Concretely:
   proposed.
 - **Scope: host-level for v1.** All sessions on the host share one
   transport. Per-session transport selection (a session config key, so a
-  user could run one chat on Copilot quota and another on their own key)
+  user could run one chat on AI quota and another on their own key)
   is a deliberate **follow-up** — it interacts with restored-session
   transport identity (below) and the picker would need to show two model
   catalogues at once.
@@ -2330,11 +2330,11 @@ value and flow as data; avoid re-reading the config in five places.
   this — don't try to hot-swap a running subprocess between proxy and
   native.
 - Proxied mode keeps today's behaviour: acquire `IClaudeProxyHandle` in
-  `authenticate()`, wire `onDidReportCredits`, advertise the Copilot
+  `authenticate()`, wire `onDidReportCredits`, advertise the AI
   protected resource, populate models from CAPI.
 - Native mode: skip the proxy handle entirely (do **not** call
   `IClaudeProxyService.start`), skip the credits subscription, drop the
-  Copilot protected resource, populate models via Phase 18's
+  AI protected resource, populate models via Phase 18's
   `supportedModels()` path **with the gateway-discovery flag off** (no
   CAPI, no commercial-metadata overlay).
 - The mode is threaded into the session as part of the materialize inputs
@@ -2400,7 +2400,7 @@ A session's transport is part of its identity for replay/continuation:
   native; `true` or absent → proxied default; `onDidRootConfigChange`
   flipping the value updates `_transportMode` for subsequent sessions.
 - `ClaudeAgent` native mode: `authenticate` does not call
-  `IClaudeProxyService.start`; `getProtectedResources` omits Copilot;
+  `IClaudeProxyService.start`; `getProtectedResources` omits AI;
   `models` populated from a stubbed `supportedModels()` (dedicated
   enumeration query) without any CAPI call; enumeration query is disposed
   and never appears in `listSessions`; `onDidReportCredits` never
@@ -2424,7 +2424,7 @@ A session's transport is part of its identity for replay/continuation:
   user's plan, not the CAPI catalogue), runs a turn, streams output, and
   renders SDK cost — with the proxy port never bound (verify via logs /
   `lsof`).
-- Flip the root value back to `true` → Copilot-routed behaviour returns
+- Flip the root value back to `true` → AI-routed behaviour returns
   for new sessions, proxy binds, credits render.
 - Resume a session created in one mode under the other → picker shows the
   current-mode catalogue, resume succeeds, missing model id degrades to
@@ -2433,10 +2433,10 @@ A session's transport is part of its identity for replay/continuation:
 #### Exit criteria
 
 A user can set one config property to run the Claude provider entirely on
-their own Anthropic credentials with no Copilot token, CAPI call, or proxy
+their own Anthropic credentials with no AI token, CAPI call, or proxy
 server in the path; the model picker is populated without CAPI; per-turn
 cost surfaces from the SDK `result`; and all proxy-only plumbing
-(credits, Bearer correlation, `ANTHROPIC_BASE_URL` injection, Copilot
+(credits, Bearer correlation, `ANTHROPIC_BASE_URL` injection, AI
 protected resource) is cleanly quarantined behind the `'proxy'` transport
 mode. The proxied path remains the unchanged default.
 
@@ -2456,7 +2456,7 @@ mode. The proxied path remains the unchanged default.
 - **Per-session transport** — defer, but record the metadata now so the
   follow-up doesn't require a migration.
 - **`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` in native mode** — in
-  proxied mode it's a Copilot leak-tightness guarantee. In native mode
+  proxied mode it's a AI leak-tightness guarantee. In native mode
   it's the user's own Anthropic account; do we keep disabling
   nonessential traffic (privacy-preserving default) or respect the
   user's normal CLI behaviour? Leaning keep-disabled.
@@ -2496,7 +2496,7 @@ mode. The proxied path remains the unchanged default.
 
 - **Anthropic-direct authentication via the proxy** (`x-api-key` against
   api.anthropic.com *through `ClaudeProxyService`*). The proxy is
-  Copilot-routed only and ignores `x-api-key` by design. Direct Anthropic
+  AI-routed only and ignores `x-api-key` by design. Direct Anthropic
   access is instead delivered by **Phase 19's native transport**, which
   removes the proxy from the path entirely rather than teaching it to
   forward personal keys.

@@ -79,7 +79,7 @@ export class TelemetrySender {
 				}
 			);
 		}
-		this.logService.debug(`TypeScript Copilot context speculative request: [${context.requestId} - ${originalRequestId}, numberOfItems: ${numberOfItems}]`);
+		this.logService.debug(`TypeScript AI context speculative request: [${context.requestId} - ${originalRequestId}, numberOfItems: ${numberOfItems}]`);
 	}
 
 	public willLogRequestTelemetry(context: RequestContext): boolean {
@@ -164,7 +164,7 @@ export class TelemetrySender {
 				}
 			);
 		}
-		this.logService.debug(`TypeScript Copilot context: [${context.requestId}, ${context.source ?? KnownSources.unknown}, ${JSON.stringify(position, undefined, 0)}, ${JSON.stringify(nodePath, undefined, 0)}, ${JSON.stringify(stats, undefined, 0)}, cacheItems:${data.cachedItems}, cacheState:${JSON.stringify(cacheState, undefined, 0)}, budgetExhausted:${data.tokenBudgetExhausted}, cancelled:${data.cancelled}, timedOut:${data.timedOut}, fileSize:${fileSize}] in [${timeTaken},${data.serverTime},${data.contextComputeTime}]ms.${data.timedOut ? ' Timed out.' : ''}`);
+		this.logService.debug(`TypeScript AI context: [${context.requestId}, ${context.source ?? KnownSources.unknown}, ${JSON.stringify(position, undefined, 0)}, ${JSON.stringify(nodePath, undefined, 0)}, ${JSON.stringify(stats, undefined, 0)}, cacheItems:${data.cachedItems}, cacheState:${JSON.stringify(cacheState, undefined, 0)}, budgetExhausted:${data.tokenBudgetExhausted}, cancelled:${data.cancelled}, timedOut:${data.timedOut}, fileSize:${fileSize}] in [${timeTaken},${data.serverTime},${data.contextComputeTime}]ms.${data.timedOut ? ' Timed out.' : ''}`);
 		if (data.errorData !== undefined && data.errorData.length > 0) {
 			const errorData = data.errorData;
 			for (const error of errorData) {
@@ -231,7 +231,7 @@ export class TelemetrySender {
 				totalSize: totalSize
 			}
 		);
-		this.logService.debug(`TypeScript Copilot context on timeout: [${context.requestId}, ${JSON.stringify(stats, undefined, 0)}]`);
+		this.logService.debug(`TypeScript AI context on timeout: [${context.requestId}, ${JSON.stringify(stats, undefined, 0)}]`);
 	}
 
 	public sendRequestFailureTelemetry(context: RequestContext, data: { error: protocol.ErrorCode; message: string; stack?: string }): void {
@@ -282,7 +282,7 @@ export class TelemetrySender {
 				timeTaken: timeTaken
 			}
 		);
-		this.logService.debug(`TypeScript Copilot context request ${context.requestId} got cancelled.`);
+		this.logService.debug(`TypeScript AI context request ${context.requestId} got cancelled.`);
 	}
 
 	public sendActivationTelemetry(response: protocol.PingResponse | undefined, error: unknown | undefined): void {
@@ -373,7 +373,7 @@ export class TelemetrySender {
 		/* __GDPR__
 			"typescript-context-plugin.integration.failed" : {
 				"owner": "dirkb",
-				"comment": "Telemetry for Copilot inline chat integration.",
+				"comment": "Telemetry for AI inline chat integration.",
 				"requestId": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The request correlation id" },
 				"document": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The document for which the integration failed" },
 				"versionMismatch": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The version mismatch" }
@@ -394,7 +394,7 @@ export class TelemetrySender {
 			/* __GDPR__
 				"typescript-context-plugin.inline-completion-provider.registered" : {
 					"owner": "dirkb",
-					"comment": "Telemetry for Copilot inline completions",
+					"comment": "Telemetry for AI inline completions",
 					"source": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The source of the request" }
 				}
 			*/
@@ -408,7 +408,7 @@ export class TelemetrySender {
 			/* __GDPR__
 				"typescript-context-plugin.inline-completion-provider.unregistered" : {
 					"owner": "dirkb",
-					"comment": "Telemetry for Copilot inline completions",
+					"comment": "Telemetry for AI inline completions",
 					"source": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The source of the request" }
 				}
 			*/

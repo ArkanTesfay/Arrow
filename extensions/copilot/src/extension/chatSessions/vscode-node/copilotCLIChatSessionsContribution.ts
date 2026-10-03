@@ -124,8 +124,8 @@ function getIssueRuntimeInfo(): { readonly platform: string; readonly vscodeInfo
 
 function getSessionLoadFailureIssueInfo(invalidSessionMessage: string): { readonly issueBody: string; readonly issueUrl: string } {
 	const runtimeInfo = getIssueRuntimeInfo();
-	const issueTitle = '[Copilot CLI] Failed to load chat session';
-	const issueBody = `## Description\n\nFailed to load a Copilot CLI chat session.\n\n## Environment\n\n- Platform: ${runtimeInfo.platform}\n- VS Code: ${runtimeInfo.vscodeInfo}\n- Chat Extension Version: ${runtimeInfo.extensionVersion}\n\n## Error\n\n\`\`\`\n${invalidSessionMessage}\n\`\`\``;
+	const issueTitle = '[AI CLI] Failed to load chat session';
+	const issueBody = `## Description\n\nFailed to load a AI CLI chat session.\n\n## Environment\n\n- Platform: ${runtimeInfo.platform}\n- Vertex: ${runtimeInfo.vscodeInfo}\n- Chat Extension Version: ${runtimeInfo.extensionVersion}\n\n## Error\n\n\`\`\`\n${invalidSessionMessage}\n\`\`\``;
 	const issueUrl = `https://github.com/microsoft/vscode/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
 
 	return { issueBody, issueUrl };
@@ -524,7 +524,7 @@ export class CopilotCLIChatSessionItemProvider extends Disposable implements vsc
 	}
 	public async createCopilotCLITerminal(location: TerminalOpenLocation = 'editor', name?: string, cwd?: string): Promise<void> {
 		// TODO@rebornix should be set by CLI
-		const terminalName = name || process.env.COPILOTCLI_TERMINAL_TITLE || l10n.t('Copilot CLI');
+		const terminalName = name || process.env.COPILOTCLI_TERMINAL_TITLE || l10n.t('AI CLI');
 		await this.terminalIntegration.openTerminal(terminalName, [], cwd, location);
 	}
 
@@ -1952,7 +1952,7 @@ export class CopilotCLIChatSessionParticipant extends Disposable {
 			stream.warning(l10n.t('Chat session not found.'));
 			return { session: undefined, trusted };
 		}
-		this.logService.info(`Using Copilot CLI session: ${session.object.sessionId} (isNewSession: ${isNewSession}, isolationEnabled: ${isIsolationEnabled(workspaceInfo)}, workingDirectory: ${workingDirectory}, worktreePath: ${worktreeProperties?.worktreePath})`);
+		this.logService.info(`Using AI CLI session: ${session.object.sessionId} (isNewSession: ${isNewSession}, isolationEnabled: ${isIsolationEnabled(workspaceInfo)}, workingDirectory: ${workingDirectory}, worktreePath: ${worktreeProperties?.worktreePath})`);
 		if (isNewSession) {
 			this.sessionItemProvider.untitledSessionIdMapping.set(id, session.object.sessionId);
 			this.sessionItemProvider.sdkToUntitledUriMapping.set(session.object.sessionId, resource);
@@ -2103,7 +2103,7 @@ export class CopilotCLIChatSessionParticipant extends Disposable {
 		]);
 
 		if (cancelled || token.isCancellationRequested) {
-			stream.markdown(l10n.t('Copilot CLI delegation cancelled.'));
+			stream.markdown(l10n.t('AI CLI delegation cancelled.'));
 			return {};
 		}
 		const workingDirectory = getWorkingDirectory(workspaceInfo);
@@ -2138,7 +2138,7 @@ export class CopilotCLIChatSessionParticipant extends Disposable {
 			attachedContext: references.map(ref => convertReferenceToVariable(ref, attachments))
 		});
 
-		stream.markdown(l10n.t('A Copilot CLI session has begun working on your request. Follow its progress in the sessions list.'));
+		stream.markdown(l10n.t('A AI CLI session has begun working on your request. Follow its progress in the sessions list.'));
 
 		return {};
 	}
@@ -2319,14 +2319,14 @@ export function registerCLIChatCommands(
 		}
 	}));
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.newSession', async () => {
-		await copilotcliSessionItemProvider.createCopilotCLITerminal('editor', l10n.t('Copilot CLI'));
+		await copilotcliSessionItemProvider.createCopilotCLITerminal('editor', l10n.t('AI CLI'));
 	}));
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.newSessionToSide', async () => {
-		await copilotcliSessionItemProvider.createCopilotCLITerminal('editorBeside', l10n.t('Copilot CLI'));
+		await copilotcliSessionItemProvider.createCopilotCLITerminal('editorBeside', l10n.t('AI CLI'));
 	}));
 	disposableStore.add(vscode.commands.registerCommand(OPEN_IN_COPILOT_CLI_COMMAND_ID, async (sourceControlContext?: unknown) => {
 		const rootUri = getSourceControlRootUri(sourceControlContext);
-		await copilotcliSessionItemProvider.createCopilotCLITerminal('editor', l10n.t('Copilot CLI'), rootUri?.fsPath);
+		await copilotcliSessionItemProvider.createCopilotCLITerminal('editor', l10n.t('AI CLI'), rootUri?.fsPath);
 	}));
 	disposableStore.add(vscode.commands.registerCommand('github.copilot.cli.sessions.openWorktreeInNewWindow', async (sessionItem?: vscode.ChatSessionItem) => {
 		if (!sessionItem?.resource) {
@@ -2765,7 +2765,7 @@ export function registerCLIChatCommands(
 		}
 
 		if (!message) {
-			message = `Copilot CLI session ${sessionId} changes`;
+			message = `AI CLI session ${sessionId} changes`;
 		}
 
 		await gitService.commit(repository.rootUri, message, { all: true, noVerify: true, signCommit: false });
@@ -3051,7 +3051,7 @@ async function getModelFromPromptFile(models: readonly string[], copilotCLIModel
 		if (modelId) {
 			return modelId;
 		}
-		// Sometimes the models can contain ` (Copilot)` suffix, try stripping that and resolving again.
+		// Sometimes the models can contain ` (AI)` suffix, try stripping that and resolving again.
 		if (!model.includes('(')) {
 			continue;
 		}

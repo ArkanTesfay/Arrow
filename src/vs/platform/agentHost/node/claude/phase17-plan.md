@@ -758,7 +758,7 @@ outside the plugin roots (+ traversal regression test); (2) **perf (consensus)**
 `excludeNativePluginSkills` now probes skills in parallel (`Promise.all`) instead of serially;
 (3) **cleanup** — `buildDiscoveredCustomizations` matches each native plugin to its SDK entry in
 a single pass (dropped the redundant second `sdk.plugins.find`); (4) **coverage** — added the
-no-workspace and path-traversal scanner tests. Declined: the "Copilot bare-`plugin.json`"
+no-workspace and path-traversal scanner tests. Declined: the "AI bare-`plugin.json`"
 finding (unreachable — native Claude plugins are only Claude/Open-Plugins format, and
 `parsePlugin` would mis-detect a bare manifest under `.claude` regardless) and the trailing-slash
 path-fallback nit (mitigated — `source` is the primary match key).

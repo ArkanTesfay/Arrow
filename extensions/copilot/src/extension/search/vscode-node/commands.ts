@@ -24,7 +24,7 @@ export class SearchPanelCommands extends Disposable {
 		}));
 		this._register(vscode.commands.registerCommand('github.copilot.search.feedback', () => {
 			this.sendFeedback(SearchFeedbackKind.Feedback);
-			vscode.commands.executeCommand('github.copilot.report', `Copilot search feedback: "${SemanticSearchTextSearchProvider.latestQuery}"`);
+			vscode.commands.executeCommand('github.copilot.report', `AI search feedback: "${SemanticSearchTextSearchProvider.latestQuery}"`);
 		}));
 	}
 

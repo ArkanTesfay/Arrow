@@ -147,7 +147,7 @@ export class ContextKeysContribution extends Disposable {
 				// Expected in BYOK / air-gapped flows where the user is not signed in to GitHub.
 				this._logService.debug(SESSION_LOGIN_MESSAGE);
 			} else {
-				this._logService.error(`GitHub Copilot could not connect to server. Extension activation failed: "${reason}"`);
+				this._logService.error(`Vertex AI could not connect to server. Extension activation failed: "${reason}"`);
 			}
 		}
 
@@ -206,7 +206,7 @@ export class ContextKeysContribution extends Disposable {
 			const copilotToken = await this._authenticationService.getCopilotToken();
 			const disabled = !copilotToken.isEditorPreviewFeaturesEnabled();
 			if (disabled) {
-				this._logService.warn(`Copilot preview features are disabled by organizational policy. Learn more: https://aka.ms/github-copilot-org-enable-features`);
+				this._logService.warn(`AI preview features are disabled by organizational policy. Learn more: https://aka.ms/github-copilot-org-enable-features`);
 			}
 			commands.executeCommand('setContext', previewFeaturesDisabledContextKey, disabled);
 		} catch (e) {

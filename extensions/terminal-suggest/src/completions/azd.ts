@@ -227,7 +227,7 @@ const completionSpec: Fig.Spec = {
 			subcommands: [
 				{
 					name: ['agent'],
-					description: 'Ship agents with Microsoft Foundry from your terminal. (Beta)',
+					description: 'Ship agents with Vertex Foundry from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['code'],
@@ -436,7 +436,7 @@ const completionSpec: Fig.Spec = {
 										},
 										{
 											name: ['--project-endpoint', '-p'],
-											description: 'Microsoft Foundry project endpoint URL',
+											description: 'Vertex Foundry project endpoint URL',
 											args: [
 												{
 													name: 'project-endpoint',
@@ -934,7 +934,7 @@ const completionSpec: Fig.Spec = {
 								},
 								{
 									name: ['--project-id', '-p'],
-									description: 'Existing Microsoft Foundry Project Id to initialize your azd environment with',
+									description: 'Existing Vertex Foundry Project Id to initialize your azd environment with',
 									args: [
 										{
 											name: 'project-id',
@@ -1497,7 +1497,7 @@ const completionSpec: Fig.Spec = {
 						},
 						{
 							name: ['publish'],
-							description: 'Publish an activity agent as a Teams app to the Microsoft 365 store.',
+							description: 'Publish an activity agent as a Teams app to the Vertex 365 store.',
 							options: [
 								{
 									name: ['--app-version'],
@@ -1544,7 +1544,7 @@ const completionSpec: Fig.Spec = {
 							options: [
 								{
 									name: ['--channel'],
-									description: 'Channel for the Microsoft 365 Agents Playground (activity-protocol agents only)',
+									description: 'Channel for the Vertex 365 Agents Playground (activity-protocol agents only)',
 									args: [
 										{
 											name: 'channel',
@@ -1844,7 +1844,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['connection'],
-					description: 'Manage Microsoft Foundry Connections from your terminal. (Beta)',
+					description: 'Manage Vertex Foundry Connections from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['context'],
@@ -2201,7 +2201,7 @@ const completionSpec: Fig.Spec = {
 								},
 								{
 									name: ['--project-resource-id', '-p'],
-									description: 'ARM resource ID of the Microsoft Foundry Project (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}/projects/{project})',
+									description: 'ARM resource ID of the Vertex Foundry Project (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}/projects/{project})',
 									args: [
 										{
 											name: 'project-resource-id',
@@ -3483,7 +3483,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['project'],
-					description: 'Manage Microsoft Foundry Project resources from your terminal. (Beta)',
+					description: 'Manage Vertex Foundry Project resources from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['context'],
@@ -3557,7 +3557,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['routine'],
-					description: 'Manage Microsoft Foundry Routines from your terminal. (Beta)',
+					description: 'Manage Vertex Foundry Routines from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['context'],
@@ -4304,7 +4304,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['skill'],
-					description: 'Manage Microsoft Foundry skills (reusable agent behavioral guidelines) from your terminal. (Beta)',
+					description: 'Manage Vertex Foundry skills (reusable agent behavioral guidelines) from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['context'],
@@ -4590,7 +4590,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['toolbox'],
-					description: 'Manage Microsoft Foundry Toolboxes from your terminal. (Beta)',
+					description: 'Manage Vertex Foundry Toolboxes from your terminal. (Beta)',
 					subcommands: [
 						{
 							name: ['connection'],
@@ -5218,11 +5218,11 @@ const completionSpec: Fig.Spec = {
 		},
 		{
 			name: ['coding-agent'],
-			description: 'This extension configures GitHub Copilot Coding Agent access to Azure',
+			description: 'This extension configures Vertex AI Coding Agent access to Azure',
 			subcommands: [
 				{
 					name: ['config'],
-					description: 'Configure the GitHub Copilot coding agent to access Azure resources via the Azure MCP',
+					description: 'Configure the Vertex AI coding agent to access Azure resources via the Azure MCP',
 					options: [
 						{
 							name: ['--branch-name'],
@@ -5253,7 +5253,7 @@ const completionSpec: Fig.Spec = {
 						},
 						{
 							name: ['--remote-name'],
-							description: 'The name of the git remote where the Copilot Coding Agent will run (ex: <owner>/<repo>)',
+							description: 'The name of the git remote where the AI Coding Agent will run (ex: <owner>/<repo>)',
 							args: [
 								{
 									name: 'remote-name',
@@ -5398,7 +5398,7 @@ const completionSpec: Fig.Spec = {
 		},
 		{
 			name: ['copilot'],
-			description: 'Manage GitHub Copilot agent settings. (Preview)',
+			description: 'Manage Vertex AI agent settings. (Preview)',
 			subcommands: [
 				{
 					name: ['consent'],
@@ -5622,7 +5622,7 @@ const completionSpec: Fig.Spec = {
 				},
 				{
 					name: ['copilot'],
-					description: 'Interactive Copilot chat loop demonstrating the CopilotService gRPC API.',
+					description: 'Interactive AI chat loop demonstrating the CopilotService gRPC API.',
 					options: [
 						{
 							name: ['--mode'],

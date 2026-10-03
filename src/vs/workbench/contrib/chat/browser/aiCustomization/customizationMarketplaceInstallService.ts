@@ -384,7 +384,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 					this.emitChange();
 				}
 			} catch (error) {
-				this.logService.error(`[CustomizationMarketplace] Unable to record connected Copilot connector '${connector.name}'`, error);
+				this.logService.error(`[CustomizationMarketplace] Unable to record connected AI connector '${connector.name}'`, error);
 			}
 		}
 		await this.reconcileRecords(this.getApplicableConnectorRecords());
@@ -393,7 +393,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 	private async createConnectorRecord(resource: ICustomizationMarketplaceResource, account: ICopilotConnectorAccount, existingId?: string): Promise<ICustomizationMarketplaceInstallationRecord> {
 		const installation = resource.installation;
 		if (installation?.kind !== 'copilotConnector') {
-			throw new Error(localize('customizationMarketplace.connectorInstallationMetadataUnavailable', "Copilot connector installation metadata is unavailable."));
+			throw new Error(localize('customizationMarketplace.connectorInstallationMetadataUnavailable', "AI connector installation metadata is unavailable."));
 		}
 		return {
 			id: existingId ?? await createInstallationRecordId([
@@ -587,7 +587,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 			const target = record.target;
 			const connector = this.copilotConnectorsService.connectors.find(candidate => candidate.name === target.name);
 			if (!connector) {
-				return localize('customizationMarketplace.connectorNoLongerAvailable', "This connector is no longer available from the Copilot Connectors catalog.");
+				return localize('customizationMarketplace.connectorNoLongerAvailable', "This connector is no longer available from the AI Connectors catalog.");
 			}
 			const presentation = getConnectorRowPresentation(connector);
 			if (connector.connectionStatus !== 'connected' && !presentation.action) {
@@ -615,7 +615,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 	getInstallState(resource: ICustomizationMarketplaceResource): CustomizationMarketplaceInstallState {
 		if (resource.installation?.kind === 'copilotConnector' &&
 			this.configurationService.getValue<boolean>(CustomizationMarketplaceConfiguration.CopilotConnectorsEnabled) !== true) {
-			return { kind: 'unavailable', message: localize('customizationMarketplace.connectorsDisabled', "Enable the Copilot connectors experiment to connect this resource.") };
+			return { kind: 'unavailable', message: localize('customizationMarketplace.connectorsDisabled', "Enable the AI connectors experiment to connect this resource.") };
 		}
 		const recorded = this.installations.get().findByResource(resource);
 		if (recorded) {
@@ -639,7 +639,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 		const source = resource.installation;
 		if (source?.kind === 'configuredPlugin') {
 			if (isWeb) {
-				return { kind: 'unavailable', message: localize('customizationMarketplace.pluginWebUnsupported', "Installing configured marketplace plugins is not available in VS Code for the Web.") };
+				return { kind: 'unavailable', message: localize('customizationMarketplace.pluginWebUnsupported', "Installing configured marketplace plugins is not available in Vertex for the Web.") };
 			}
 			if (!this.configurationService.getValue<boolean>(ChatConfiguration.PluginsEnabled)) {
 				return { kind: 'unavailable', message: localize('customizationMarketplace.pluginsDisabled', "Enable agent plugins to install this resource.") };
@@ -650,7 +650,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 			return {
 				kind: 'unavailable',
 				message: resource.mediaType === CustomizationMarketplaceMediaType.CursorPlugin
-					? localize('customizationMarketplace.cursorUnsupported', "Cursor plugins cannot be installed in VS Code. Open the resource to view its installation instructions.")
+					? localize('customizationMarketplace.cursorUnsupported', "Cursor plugins cannot be installed in Vertex. Open the resource to view its installation instructions.")
 					: localize('customizationMarketplace.sourceUnavailable', "This resource does not provide a supported installation source."),
 			};
 		}
@@ -666,7 +666,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 				return { kind: 'uninstalling', target };
 			}
 			if (this.configurationService.getValue<boolean>(CustomizationMarketplaceConfiguration.CopilotConnectorsEnabled) !== true) {
-				return { kind: 'unavailable', message: localize('customizationMarketplace.connectorsDisabled', "Enable the Copilot connectors experiment to connect this resource.") };
+				return { kind: 'unavailable', message: localize('customizationMarketplace.connectorsDisabled', "Enable the AI connectors experiment to connect this resource.") };
 			}
 			const connector = this.copilotConnectorsService.connectors.find(connector => connector.name === source.name);
 			if (!connector) {
@@ -984,7 +984,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 			throw new Error(localize('customizationMarketplace.sourceUnavailable', "This resource does not provide a supported installation source."));
 		}
 		if (source.kind === 'copilotConnector') {
-			throw new Error(localize('customizationMarketplace.connectorInstallTargetUnavailable', "Copilot connectors do not have a local installation target."));
+			throw new Error(localize('customizationMarketplace.connectorInstallTargetUnavailable', "AI connectors do not have a local installation target."));
 		}
 		const target = await this.installTarget({ ...resource, installation: source }, token);
 		const slot = target.kind === 'skill'
@@ -1100,7 +1100,7 @@ export class CustomizationMarketplaceInstallService extends Disposable implement
 			return { kind: 'mcp', id: installed.id };
 		}
 		if (source.kind === 'copilotConnector') {
-			throw new Error(localize('customizationMarketplace.connectorInstallTargetUnavailable', "Copilot connectors do not have a local installation target."));
+			throw new Error(localize('customizationMarketplace.connectorInstallTargetUnavailable', "AI connectors do not have a local installation target."));
 		}
 		if (source.kind === 'plugin') {
 			const result = await this.pluginInstallService.installPluginFromSource(`${source.repository}#${source.ref}`, { path: source.path });

@@ -668,7 +668,7 @@ function toGitHubInfo(meta: SessionMeta | undefined, workingDirectory: URI | und
 /** Copilot CLI session type */
 export const CopilotCLISessionType: ISessionType = {
 	id: 'copilotcli',
-	label: localize('copilotCLI', "Copilot"),
+	label: localize('copilotCLI', "AI"),
 	icon: Codicon.copilot,
 	supportsWorktreeConfiguration: true,
 	authRequirement: SessionTypeAuthRequirement.GitHub,
@@ -3751,7 +3751,7 @@ export abstract class BaseAgentHostSessionsProvider extends Disposable implement
 	 */
 	protected abstract resourceSchemeForProvider(provider: string): string;
 
-	/** Format the human-readable label for a session type entry (e.g. `Copilot`). */
+	/** Format the human-readable label for a session type entry (e.g. `AI`). */
 	protected abstract _formatSessionTypeLabel(agentLabel: string): string;
 
 	/**

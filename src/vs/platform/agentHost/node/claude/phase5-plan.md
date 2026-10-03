@@ -446,7 +446,7 @@ The PR is **done** when every box below is checked. Run them in order — earlie
 - [ ] All 7 Phase-5 stubs are real implementations or, in the case of `createSession` with `config.fork`, throw `TODO: Phase 6`. None throw `TODO: Phase 5`.
 - [ ] Phase-6+ stubs (`sendMessage`, `respondToPermissionRequest`, etc.) still throw `TODO: Phase N`.
 - [ ] `dispose()` order is `await shutdown(); _proxyHandle?.dispose(); super.dispose();` with a comment citing the Phase-6 invariant.
-- [ ] Microsoft copyright header on every new file.
+- [ ] Vertex copyright header on every new file.
 - [ ] No `as any` / `as unknown as Foo` casts in test or production code.
 
 ### 7.2 Schema & DI
@@ -464,7 +464,7 @@ The PR is **done** when every box below is checked. Run them in order — earlie
 
 ### 7.4 Compile + lint + layers
 
-- [ ] `VS Code - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
+- [ ] `Vertex - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
 - [ ] `npm run eslint -- src/vs/platform/agentHost/node/claude src/vs/platform/agentHost/test/node/claudeAgent.test.ts` exits 0.
 - [ ] `npm run valid-layers-check` exits 0.
 - [ ] `npm run hygiene` exits 0.
@@ -550,7 +550,7 @@ The SDK is source of truth. CopilotAgent's pattern at `copilotAgent.ts:521-523` 
 Mirrors Claude Code's "no message → no session" semantic. Pre-prompt drafts are in-memory only; first `sendMessage` (Phase 6) writes the SDK session record. Avoids phantom DB rows when users open the picker, hesitate, and quit without sending. The cost — drafts evaporate on app close — is acceptable and matches the SDK's own behavior.
 
 **Why is the schema Claude-native (`permissionMode`) instead of platform-conforming (`AutoApprove` + `Mode`)?**
-Decision **B5**. The `SessionConfigKey` doc-comment at [`sessionConfigKeys.ts:6-15`](../../common/sessionConfigKeys.ts) splits keys into platform-consumed (`AutoApprove`, `Permissions`, `Mode`) and client-convention (`Isolation`, `Branch`, `BranchNameHint`). But [`SessionPermissionManager`](../../common/sessionPermissions.ts#L117-L167) — the only reader of `AutoApprove` — fires only from Copilot SDK `pending_confirmation` signals. Claude SDK invokes `canUseTool` **directly** before each call, completely independent of platform gating. So `AutoApprove` is effectively a Copilot-private knob; Claude has no obligation to advertise it. The `permissionMode` enum (4 values) collapses what Copilot expresses as 2 axes (`AutoApprove` × `Mode`) into Claude's native single axis. Workbench UI is schema-driven and adapts automatically (§3.3.5).
+Decision **B5**. The `SessionConfigKey` doc-comment at [`sessionConfigKeys.ts:6-15`](../../common/sessionConfigKeys.ts) splits keys into platform-consumed (`AutoApprove`, `Permissions`, `Mode`) and client-convention (`Isolation`, `Branch`, `BranchNameHint`). But [`SessionPermissionManager`](../../common/sessionPermissions.ts#L117-L167) — the only reader of `AutoApprove` — fires only from AI SDK `pending_confirmation` signals. Claude SDK invokes `canUseTool` **directly** before each call, completely independent of platform gating. So `AutoApprove` is effectively a AI-private knob; Claude has no obligation to advertise it. The `permissionMode` enum (4 values) collapses what AI expresses as 2 axes (`AutoApprove` × `Mode`) into Claude's native single axis. Workbench UI is schema-driven and adapts automatically (§3.3.5).
 
 **Why is `turnIdMapping` consumed but not built by `ClaudeAgent.createSession`?**
 [`AgentService.createSession`](../../common/agentService.ts#L252-L264) **already** builds `turnIdMapping` from the source session's turns BEFORE calling `provider.createSession(config)`. Providers are consumers, not authors. CopilotAgent's older inline-build pattern at `copilotAgent.ts:633` predates the centralized mapping; `ClaudeAgent` follows the new contract.

@@ -208,7 +208,7 @@ export class TaskApiBackend implements CloudAgentBackend {
 		return {
 			taskId: task.id,
 			taskUrl: task.html_url ?? '',
-			title: task.name ?? extractTitle(params.prompt, params.problemStatement) ?? params.title ?? 'Copilot task',
+			title: task.name ?? extractTitle(params.prompt, params.problemStatement) ?? params.title ?? 'AI task',
 			sessionId: task.id,
 		};
 	}

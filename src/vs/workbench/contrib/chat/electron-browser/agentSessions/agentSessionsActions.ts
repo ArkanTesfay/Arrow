@@ -274,7 +274,7 @@ export class ResetCopilotHarnessIntroductionAction extends Action2 {
 	constructor() {
 		super({
 			id: ResetCopilotHarnessIntroductionAction.ID,
-			title: localize2('chat.resetCopilotHarnessIntroduction', "Reset Copilot Harness Introduction"),
+			title: localize2('chat.resetCopilotHarnessIntroduction', "Reset AI Harness Introduction"),
 			category: Categories.Developer,
 			f1: true,
 			precondition: ChatContextKeys.enabled,
@@ -514,7 +514,7 @@ export const enum AgentsHandoffTipMode {
 	Hidden = 'hidden',
 	/** Show the tip with the default message + description. */
 	Default = 'default',
-	/** Show the tip with the alternate "Free with your Copilot" framing. */
+	/** Show the tip with the alternate "Free with your AI" framing. */
 	Custom = 'custom',
 }
 
@@ -790,12 +790,12 @@ export class AgentsHandoffInputTipContribution extends Disposable implements IWo
 		// than a generic "continue in agents" upsell.
 		const useEmptyWorkspaceCopy = emptyWorkspaceEligible && !eligible;
 		const message = this._titleTreatment ?? (useEmptyWorkspaceCopy
-			? localize('chat.agentsHandoff.tip.emptyWorkspace.message', "Copilot isn't available without an open folder")
+			? localize('chat.agentsHandoff.tip.emptyWorkspace.message', "AI isn't available without an open folder")
 			: localize('chat.agentsHandoff.tip.message', "Continue this session in the Agents Window"));
 		const description = this._descriptionTreatment ?? (useEmptyWorkspaceCopy
-			? localize('chat.agentsHandoff.tip.emptyWorkspace.description', "Open the Agents Window to start a Copilot session.")
+			? localize('chat.agentsHandoff.tip.emptyWorkspace.description', "Open the Agents Window to start a AI session.")
 			: mode === AgentsHandoffTipMode.Custom
-				? localize('chat.agentsHandoff.tip.description.copilot', "Free with your Copilot plan — get a dedicated, multi-pane view alongside your workspace.")
+				? localize('chat.agentsHandoff.tip.description.copilot', "Free with your AI plan — get a dedicated, multi-pane view alongside your workspace.")
 				: localize('chat.agentsHandoff.tip.description', "Get a dedicated, multi-pane view alongside your workspace."));
 		const actionLabel = useEmptyWorkspaceCopy
 			? localize('chat.agentsHandoff.tip.action', "Open in Agents Window")
@@ -872,14 +872,14 @@ type CopilotHarnessIntroductionLifecycleEvent = {
 };
 
 type CopilotHarnessIntroductionLifecycleClassification = {
-	stage: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Whether an eligible Copilot harness introduction opportunity was observed or the introduction was actually shown.' };
-	mode: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The effective Copilot harness introduction experiment mode.' };
+	stage: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Whether an eligible AI harness introduction opportunity was observed or the introduction was actually shown.' };
+	mode: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The effective AI harness introduction experiment mode.' };
 	chatSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The random identifier of the eligible chat session.' };
 	sessionType: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The telemetry-safe chat session type.' };
 	harness: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The underlying Agent Host harness, when applicable.' };
 	committedChatSessionId?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The random identifier assigned when an untitled opportunity materializes, used to join later request telemetry.' };
 	owner: 'justschen';
-	comment: 'Tracks eligible opportunities and actual exposure for the Copilot harness introduction experiment.';
+	comment: 'Tracks eligible opportunities and actual exposure for the AI harness introduction experiment.';
 };
 
 export class AgentsParallelWorkContribution extends Disposable implements IWorkbenchContribution {

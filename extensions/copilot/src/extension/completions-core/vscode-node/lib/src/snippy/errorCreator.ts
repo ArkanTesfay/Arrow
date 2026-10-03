@@ -17,7 +17,7 @@ export const ErrorMessages = {
 	[ErrorReasons.Unauthorized]:
 		'Invalid GitHub token. Please sign out from your GitHub account using VSCode UI and try again',
 	[ErrorReasons.InternalError]:
-		'Internal error: matches to public code will not be detected. It is advised to disable Copilot completions until the service is reconnected.',
+		'Internal error: matches to public code will not be detected. It is advised to disable AI completions until the service is reconnected.',
 	[ErrorReasons.RateLimit]:
 		`You've reached your quota and limit, code matching will be unavailable until the limit resets`,
 };

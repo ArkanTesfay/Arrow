@@ -10,7 +10,7 @@ import { CancellationToken } from '../../../base/common/cancellation.js';
 import { extract } from '../../../base/node/zip.js';
 import { DEFAULT_LOCAL_TRANSCRIPTION_MODEL, ILocalTranscriptionModelImportResult } from '../common/localTranscription.js';
 
-const MODEL_PUBLISHER = 'Microsoft';
+const MODEL_PUBLISHER = 'Vertex';
 const MODEL_VARIANT = `${DEFAULT_LOCAL_TRANSCRIPTION_MODEL}-generic-cpu`;
 const INFERENCE_MODEL_FILE = 'inference_model.json';
 const GENAI_CONFIG_FILE = 'genai_config.json';

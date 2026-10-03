@@ -132,7 +132,7 @@ export abstract class DefaultModelContribution extends Disposable {
 			supportedModels.sort((a, b) => a.metadata.name.localeCompare(b.metadata.name));
 
 			// Build a vendor id -> display name lookup so labels can show the
-			// human-readable provider name (e.g. "Copilot") instead of the
+			// human-readable provider name (e.g. "AI") instead of the
 			// vendor id (e.g. "copilot") which is what gets stored.
 			const vendorDisplayNames = new Map<string, string>();
 			for (const vendor of vendors) {

@@ -1,12 +1,12 @@
-# GitHub Copilot Managed Settings
+# Vertex AI Managed Settings
 
-This file documents the **managed-settings** modality: how an enterprise admin's Copilot configuration (delivered to VS Code via native MDM or the GitHub server) flows into VS Code's policy stack and locks a setting. It is a companion to `SKILL.md` — read that first for the general policy lifecycle (`policy:` field, export, artifacts).
+This file documents the **managed-settings** modality: how an enterprise admin's AI configuration (delivered to Vertex via native MDM or the GitHub server) flows into Vertex's policy stack and locks a setting. It is a companion to `SKILL.md` — read that first for the general policy lifecycle (`policy:` field, export, artifacts).
 
 Managed settings layer **on top of** the existing policy framework. They do **not** introduce a new `IPolicyService`; they feed `IPolicyData.managedSettings`, which the existing `policy.value(policyData)` callback already consumes via `AccountPolicyService`.
 
-## The big idea: one canonical bag, three delivery channels (in VS Code)
+## The big idea: one canonical bag, three delivery channels (in Vertex)
 
-Every enterprise-managed Copilot setting resolves through a single normalized bag:
+Every enterprise-managed AI setting resolves through a single normalized bag:
 
 ```ts
 // src/vs/base/common/policy.ts
@@ -28,7 +28,7 @@ Keys are **flat dot-paths**. Scalar leaves flatten directly. Structured values (
 
 ### Delivery channels
 
-VS Code implements **three** channels feeding the bag, matching the external schema's described delivery slots (native MDM, server-managed, and file-based).
+Vertex implements **three** channels feeding the bag, matching the external schema's described delivery slots (native MDM, server-managed, and file-based).
 
 | Channel | Where it's read | Implementation | Lands on |
 |---------|-----------------|----------------|----------|
@@ -36,19 +36,19 @@ VS Code implements **three** channels feeding the bag, matching the external sch
 | **Server-managed** (`/copilot_internal/managed_settings`) | GitHub endpoint; per the code comment in `managedSettings.ts`, it returns the enterprise's `.github/copilot/settings.json` content | `adaptManagedSettings` (`src/vs/workbench/services/accounts/browser/managedSettings.ts`) → `DefaultAccountService.policyData` | `accountPolicyData.managedSettings` |
 | **File-based** (`managed-settings.json`) | well-known per-OS disk path (e.g. `/Library/Application Support/GitHubCopilot/` on macOS), read in the main process and exposed to renderer windows over IPC | `FileManagedSettingsService` (`src/vs/platform/policy/common/fileManagedSettingsService.ts`) | `IFileManagedSettingsService.rawManagedSettings` + `.managedSettings` |
 
-All three VS Code channels converge in `AccountPolicyService.getPolicyData()`.
+All three Vertex channels converge in `AccountPolicyService.getPolicyData()`.
 
 **Precedence: native MDM managed settings win over the server-delivered channel, which in turn wins over the file-based channel** (`pickManagedSettings` in `copilotManagedSettings.ts`). Precedence is resolved **per key**: for each key the highest-precedence channel that supplies it wins, but a key that the higher channels leave unset is still filled in by a lower channel. A value an admin locks via native MDM therefore cannot be overwritten by the server or a file, while keys the higher channels never set remain available to lower ones. Rationale for the order: the server is harder to bypass than local MDM, and a local file is the most easily tampered with. The merged bag is then projected onto the declared schema (see below). Client-side merging still happens *within* a channel's value (e.g. `enabledPlugins`, `extraKnownMarketplaces`).
 
 **Sandbox presentation exceptions:** `sandbox.enabled` follows the runtime's `force-on-wins` contract: `true` from any managed channel wins over `false` from another channel. `sandbox.allowBypass` and `sandbox.userPolicy.network.allowOutbound` are `deny-wins`: `false` from any managed channel wins. The shared resolver supplies these results to UI consumers and Policy Diagnostics; runtime enforcement remains authoritative. Other keys retain their existing delivery-channel precedence.
 
-The Settings editor presents managed outbound denial as `chat.agent.sandbox.allowNetwork: false` and managed bypass denial as `chat.agent.sandbox.allowUnsandboxedCommands: false`, using the existing disabled control and organization-managed indicator. Managed `true` leaves these controls editable so users can restrict access locally. Requiring sandboxing without explicitly permitting bypass also locks bypass off. `SandboxSettingsResolutionHelper` shares these toggle rules with the Agent Host's effective configuration, which uses the runtime-resolved session policy before sending SDK updates or supplying custom terminal settings. These are not VS Code configuration policies: stored preferences are unchanged and reappear when restrictions are removed. Filesystem settings display and forward local values, without managed intersection or union in the helper.
+The Settings editor presents managed outbound denial as `chat.agent.sandbox.allowNetwork: false` and managed bypass denial as `chat.agent.sandbox.allowUnsandboxedCommands: false`, using the existing disabled control and organization-managed indicator. Managed `true` leaves these controls editable so users can restrict access locally. Requiring sandboxing without explicitly permitting bypass also locks bypass off. `SandboxSettingsResolutionHelper` shares these toggle rules with the Agent Host's effective configuration, which uses the runtime-resolved session policy before sending SDK updates or supplying custom terminal settings. These are not Vertex configuration policies: stored preferences are unchanged and reappear when restrictions are removed. Filesystem settings display and forward local values, without managed intersection or union in the helper.
 
 ## Schema source of truth
 
-When the developer has `copilot-agent-runtime` checked out side-by-side, reference `copilot-agent-runtime/schema/managed-settings-schema.json` as the authoritative shape. It is aligned with the `managed_settings` API output and is the schema for all delivery channels (MDM plist/registry, file-based, server-managed). The runtime schema also contains keys that VS Code never projects because their behavior is runtime-owned. The table below contains selected VS Code-projected examples with non-obvious composition or encoding. It is not an inventory; derive the current key set from policy declarations and the runtime schema.
+When the developer has `copilot-agent-runtime` checked out side-by-side, reference `copilot-agent-runtime/schema/managed-settings-schema.json` as the authoritative shape. It is aligned with the `managed_settings` API output and is the schema for all delivery channels (MDM plist/registry, file-based, server-managed). The runtime schema also contains keys that Vertex never projects because their behavior is runtime-owned. The table below contains selected Vertex-projected examples with non-obvious composition or encoding. It is not an inventory; derive the current key set from policy declarations and the runtime schema.
 
-The schema is **nested**, whereas the VS Code bag is **flattened** to dot-paths — e.g. the schema's nested `permissions.disableBypassPermissionsMode` becomes the flat bag key of the same name (the `COPILOT_DISABLE_BYPASS_PERMISSIONS_MODE_KEY` constant):
+The schema is **nested**, whereas the Vertex bag is **flattened** to dot-paths — e.g. the schema's nested `permissions.disableBypassPermissionsMode` becomes the flat bag key of the same name (the `COPILOT_DISABLE_BYPASS_PERMISSIONS_MODE_KEY` constant):
 
 | Schema property (path) | Type in schema | Composition (`x-composition.strategy`) |
 |------------------------|----------------|----------------------------------------|
@@ -60,13 +60,13 @@ The schema is **nested**, whereas the VS Code bag is **flattened** to dot-paths 
 | `extraKnownMarketplaces` | `{ name: { source, autoUpdate? } }`, source `github` \| `git` \| `directory` | most-restrictive-wins (higher layer is the complete allowlist); explicit `autoUpdate` overrides the client's global plugin auto-update setting for that marketplace |
 | `strictKnownMarketplaces` | array of source descriptors | most-restrictive-wins (empty array = lockdown) |
 
-> **Current schema ↔ runtime divergence** (treat `managed-settings-schema.json` as the API source of truth, and keep the VS Code `managedSettings` declarations aligned with what the server actually projects into the bag):
+> **Current schema ↔ runtime divergence** (treat `managed-settings-schema.json` as the API source of truth, and keep the Vertex `managedSettings` declarations aligned with what the server actually projects into the bag):
 > - `extraKnownMarketplaces`: the schema permits source kinds `github` / `git` /
->   `directory`, but the VS Code normalizer only accepts `github` and `git` — `directory` (and any other kind) is dropped with a warning (`managedSettings.ts` `normalizeExtraKnownMarketplaces`; `IExtraKnownMarketplaceEntry` in `base/common/managedSettings.ts` only types `github`/`git`).
+>   `directory`, but the Vertex normalizer only accepts `github` and `git` — `directory` (and any other kind) is dropped with a warning (`managedSettings.ts` `normalizeExtraKnownMarketplaces`; `IExtraKnownMarketplaceEntry` in `base/common/managedSettings.ts` only types `github`/`git`).
 >
 > Note every **structured** key — `enabledPlugins`, `extraKnownMarketplaces`, `strictKnownMarketplaces` — is declared on its policy as **`{ type: 'string' }`**: the object/array value is carried as a JSON string in the bag and parsed back on read (see [Structured settings](#structured-objectarray-settings)). The *setting's* own `type` is the real shape — e.g. `chat.plugins.strictMarketplaces` is `['array', 'null']`, modeling the schema's array allowlist; only the bag-carrying type is `'string'`. That `'string'` is **required, not cosmetic**: `type` is a required field whose only allowed values are `'string' | 'number' | 'boolean'`, so omitting it or declaring `'object'` / `'array'` is a *compile* error; declaring `'number'` / `'boolean'` compiles but then fails projection validation at *runtime* (the JSON-string bag value flunks `typeof value === type`), so the key is dropped and silently never applies.
 
-Note the schema's `x-composition` describes the **server/runtime** layering across enterprise/org/user. Inside VS Code the bag has already been collapsed to a single projected `ManagedSettingsData` before a `policy.value()` callback ever sees it.
+Note the schema's `x-composition` describes the **server/runtime** layering across enterprise/org/user. Inside Vertex the bag has already been collapsed to a single projected `ManagedSettingsData` before a `policy.value()` callback ever sees it.
 
 > **Multi-key precedence (`model`).** The channel merge in `pickManagedSettings` only resolves the *same* key across delivery channels; it does not know that top-level `model` supersedes the legacy nested `permissions.model`. That cross-key precedence is resolved in the policy's `value()` callback (`managedModelValue` in `copilotManagedSettings.ts`), which reads the top-level key first and falls back to the legacy key (treating a blank value as unset). Because it is key-level, a non-empty top-level `model` wins even when `permissions.model` was supplied by a higher-precedence channel. The `ChatDefaultModel` policy declares **both** keys in its `managedSettings` so native MDM watches each and projection keeps them.
 
@@ -145,9 +145,9 @@ managedSettings: { [COPILOT_ENABLED_PLUGINS_KEY]: { type: 'string' } },
 
 ### Governance presence disables the third-party harnesses
 
-`IPolicyData.managedSettingsActive` is `true` when **any** channel supplies **any** managed setting — i.e. the user is governed at all, independent of which keys were set. It is set in `AccountPolicyService.getPolicyData` from `pickManagedSettings(...).activeSources`, and unlike `IPolicyData.managedSettings` it is **not** projected onto the keys VS Code declares, so it also reflects runtime-owned keys VS Code never reads.
+`IPolicyData.managedSettingsActive` is `true` when **any** channel supplies **any** managed setting — i.e. the user is governed at all, independent of which keys were set. It is set in `AccountPolicyService.getPolicyData` from `pickManagedSettings(...).activeSources`, and unlike `IPolicyData.managedSettings` it is **not** projected onto the keys Vertex declares, so it also reflects runtime-owned keys Vertex never reads.
 
-The `Claude3PIntegration` and `Codex3PIntegration` policies both use `thirdPartyAgentEnabledValue`, which forces its setting to `false` when the account disables chat preview features **or** when `managedSettingsActive` is `true`. Rationale: managed settings are composed and enforced by the Copilot runtime and never reach the Claude or Codex harnesses, so leaving those harnesses available would hand a governed user an ungoverned path around every control the enterprise set. This mirrors the runtime-owned `sandbox.enabled` floor retiring the local harness (`IAgentHostEnablementService.managedSandboxEnforced`).
+The `Claude3PIntegration` and `Codex3PIntegration` policies both use `thirdPartyAgentEnabledValue`, which forces its setting to `false` when the account disables chat preview features **or** when `managedSettingsActive` is `true`. Rationale: managed settings are composed and enforced by the AI runtime and never reach the Claude or Codex harnesses, so leaving those harnesses available would hand a governed user an ungoverned path around every control the enterprise set. This mirrors the runtime-owned `sandbox.enabled` floor retiring the local harness (`IAgentHostEnablementService.managedSandboxEnforced`).
 
 Invariants:
 
@@ -206,15 +206,15 @@ The **file-based** channel is wired the same way (`src/vs/code/electron-main/mai
 
 1. Source input (the server response, parsed file, or definition-scoped native watcher values).
 2. Canonical normalized bag from `normalizeManagedSettings`.
-3. VS Code policy projection from `projectManagedSettings`.
+3. Vertex policy projection from `projectManagedSettings`.
 
-It then shows per-key channel precedence, the merged normalized bag, and the final bag delivered to VS Code policy callbacks. Runtime-owned settings can therefore remain visible in a raw source even when VS Code has no corresponding policy declaration and the projected bag is empty.
+It then shows per-key channel precedence, the merged normalized bag, and the final bag delivered to Vertex policy callbacks. Runtime-owned settings can therefore remain visible in a raw source even when Vertex has no corresponding policy declaration and the projected bag is empty.
 
-The report separately queries capable Agent Host providers for their own effective managed-settings snapshot. Copilot uses the platform runtime package's public `sdk/index.js#getManagedSettings()` API, which returns the same payload as `session.managed_settings_resolved` without requiring an active session. This runtime snapshot is not treated as another VS Code delivery channel because the runtime owns its schema and authority resolution independently.
+The report separately queries capable Agent Host providers for their own effective managed-settings snapshot. AI uses the platform runtime package's public `sdk/index.js#getManagedSettings()` API, which returns the same payload as `session.managed_settings_resolved` without requiring an active session. This runtime snapshot is not treated as another Vertex delivery channel because the runtime owns its schema and authority resolution independently.
 
-## Projecting a managed-settings key into VS Code (checklist)
+## Projecting a managed-settings key into Vertex (checklist)
 
-Follow this checklist only after the root [SKILL.md](./SKILL.md) routes the control to a VS Code or split runtime/editor policy. Runtime-only managed settings need no VS Code constant, configuration policy, or policy-data export.
+Follow this checklist only after the root [SKILL.md](./SKILL.md) routes the control to a Vertex or split runtime/editor policy. Runtime-only managed settings need no Vertex constant, configuration policy, or policy-data export.
 
 1. **Pick the canonical dot-path** and add it as a constant in `copilotManagedSettings.ts`. It must match the server `managed_settings` API field / the `managed-settings-schema.json` key exactly.
 2. **Attach it to a policy** on the governing setting: add `managedSettings: { [KEY]: { type } }` and a `value` callback. For a plain pass-through use `value: managedSettingValue(KEY)`; only hand-write the callback when combining with another condition. A transport control with no governing configuration setting is the exception: add its schema to `MANAGED_SETTINGS_CONTROL_DEFINITIONS` and consume it in the delivery pipeline instead.
@@ -224,7 +224,7 @@ Follow this checklist only after the root [SKILL.md](./SKILL.md) routes the cont
 
 ### Transport-only control: `forceRemoteSettingsRefresh`
 
-`forceRemoteSettingsRefresh` is not a user configuration setting. It controls whether the server-managed-settings cache may satisfy startup, so VS Code preserves it in the cached raw server bag and always includes it in the native MDM watch schema. `DefaultAccountProvider` resolves the control across native MDM, cached server, and managed-file delivery before using the server cache. When the result is `true`, only a fresh successful server response for the current account, authentication provider, and endpoint satisfies the requirement. A failed refresh may retain cached restrictions and the flag itself, but the Account Policy gate keeps AI features disabled until a retry succeeds. Authentication remains available so users can recover from missing or expired credentials.
+`forceRemoteSettingsRefresh` is not a user configuration setting. It controls whether the server-managed-settings cache may satisfy startup, so Vertex preserves it in the cached raw server bag and always includes it in the native MDM watch schema. `DefaultAccountProvider` resolves the control across native MDM, cached server, and managed-file delivery before using the server cache. When the result is `true`, only a fresh successful server response for the current account, authentication provider, and endpoint satisfies the requirement. A failed refresh may retain cached restrictions and the flag itself, but the Account Policy gate keeps AI features disabled until a retry succeeds. Authentication remains available so users can recover from missing or expired credentials.
 
 Reference tests:
 - `src/vs/platform/policy/test/common/copilotManagedSettings.test.ts`

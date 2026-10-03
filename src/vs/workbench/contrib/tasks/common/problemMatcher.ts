@@ -1943,7 +1943,7 @@ class ProblemMatcherRegistryImpl implements IProblemMatcherRegistry {
 	private fillDefaults(): void {
 		this.add({
 			name: 'msCompile',
-			label: localize('msCompile', 'Microsoft compiler problems'),
+			label: localize('msCompile', 'Vertex compiler problems'),
 			owner: 'msCompile',
 			source: 'cpp',
 			applyTo: ApplyToKind.allDocuments,

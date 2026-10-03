@@ -162,7 +162,7 @@ export class SlashCommandHandler extends Disposable implements IChatSubmitReques
 
 		this._slashCommands.push({
 			command: 'vscode-pet',
-			detail: localize('slashCommand.vscodePet', "Toggle an interactive VS Code pet (Experimental)"),
+			detail: localize('slashCommand.vscodePet', "Toggle an interactive Vertex pet (Experimental)"),
 			sortText: 'z3_vscodePet',
 			executeImmediately: true,
 			execute: () => this.chatPetService.toggle(),

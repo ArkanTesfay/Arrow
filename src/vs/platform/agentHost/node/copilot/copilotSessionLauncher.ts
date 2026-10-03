@@ -388,10 +388,10 @@ function describeModelId(model: ModelSelection | undefined): string {
 export function resolveConfiguredReasoningEffortOverride(model: ModelSelection | undefined, configurationService: Pick<IAgentConfigurationService, 'getRootValue'>, logService: ILogService, sessionId: string): SessionConfig['reasoningEffort'] {
 	const overrides = configurationService.getRootValue(copilotCliConfigSchema, CopilotCliConfigKey.ModelCapabilityOverrides);
 	const effort = resolveModelCapabilityOverrideField(overrides, model?.id, 'reasoningEffort', isCopilotReasoningEffort, value => {
-		logService.warn(`[Copilot:${sessionId}] Ignoring invalid reasoning-effort override '${value}' for '${describeModelId(model)}'; expected one of [${ReasoningEfforts.join(', ')}]`);
+		logService.warn(`[AI:${sessionId}] Ignoring invalid reasoning-effort override '${value}' for '${describeModelId(model)}'; expected one of [${ReasoningEfforts.join(', ')}]`);
 	});
 	if (effort !== undefined) {
-		logService.info(`[Copilot:${sessionId}] Applying reasoning-effort override '${effort}' for '${describeModelId(model)}'`);
+		logService.info(`[AI:${sessionId}] Applying reasoning-effort override '${effort}' for '${describeModelId(model)}'`);
 		return toSdkReasoningEffort(effort);
 	}
 	return undefined;
@@ -413,7 +413,7 @@ function getModelCapabilitiesOverride(value: Record<string, unknown> | undefined
 	if (value === undefined) {
 		return undefined;
 	}
-	logService.info(`[Copilot:${sessionId}] Applying 'modelCapabilities' capability override for '${modelId}'`);
+	logService.info(`[AI:${sessionId}] Applying 'modelCapabilities' capability override for '${modelId}'`);
 	return value as ModelCapabilitiesOverride;
 }
 
@@ -444,7 +444,7 @@ export function normalizeToolFilterPatterns(value: unknown): string[] | undefine
 function getToolFilterOverride(value: string | readonly string[] | undefined, field: string, modelId: string, logService: ILogService, sessionId: string): string[] | undefined {
 	const patterns = value !== undefined ? normalizeToolFilterPatterns(value) : undefined;
 	if (patterns !== undefined) {
-		logService.info(`[Copilot:${sessionId}] Applying '${field}' capability override for '${modelId}': ${patterns.join(', ')}`);
+		logService.info(`[AI:${sessionId}] Applying '${field}' capability override for '${modelId}': ${patterns.join(', ')}`);
 	}
 	return patterns;
 }
@@ -494,10 +494,10 @@ function resolveConfiguredAutoTierOverride(model: ModelSelection | undefined, co
 	}
 	const tier = normalizeAutoModeTier(override);
 	if (!isAutoModeTier(tier)) {
-		logService.warn(`[Copilot:${sessionId}] Ignoring unsupported Auto "Optimize for" override '${override}'; expected one of [${autoModeTiers.join(', ')}]`);
+		logService.warn(`[AI:${sessionId}] Ignoring unsupported Auto "Optimize for" override '${override}'; expected one of [${autoModeTiers.join(', ')}]`);
 		return undefined;
 	}
-	logService.info(`[Copilot:${sessionId}] Applying Auto "Optimize for" override '${tier}'`);
+	logService.info(`[AI:${sessionId}] Applying Auto "Optimize for" override '${tier}'`);
 	return tier;
 }
 
@@ -511,7 +511,7 @@ export function resolveCopilotAutoTier(model: ModelSelection | undefined, config
 	if (tier === undefined) {
 		return undefined;
 	}
-	logService.info(`[Copilot:${sessionId}] Using Auto "Optimize for" preference '${tier}'`);
+	logService.info(`[AI:${sessionId}] Using Auto "Optimize for" preference '${tier}'`);
 	return tier;
 }
 
@@ -556,7 +556,7 @@ export async function resolveByokSessionConfig(
 	try {
 		byokModels = [...bridgeRegistry.getModels()];
 	} catch (err) {
-		logService.warn(`[Copilot:${sessionId}] Failed to enumerate BYOK models from renderer bridges`, err);
+		logService.warn(`[AI:${sessionId}] Failed to enumerate BYOK models from renderer bridges`, err);
 		return {};
 	}
 	if (byokModels.length === 0) {
@@ -583,7 +583,7 @@ export async function resolveByokSessionConfig(
 	try {
 		handle = await startProxy();
 	} catch (err) {
-		logService.warn(`[Copilot:${sessionId}] Failed to start BYOK loopback proxy`, err);
+		logService.warn(`[AI:${sessionId}] Failed to start BYOK loopback proxy`, err);
 		return {};
 	}
 	const providers: NamedProviderConfig[] = [...new Set(byokModels.map(m => m.vendor))].map(vendor => ({
@@ -601,7 +601,7 @@ export async function resolveByokSessionConfig(
 		...(m.maxPromptTokens !== undefined ? { maxPromptTokens: m.maxPromptTokens } : {}),
 		...(m.maxOutputTokens !== undefined ? { maxOutputTokens: m.maxOutputTokens } : {}),
 	}));
-	logService.info(`[Copilot:${sessionId}] Wired ${models.length} BYOK model(s) across ${providers.length} provider(s) via loopback proxy ${handle.baseUrl}`);
+	logService.info(`[AI:${sessionId}] Wired ${models.length} BYOK model(s) across ${providers.length} provider(s) via loopback proxy ${handle.baseUrl}`);
 	return { providers, models };
 }
 
@@ -610,18 +610,18 @@ export async function applySandboxConfig(session: CopilotSessionWrapper['session
 	try {
 		const result = await session.rpc.options.update({ sandboxConfig });
 		if (!result.success) {
-			throw new Error('Copilot SDK rejected sandbox config update');
+			throw new Error('AI SDK rejected sandbox config update');
 		}
-		logService.info(`[Copilot:${sessionId}] Applied SDK sandboxConfig via session.options.update`);
+		logService.info(`[AI:${sessionId}] Applied SDK sandboxConfig via session.options.update`);
 		return true;
 	} catch (err) {
 		const data = isObject(err) ? err.data : undefined;
 		if ((isObject(data) && data.code === 'managed_sandbox_policy_conflict')
 			|| (err instanceof Error && err.message.includes('Sandbox configuration update violates managed policy. Contact your administrator for more information.'))) {
-			logService.warn(`[Copilot:${sessionId}] SDK sandboxConfig update conflicts with managed policy; continuing with the runtime's existing sandbox configuration`, err);
+			logService.warn(`[AI:${sessionId}] SDK sandboxConfig update conflicts with managed policy; continuing with the runtime's existing sandbox configuration`, err);
 			return false;
 		}
-		logService.warn(`[Copilot:${sessionId}] Failed to apply SDK sandboxConfig`, err);
+		logService.warn(`[AI:${sessionId}] Failed to apply SDK sandboxConfig`, err);
 		throw err;
 	}
 }
@@ -651,12 +651,12 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 	) { }
 
 	async launch(plan: CopilotSessionLaunchPlan, runtime: ICopilotSessionRuntime): Promise<CopilotSessionWrapper> {
-		this._logService.info(`[Copilot:${plan.sessionId}] Preparing SDK session: kind=${plan.kind}, configuration=${runtime.configurationResource.toString()}, chat=${runtime.chatUri.toString()}`);
+		this._logService.info(`[AI:${plan.sessionId}] Preparing SDK session: kind=${plan.kind}, configuration=${runtime.configurationResource.toString()}, chat=${runtime.chatUri.toString()}`);
 		let managedSettingsResolved = false;
 		const config = await this._buildSessionConfig(plan, runtime, () => { managedSettingsResolved = true; });
 		const sandboxConfig = async (session: CopilotSessionWrapper['session']) => {
 			if (!managedSettingsResolved) {
-				this._logService.error(`[Copilot:${plan.sessionId}] Copilot runtime did not report its resolved managed settings; continuing with available sandbox configuration`);
+				this._logService.error(`[AI:${plan.sessionId}] AI runtime did not report its resolved managed settings; continuing with available sandbox configuration`);
 			}
 			const owner = runtime.configurationResource.toString();
 			const config = this._computeSandboxConfig(owner);
@@ -678,28 +678,28 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 			let resumeError = err;
 			const errCode = getCopilotSdkErrorCode(resumeError);
 			const errMsg = getErrorMessage(resumeError);
-			this._logService.warn(`[Copilot:${plan.sessionId}] SDK resumeSession failed: code=${errCode}, message=${errMsg}`);
+			this._logService.warn(`[AI:${plan.sessionId}] SDK resumeSession failed: code=${errCode}, message=${errMsg}`);
 			if (plan.resolvedAgentName && isCustomAgentNotFoundError(resumeError)) {
 				fallbackPlan = { ...plan, resolvedAgentName: undefined };
 				fallbackConfig = { ...config, agent: undefined };
-				this._logService.warn(`[Copilot:${plan.sessionId}] Stored custom agent '${plan.resolvedAgentName}' was not found; retrying resume without a custom agent`);
+				this._logService.warn(`[AI:${plan.sessionId}] Stored custom agent '${plan.resolvedAgentName}' was not found; retrying resume without a custom agent`);
 				try {
 					const raw = await this._resumeSession(session, fallbackPlan, fallbackConfig);
 					return this._finalizeSession(raw, sandboxConfig, fallbackPlan, fallbackPlan.fallback.model?.id);
 				} catch (retryErr) {
 					resumeError = retryErr;
-					this._logService.warn(`[Copilot:${plan.sessionId}] SDK resumeSession without custom agent failed: code=${getCopilotSdkErrorCode(retryErr)}, message=${getErrorMessage(retryErr)}`);
+					this._logService.warn(`[AI:${plan.sessionId}] SDK resumeSession without custom agent failed: code=${getCopilotSdkErrorCode(retryErr)}, message=${getErrorMessage(retryErr)}`);
 				}
 			}
 			// Only a session with no events on disk may fall back to creating a
 			// fresh one under the same ID (seeding model & working directory
 			// from stored metadata); every other failure propagates.
 			if (!shouldCreateEmptySessionAfterResumeError(resumeError)) {
-				this._logService.warn(`[Copilot:${plan.sessionId}] Resume failure does not indicate an empty session; surfacing it instead of replacing the session with an empty one`);
+				this._logService.warn(`[AI:${plan.sessionId}] Resume failure does not indicate an empty session; surfacing it instead of replacing the session with an empty one`);
 				throw resumeError;
 			}
 
-			this._logService.warn(`[Copilot:${plan.sessionId}] Resume reported no session history; falling back to createSession with same ID`);
+			this._logService.warn(`[AI:${plan.sessionId}] Resume reported no session history; falling back to createSession with same ID`);
 			const wrapper = await this._createSession({
 				...fallbackPlan,
 				kind: 'create',
@@ -708,7 +708,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 				freeLongContext: fallbackPlan.fallback.freeLongContext,
 			}, fallbackConfig, sandboxConfig);
 			this._sessionOpenTelemetry.sdkResumeFallbackCreated(session);
-			this._logService.info(`[Copilot:${plan.sessionId}] Fallback createSession succeeded`);
+			this._logService.info(`[AI:${plan.sessionId}] Fallback createSession succeeded`);
 			return wrapper;
 		}
 	}
@@ -717,7 +717,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		const attemptId = generateUuid();
 		const stopWatch = new StopWatch();
 		let outcome = 'error';
-		this._logService.info(`[Copilot:${plan.sessionId}] SDK resumeSession started: attemptId=${attemptId}`);
+		this._logService.info(`[AI:${plan.sessionId}] SDK resumeSession started: attemptId=${attemptId}`);
 		try {
 			const raw = await this._sessionOpenTelemetry.withSdkResume(
 				session,
@@ -726,7 +726,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 			outcome = 'success';
 			return raw;
 		} finally {
-			this._logService.info(`[Copilot:${plan.sessionId}] SDK resumeSession settled: attemptId=${attemptId}, outcome=${outcome}, elapsedMs=${Math.round(stopWatch.elapsed())}`);
+			this._logService.info(`[AI:${plan.sessionId}] SDK resumeSession settled: attemptId=${attemptId}, outcome=${outcome}, elapsedMs=${Math.round(stopWatch.elapsed())}`);
 		}
 	}
 
@@ -774,7 +774,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		try {
 			const capabilities = await session.rpc.connectors.getCapabilities();
 			if (capabilities.availability !== 'enabled') {
-				this._logService.info(`[Copilot:${plan.sessionId}] Connector MCP reconciliation unavailable: ${capabilities.availability}`);
+				this._logService.info(`[AI:${plan.sessionId}] Connector MCP reconciliation unavailable: ${capabilities.availability}`);
 				return;
 			}
 			const token = plan.githubCredentials.token;
@@ -794,13 +794,13 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 				account = matchingProviders.length === 1 ? matchingProviders[0] : matchingAccounts.length === 1 ? matchingAccounts[0] : undefined;
 			}
 			if (!account?.selectionId) {
-				this._logService.warn(`[Copilot:${plan.sessionId}] Connector MCP reconciliation skipped because the session account could not be resolved`);
+				this._logService.warn(`[AI:${plan.sessionId}] Connector MCP reconciliation skipped because the session account could not be resolved`);
 				return;
 			}
 			const status = await session.rpc.connectors.reconcile({ accountId: account.selectionId, refreshCatalog: true });
-			this._logService.info(`[Copilot:${plan.sessionId}] Reconciled ${status.runtimeServers.length} connector MCP server(s) through the Copilot runtime`);
+			this._logService.info(`[AI:${plan.sessionId}] Reconciled ${status.runtimeServers.length} connector MCP server(s) through the AI runtime`);
 		} catch (error) {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Connector MCP reconciliation failed; continuing without connector tools: ${getErrorMessage(error)}`);
+			this._logService.warn(`[AI:${plan.sessionId}] Connector MCP reconciliation failed; continuing without connector tools: ${getErrorMessage(error)}`);
 		}
 	}
 
@@ -839,7 +839,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 			// problems by failing the request, so this is the path a genuine failure
 			// takes. Log the reason before it propagates: the launch is aborted below
 			// and the raw RPC error alone would not say which option was refused.
-			this._logService.error(`[Copilot:${sessionId}] Could not enable script safety; managed permissions cannot govern shell paths`, err);
+			this._logService.error(`[AI:${sessionId}] Could not enable script safety; managed permissions cannot govern shell paths`, err);
 			throw err;
 		}
 	}
@@ -848,9 +848,9 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 	private async _applyVerbosity(session: CopilotSessionWrapper['session'], verbosity: Verbosity, sessionId: string): Promise<void> {
 		try {
 			await session.rpc.options.update({ verbosity });
-			this._logService.info(`[Copilot:${sessionId}] Applied '${verbosity}' verbosity`);
+			this._logService.info(`[AI:${sessionId}] Applied '${verbosity}' verbosity`);
 		} catch (err) {
-			this._logService.warn(`[Copilot:${sessionId}] Failed to apply '${verbosity}' verbosity`, err);
+			this._logService.warn(`[AI:${sessionId}] Failed to apply '${verbosity}' verbosity`, err);
 		}
 	}
 
@@ -867,7 +867,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 	private _resolveByokSessionConfig(sessionId: string): Promise<{ providers?: NamedProviderConfig[]; models?: ProviderModelConfig[] }> {
 		const rootConfigValue = this._configurationService.getRootValue(platformRootSchema, AgentHostByokModelsEnabledConfigKey);
 		const { enabled, trace } = resolveByokLmEnablement(rootConfigValue);
-		this._logService.trace(`[Copilot:${sessionId}] BYOK session configuration ${trace}`);
+		this._logService.trace(`[AI:${sessionId}] BYOK session configuration ${trace}`);
 		if (!enabled) {
 			return Promise.resolve({});
 		}
@@ -921,7 +921,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		let shellTools: Awaited<ReturnType<typeof createShellTools>> = [];
 		if (enableCustomTerminalTool) {
 			if (!plan.shellManager) {
-				throw new Error(`ShellManager is required to launch Copilot session '${plan.sessionId}'`);
+				throw new Error(`ShellManager is required to launch AI session '${plan.sessionId}'`);
 			}
 			shellTools = await createShellTools(plan.shellManager, runtime.chatUri, this._terminalManager, this._logService, request => runtime.requestUnsandboxedCommandConfirmation(request));
 		}
@@ -944,15 +944,15 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		const modelId = describeModelId(model);
 		const modelFamily = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'family', (value): value is string => normalizeModelFamilyAlias(value) !== undefined, value => {
 			const description = typeof value === 'string' ? JSON.stringify(value.slice(0, 40)) : typeof value;
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring invalid 'family' capability override ${description} for '${modelId}'; expected a model id of at most 128 characters`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring invalid 'family' capability override ${description} for '${modelId}'; expected a model id of at most 128 characters`);
 		});
 		// Re-applied on every launch and resume, but NOT on a mid-session model
 		// change: a session keeps the filters of the model it launched with.
 		const availableToolsOverride = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'availableTools', (value): value is string | readonly string[] => normalizeToolFilterPatterns(value) !== undefined, () => {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring unusable 'availableTools' capability override for '${modelId}'; expected an array of tool patterns`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring unusable 'availableTools' capability override for '${modelId}'; expected an array of tool patterns`);
 		});
 		const excludedToolsOverride = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'excludedTools', (value): value is string | readonly string[] => normalizeToolFilterPatterns(value) !== undefined, () => {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring unusable 'excludedTools' capability override for '${modelId}'; expected an array of tool patterns`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring unusable 'excludedTools' capability override for '${modelId}'; expected an array of tool patterns`);
 		});
 		const availableTools = getToolFilterOverride(availableToolsOverride, 'availableTools', modelId, this._logService, plan.sessionId);
 		const excludedTools = getToolFilterOverride(excludedToolsOverride, 'excludedTools', modelId, this._logService, plan.sessionId);
@@ -965,21 +965,21 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 			? configuredSdkExcludedTools
 			: [...new Set([...(configuredSdkExcludedTools ?? []), `builtin:${SEMANTIC_SEARCH_TOOL_NAME}`])];
 		const modelCapabilitiesOverride = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'modelCapabilities', (value): value is Record<string, unknown> => isObject(value), () => {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring invalid 'modelCapabilities' capability override for '${modelId}'; expected an object`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring invalid 'modelCapabilities' capability override for '${modelId}'; expected an object`);
 		});
 		const modelCapabilities = getModelCapabilitiesOverride(modelCapabilitiesOverride, modelId, this._logService, plan.sessionId);
 		const promptOverrideString = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'promptOverrideString', (value): value is string => typeof value === 'string', () => {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring invalid 'promptOverrideString' capability override for '${modelId}'; expected a string`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring invalid 'promptOverrideString' capability override for '${modelId}'; expected a string`);
 		});
 		const promptOverrideFile = resolveModelCapabilityOverrideField(capabilityOverrides, model?.id, 'promptOverrideFile', (value): value is string => typeof value === 'string', () => {
-			this._logService.warn(`[Copilot:${plan.sessionId}] Ignoring invalid 'promptOverrideFile' capability override for '${modelId}'; expected a string`);
+			this._logService.warn(`[AI:${plan.sessionId}] Ignoring invalid 'promptOverrideFile' capability override for '${modelId}'; expected a string`);
 		});
 		// Host-side routing only — the prompt contributor and the tool-search gate
 		// below. The wire model stays the selected one, so the session still runs
 		// on the real model with the aliased family's prompt and tool profile.
 		const effectiveModel = modelFamily ? { ...model, id: modelFamily } : model;
 		if (modelFamily) {
-			this._logService.info(`[Copilot:${plan.sessionId}] Model capability override: routing prompt for '${describeModelId(model)}' as family '${modelFamily}'`);
+			this._logService.info(`[AI:${plan.sessionId}] Model capability override: routing prompt for '${describeModelId(model)}' as family '${modelFamily}'`);
 		}
 		const toolSearchActive = this._configurationService.getRootValue(copilotCliConfigSchema, CopilotCliConfigKey.ToolSearchEnabled) === true
 			&& agentHostModelSupportsToolSearch(effectiveModel?.id)
@@ -1001,7 +1001,7 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		const systemMessage = promptOverrides.systemPrompt !== undefined
 			? fullSystemPrompt(promptOverrides.systemPrompt)
 			: agentHostPromptRegistry.resolveSystemMessageConfig(effectiveModel, promptContext);
-		this._logService.info(`[Copilot:${plan.sessionId}] Resolved system message: ${describeSystemMessageConfig(systemMessage)}`);
+		this._logService.info(`[AI:${plan.sessionId}] Resolved system message: ${describeSystemMessageConfig(systemMessage)}`);
 		const additionalDisabledMcpServers = plan.isEphemeral ? [
 			...plugins.flatMap(plugin => plugin.mcpServers.map(server => server.name)),
 			...Object.keys(plan.snapshot.mcpServers),
@@ -1011,9 +1011,9 @@ export class CopilotSessionLauncher implements ICopilotSessionLauncher {
 		if (this._logService.getLevel() <= LogLevel.Trace) {
 			// Guarded: a `replace`-mode prompt's content can be multiple KB, so only
 			// serialize it when trace output is actually emitted.
-			this._logService.trace(`[Copilot:${plan.sessionId}] System message config: ${JSON.stringify(systemMessage, (_key, value) => typeof value === 'function' ? '[transform fn]' : value)}`);
+			this._logService.trace(`[AI:${plan.sessionId}] System message config: ${JSON.stringify(systemMessage, (_key, value) => typeof value === 'function' ? '[transform fn]' : value)}`);
 			const sortedUnique = (names: readonly string[]) => [...new Set(names)].sort();
-			this._logService.trace(`[Copilot:${plan.sessionId}] MCP launch projection: ${JSON.stringify({
+			this._logService.trace(`[AI:${plan.sessionId}] MCP launch projection: ${JSON.stringify({
 				ephemeral: plan.isEphemeral === true,
 				pluginDiscovery: sortedUnique(plugins.flatMap(plugin => plugin.mcpServers.filter(server => server.sdkRegistration === 'pluginDiscovery').map(server => server.name))),
 				sessionConfig: sortedUnique(plugins.flatMap(plugin => plugin.mcpServers.filter(server => server.sdkRegistration === 'sessionConfig').map(server => server.name))),

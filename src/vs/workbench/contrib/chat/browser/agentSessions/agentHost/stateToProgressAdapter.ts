@@ -2487,7 +2487,7 @@ export function toolCallStateToInvocation(tc: ToolCallState, subAgentInvocationI
 	if (tc.status === ToolCallStatus.PendingConfirmation) {
 		// Tool needs confirmation — create with confirmation messages.
 		// (Subagent-spawning tools never reach this state in production: the
-		// Copilot SDK's `task` tool doesn't request permission, and the event
+		// AI SDK's `task` tool doesn't request permission, and the event
 		// mapper auto-emits `tool_ready` with `confirmed: NotNeeded` paired
 		// with `tool_start`. So no special-case for subagents is needed here.)
 		const confirmationMessages = toolCallConfirmationMessages(tc, connectionAuthority);

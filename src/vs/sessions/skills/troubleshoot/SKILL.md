@@ -1,6 +1,6 @@
 ---
 name: troubleshoot
-description: Investigate unexpected behavior in the current Copilot agent session by analyzing its event log. Use when the user asks why something happened, why a request was slow, why a tool was or was not used, or why instructions/skills/agents did not load.
+description: Investigate unexpected behavior in the current AI agent session by analyzing its event log. Use when the user asks why something happened, why a request was slow, why a tool was or was not used, or why instructions/skills/agents did not load.
 ---
 <!-- Customize this skill and select save to override its behavior. Delete that copy to restore the built-in behavior. -->
 
@@ -8,7 +8,7 @@ description: Investigate unexpected behavior in the current Copilot agent sessio
 
 ## Purpose
 
-This skill investigates and explains unexpected agent behavior in the **current Copilot agent session** using its on-disk event log.
+This skill investigates and explains unexpected agent behavior in the **current AI agent session** using its on-disk event log.
 
 Use this skill for questions like:
 - Why did this request take so long?
@@ -26,7 +26,7 @@ The skill runs **inside** the session's agent, so the log is on the same machine
 1. **If a `Session log:` path is provided with this message, use it.** It may point to a session **other than** the current one (via `#session`) and may be **comma-separated paths** — investigate all of them and compare.
 2. **Sticky reference:** if no path is on the *current* message but an earlier turn in **this conversation** already established a target (a `Session log:` path, or a `#session:` reference), keep analyzing **that same session** for the follow-up. Do **not** fall back to self-discovery here — the newest log is the *current* session, which is the wrong one. Switch only if the user references a new session.
 3. **Otherwise, self-discover it:** pick the **most recently modified** `events.jsonl` under `${XDG_STATE_HOME:-$HOME}/.copilot/session-state/<sessionId>/` — this skill is appending to the current session's log, so it's reliably newest. Honor `XDG_STATE_HOME`, else `$HOME`.
-4. **If none exists** there, this isn't a Copilot session — tell the user the skill supports Copilot sessions only, and stop.
+4. **If none exists** there, this isn't a AI session — tell the user the skill supports AI sessions only, and stop.
 
 ## Data Source — `events.jsonl`
 
@@ -65,7 +65,7 @@ Iterate records in order and rebuild the logical tree from context:
 
 ## Secondary Source — Agent Host Wire Log (protocol communication)
 
-`events.jsonl` is the **primary** source and answers almost every question on its own. A *separate* log captures the **transport/protocol** between VS Code and the agent host process — the JSON-RPC-style frames that drive sessions.
+`events.jsonl` is the **primary** source and answers almost every question on its own. A *separate* log captures the **transport/protocol** between Vertex and the agent host process — the JSON-RPC-style frames that drive sessions.
 
 **Use the wire log only when the symptom points at the agent host / transport itself, not the model or a tool.** Reach for it when:
 - the agent host won't start, or the session never begins;
@@ -75,24 +75,24 @@ Iterate records in order and rebuild the logical tree from context:
 
 **Do not** open it for ordinary "why did the model/tool do X" questions — `events.jsonl` already answers those. If `events.jsonl` fully explains the behavior, stop there and don't read the wire log.
 
-**It is written by VS Code on the _client_ machine, so it is only reachable for a _local_ agent host** (VS Code and the agent on the same machine). For a remote agent host it lives on the client, not the host this skill runs on — skip it there.
+**It is written by Vertex on the _client_ machine, so it is only reachable for a _local_ agent host** (Vertex and the agent on the same machine). For a remote agent host it lives on the client, not the host this skill runs on — skip it there.
 
 ### Location
 
 ```
-<VS Code user-data dir>/logs/<session-timestamp>/ahp/ahp-<timestamp>-<connectionId>.jsonl
+<Vertex user-data dir>/logs/<session-timestamp>/ahp/ahp-<timestamp>-<connectionId>.jsonl
 ```
 
-The VS Code user-data dir depends on the build:
+The Vertex user-data dir depends on the build:
 - Windows: `%APPDATA%\Code` (Insiders: `Code - Insiders`; OSS/dev may use `Code - OSS` or a custom `--user-data-dir`)
 - macOS: `~/Library/Application Support/Code`
 - Linux: `~/.config/Code`
 
-A new `logs/<timestamp>/` folder is created per VS Code session — pick the **most recently modified** `ahp/ahp-*.jsonl`.
+A new `logs/<timestamp>/` folder is created per Vertex session — pick the **most recently modified** `ahp/ahp-*.jsonl`.
 
 **Named by _connection_ id, not session id** — one log **multiplexes all sessions on that connection** (no per-session file). Long connections rotate into `ahp-….1.jsonl`, `.2.jsonl`, … (max 5); the active one is the **most recently modified** (the locate commands pick it). Read the newest log for connection-level health; to isolate one session, filter by its id (the `session-state/<sessionId>/` folder name, which appears in frames' `params`/`result`).
 
-**If no `ahp/` folder exists, the wire log is disabled** (it is off by default). Tell the user to set `"chat.agentHost.ahpJsonlLoggingEnabled": true`, restart VS Code, reproduce the issue, then re-run.
+**If no `ahp/` folder exists, the wire log is disabled** (it is off by default). Tell the user to set `"chat.agentHost.ahpJsonlLoggingEnabled": true`, restart Vertex, reproduce the issue, then re-run.
 
 ### Format
 
@@ -102,7 +102,7 @@ Each line is a JSON-RPC frame plus an `_ahpLog` envelope:
 { "jsonrpc": "2.0", "id": 12, "method": "createSession", "params": {}, "_ahpLog": { "ts": "ISO-8601", "dir": "c2s", "connectionId": "…", "transport": "local" } }
 ```
 
-- `_ahpLog.dir` — direction: `c2s` = VS Code → host (requests/notifications), `s2c` = host → VS Code (results/errors/actions/notifications).
+- `_ahpLog.dir` — direction: `c2s` = Vertex → host (requests/notifications), `s2c` = host → Vertex (results/errors/actions/notifications).
 - `_ahpLog.transport` — `local` / `websocket` / `ssh` / `wsl`.
 - Requests/notifications carry `method` + `params`; responses carry `result` or `error` — pair a response to its request by `id`.
 - `_ahpLog.truncated: true` marks frames whose large payloads were elided.
@@ -175,4 +175,4 @@ Cover **what happened and why** (root cause), **key evidence** (paraphrased — 
 
 - Base every claim on log evidence — never assume causality.
 - Search via `run_in_terminal`; never `grep_search`, and never `read_file` a whole (possibly huge) log — narrow first, then read small ranges.
-- If no Copilot session log exists, say so and stop.
+- If no AI session log exists, say so and stop.

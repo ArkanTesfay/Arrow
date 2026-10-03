@@ -171,7 +171,7 @@ export class CopilotDebugCommandContribution extends Disposable implements vscod
 					return;
 				}
 				if (!authService.copilotToken) {
-					await authService.getGitHubSession('any', { createIfNone: { detail: l10n.t('Sign in to GitHub to use Copilot debug.') } });
+					await authService.getGitHubSession('any', { createIfNone: { detail: l10n.t('Sign in to GitHub to use AI debug.') } });
 				}
 				const result = await factory.start(opts, cts.token);
 

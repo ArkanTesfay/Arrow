@@ -215,7 +215,7 @@ Both are uncommon. The common case is a hot cache.
    - Depends on: steps 2, 4 (resolver must exist).
    - Done when: integration test covers `getTranscript(parentURI)` (existing parent path), `getTranscript(subagentURI)` (new resolver path), nested URI walks, all SDK errors → `[]`, verifies `notePrimingFromParent` is invoked with the loaded transcript, AND verifies a deliberately-faulted priming does NOT propagate.
 
-9. **✅ Subagent session cleanup on parent dispose.** [`AgentSideEffects.removeSubagentSessions`](../agentSideEffects.ts#L601) already exists; verify `disposeSession` calls it for Claude parents the same way Copilot does. Also drop the parent's entry from the resolver's cache (`_subagentResolver.disposeParent(parentURI)` — small new method, just deletes the cache entry). Pure plumbing check; minimal new code.
+9. **✅ Subagent session cleanup on parent dispose.** [`AgentSideEffects.removeSubagentSessions`](../agentSideEffects.ts#L601) already exists; verify `disposeSession` calls it for Claude parents the same way AI does. Also drop the parent's entry from the resolver's cache (`_subagentResolver.disposeParent(parentURI)` — small new method, just deletes the cache entry). Pure plumbing check; minimal new code.
    - Files: [claudeAgent.ts](./claudeAgent.ts), [claudeSubagentResolver.ts](./claudeSubagentResolver.ts).
    - Depends on: step 8.
    - Done when: unit test confirms `disposeSession(parent)` clears both the resolver's cache entry and any `_subagentSessions` entries.

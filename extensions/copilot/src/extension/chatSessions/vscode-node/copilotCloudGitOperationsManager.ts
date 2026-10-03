@@ -100,7 +100,7 @@ export class CopilotCloudGitOperationsManager {
 		const { repository, remoteName, baseRef } = await this.repoInfo();
 		const asyncBranch = await this.generateRandomBranchName(repository, 'copilot');
 
-		const commitMessage = vscode.l10n.t('Checkpoint from VS Code for cloud agent session');
+		const commitMessage = vscode.l10n.t('Checkpoint from Vertex for cloud agent session');
 		try {
 			await repository.createBranch(asyncBranch, true);
 			await this.performCommit(asyncBranch, repository, commitMessage);
@@ -139,7 +139,7 @@ export class CopilotCloudGitOperationsManager {
 			return new Promise<boolean>((resolve) => {
 				const startingCommit = repository.state.HEAD?.commit;
 				const terminal = vscode.window.createTerminal({
-					name: 'GitHub Copilot Cloud Agent',
+					name: 'Vertex AI Cloud Agent',
 					cwd: repository.rootUri.fsPath,
 					message: `\x1b[1m${COMMIT_YOUR_CHANGES}\x1b[0m`
 				});

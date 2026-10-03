@@ -1,6 +1,6 @@
 # @vscode/chat-lib
 
-Chat SDK extracted from VS Code Copilot Chat.
+Chat SDK extracted from Vertex AI Chat.
 
 ## Installation
 

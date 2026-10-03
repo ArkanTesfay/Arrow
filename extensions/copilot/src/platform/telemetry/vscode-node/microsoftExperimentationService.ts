@@ -130,7 +130,7 @@ class CopilotExtensionsFilterProvider implements IExperimentationFilterProvider 
 		const copilotChatExtensionVersion = packageJson.version;
 		const completionsCoreVersion = packageJson.completionsCoreVersion;
 
-		this._logService.trace(`[CopilotExtensionsFilterProvider]::getFilters Copilot Extension Version: ${copilotExtensionversion}, Copilot Chat Extension Version: ${copilotChatExtensionVersion}, Completions Core Version: ${completionsCoreVersion}`);
+		this._logService.trace(`[CopilotExtensionsFilterProvider]::getFilters AI Extension Version: ${copilotExtensionversion}, AI Chat Extension Version: ${copilotChatExtensionVersion}, Completions Core Version: ${completionsCoreVersion}`);
 		const filters = new Map<string, string>();
 		filters.set(RelatedExtensionsFilter.CopilotRelatedPluginVersionCopilot, copilotExtensionversion);
 		filters.set(RelatedExtensionsFilter.CopilotRelatedPluginVersionCopilotChat, copilotChatExtensionVersion);

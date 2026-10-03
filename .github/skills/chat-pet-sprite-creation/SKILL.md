@@ -1,6 +1,6 @@
 ---
 name: chat-pet-sprite-creation
-description: Use when creating or changing VS Code chat pet sprite art, sprite sheets, state animations, eye treatments, Stable/Insiders variants, or pet transitions under src/vs/workbench/contrib/chat/browser/widget/media/chatPet.
+description: Use when creating or changing Vertex chat pet sprite art, sprite sheets, state animations, eye treatments, Stable/Insiders variants, or pet transitions under src/vs/workbench/contrib/chat/browser/widget/media/chatPet.
 ---
 
 # Chat Pet Sprite Creation
@@ -296,7 +296,7 @@ Rare interactions should be sampled independently from the ordinary non-repeatin
 Keep the current rendering architecture:
 
 - Two sprite elements provide load-time double buffering.
-- Compare an image's original source with `getAttribute('src')`; `.src` may normalize VS Code resource URLs.
+- Compare an image's original source with `getAttribute('src')`; `.src` may normalize Vertex resource URLs.
 - Size the canvas at source-native frame dimensions and the CSS box at display dimensions.
 - Keep `imageSmoothingEnabled = false` and `image-rendering: pixelated`.
 - Cache resolved sprite source descriptors per variant.

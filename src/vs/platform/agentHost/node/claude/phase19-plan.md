@@ -8,7 +8,7 @@
 
 ## Goal
 
-Make the Copilot-CAPI proxy **optional**, selected by a single host-level
+Make the AI-CAPI proxy **optional**, selected by a single host-level
 `RootConfigState` property, so the Claude provider can talk to Anthropic
 **directly** on the user's own credentials (`ANTHROPIC_API_KEY`, a `claude
 login` OAuth session in `~/.claude`, or a cloud-provider config). All
@@ -156,7 +156,7 @@ commercial-metadata overlay.
    overlay at materialize time (forward-compat; not read for resolution in v1).
    - Files: [claudeAgent.ts](./claudeAgent.ts) (`getProtectedResources` ~L325, `_ensureAuthenticated` ~L332, `authenticate` ~L344, credits sub ~L310, `_materializeProvisional` ~L577, `_resumeSession` ~L620); [claudeAgentSession.ts](./claudeAgentSession.ts) (`_enrichSignalWithCredits` L227); [claudeSessionMetadataStore.ts](./claudeSessionMetadataStore.ts) (new `transport` overlay field).
    - Depends on: steps 4, 5.
-   - Done when: native mode never calls `start`, never subscribes credits, omits the Copilot resource, never throws `AHP_AUTH_REQUIRED`; the overlay carries the transport tag; proxied path unchanged.
+   - Done when: native mode never calls `start`, never subscribes credits, omits the AI resource, never throws `AHP_AUTH_REQUIRED`; the overlay carries the transport tag; proxied path unchanged.
 
 7. ✓ **Build the native model source.** Add
    `IClaudeAgentSdkService.supportedModels(opts): Promise<readonly ModelInfo[]>`
@@ -188,7 +188,7 @@ commercial-metadata overlay.
    the Phase 18 `TODO: Phase 19` native-branch assertion with a native
    projection assertion. Add: transport resolution from the root value;
    `onDidRootConfigChange` flip; native `authenticate` makes no `start` call;
-   native `getProtectedResources` omits Copilot; proxy-vs-native `buildOptions`
+   native `getProtectedResources` omits AI; proxy-vs-native `buildOptions`
    env snapshots; `buildSubprocessEnv(false)` preserves `ANTHROPIC_API_KEY`;
    `fromSdkModelInfo` projection; native `ChatUsage` has no `copilotUsage`;
    credential-absent (SDK 401) surfaces an actionable error and leaves `models`
@@ -285,7 +285,7 @@ commercial-metadata overlay.
 - **R4 — native restored model id unknown to the current catalogue.** SDK
   `value` ids differ from CAPI-dotted ids. → The picker already degrades to
   `models[0]` (modelPicker.ts:144); `toSdkModelId` normalizes at the SDK seam.
-- **R5 — dropping the Copilot protected resource breaks the auth gate.**
+- **R5 — dropping the AI protected resource breaks the auth gate.**
   `createSession` calls `_ensureAuthenticated` immediately. → In native mode
   `_ensureAuthenticated` returns the always-ready native transport (the SDK
   owns credentials); it must not throw `AHP_AUTH_REQUIRED`.
@@ -320,9 +320,9 @@ commercial-metadata overlay.
      `ANTHROPIC_BASE_URL` (e.g. `lsof`/log inspection) and the `system/init`
      log shows `apiKeySource`.
   3. Send a turn; confirm it completes on the user's credentials and the usage
-     pill shows SDK cost (no Copilot credits).
+     pill shows SDK cost (no AI credits).
 - **Scenario (proxied regression):** flip `claudeUseCopilotProxy` back to
-  `true` → new sessions show Copilot-routed behavior, the proxy binds, the
+  `true` → new sessions show AI-routed behavior, the proxy binds, the
   model picker and credits render exactly as before.
 
 ### Manual
@@ -368,7 +368,7 @@ commercial-metadata overlay.
 
 ### Tests written
 - [test/node/claudeSdkOptions.test.ts](../../test/node/claudeSdkOptions.test.ts) — native `buildSubprocessEnv(false)` keeps `ANTHROPIC_API_KEY`; proxy vs native `buildOptions` env (no `ANTHROPIC_BASE_URL`/`ANTHROPIC_AUTH_TOKEN`, no key strip); existing proxy calls moved to `ClaudeTransport`.
-- [test/node/claudeAgent.test.ts](../../test/node/claudeAgent.test.ts) — 3-arg `resolveClaudeModelList` (proxy + native branches); `fromSdkModelInfo` projection (no `policyState`/`_meta`); native `getProtectedResources` omits Copilot; native models populate from `supportedModels()` with no proxy start / no CAPI call; native `authenticate` makes no `start` call. Harness gained a `rootConfig` override; `FakeClaudeAgentSdkService` gained programmable `supportedModels`.
+- [test/node/claudeAgent.test.ts](../../test/node/claudeAgent.test.ts) — 3-arg `resolveClaudeModelList` (proxy + native branches); `fromSdkModelInfo` projection (no `policyState`/`_meta`); native `getProtectedResources` omits AI; native models populate from `supportedModels()` with no proxy start / no CAPI call; native `authenticate` makes no `start` call. Harness gained a `rootConfig` override; `FakeClaudeAgentSdkService` gained programmable `supportedModels`.
 
 ### Deviations / drift (surfaced)
 - **Necessary drift (compile fixes, not in the plan's file list):** `IClaudeAgentSdkService.supportedModels` is implemented by two other test fakes — added stub methods + `ModelInfo` imports to [test/node/claudeSubagentResolver.test.ts](../../test/node/claudeSubagentResolver.test.ts) and [test/node/claudeAgent.integrationTest.ts](../../test/node/claudeAgent.integrationTest.ts).
@@ -388,7 +388,7 @@ commercial-metadata overlay.
   confirmed: `[Claude] Models refreshed. Count: 5, Default (recommended),
   Sonnet, Sonnet (1M context), Haiku, Opus` (the user's subscription **Opus**
   surfaced) with **no Claude proxy start** (the only "Auth token updated" line
-  is the sibling `[Copilot]` agent). Drove via `launch` + `@playwright/cli`;
+  is the sibling `[AI]` agent). Drove via `launch` + `@playwright/cli`;
   read via `code-oss-logs`.
 
 ### avoid-private-methods

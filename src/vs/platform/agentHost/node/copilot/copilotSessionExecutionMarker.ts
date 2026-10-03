@@ -36,10 +36,10 @@ function parseDeferredCopilotSdkExecution(value: string, session: URI, logServic
 		if (isDeferredCopilotSdkExecution(parsed)) {
 			return parsed;
 		}
-		logService.warn(`[Copilot] Ignoring malformed deferred SDK execution marker for ${session.toString()}`);
+		logService.warn(`[AI] Ignoring malformed deferred SDK execution marker for ${session.toString()}`);
 		return undefined;
 	} catch (error) {
-		logService.warn(`[Copilot] Ignoring malformed deferred SDK execution marker for ${session.toString()}`, error);
+		logService.warn(`[AI] Ignoring malformed deferred SDK execution marker for ${session.toString()}`, error);
 		return undefined;
 	}
 }

@@ -283,7 +283,7 @@ export abstract class DevContainerAgentHostService extends Disposable implements
 				serverDataFolderName,
 				quality,
 				commit: this._productService.commit,
-				reportInstalling: () => this._logService.info(`${LOG_PREFIX} Installing VS Code CLI in Dev Container...`),
+				reportInstalling: () => this._logService.info(`${LOG_PREFIX} Installing Vertex CLI in Dev Container...`),
 				logService: this._logService,
 				logPrefix: LOG_PREFIX,
 				cliCacheDir,
@@ -866,7 +866,7 @@ export abstract class DevContainerAgentHostService extends Disposable implements
 		const sessionIds = await this._findContainerSessionIds(containerId);
 		const foreignSessionIds = sessionIds.filter(sessionId => sessionId !== this._telemetryService.sessionId);
 		if (foreignSessionIds.length > 0) {
-			this._logService.info(`${LOG_PREFIX} Skipping container ${operation === 'rm' ? 'removal' : 'stop'} for ${workspaceFolder}: ${foreignSessionIds.length} other VS Code session(s) are active.`);
+			this._logService.info(`${LOG_PREFIX} Skipping container ${operation === 'rm' ? 'removal' : 'stop'} for ${workspaceFolder}: ${foreignSessionIds.length} other Vertex session(s) are active.`);
 			return false;
 		}
 		this._suspendedWorkspaces.add(workspaceKey);
@@ -892,7 +892,7 @@ export abstract class DevContainerAgentHostService extends Disposable implements
 			if (/is not running|No such container/i.test(result.stderr)) {
 				return [];
 			}
-			throw new Error(localize('devContainerAgentHost.containerSessionCheckFailed', "Unable to check active VS Code sessions in Dev Container '{0}' (exit {1}): {2}", containerId, result.code, result.stderr.trim()));
+			throw new Error(localize('devContainerAgentHost.containerSessionCheckFailed', "Unable to check active Vertex sessions in Dev Container '{0}' (exit {1}): {2}", containerId, result.code, result.stderr.trim()));
 		}
 		return [...new Set(result.stdout.split('\n').map(value => value.trim()).filter(value => value.length > 0))];
 	}

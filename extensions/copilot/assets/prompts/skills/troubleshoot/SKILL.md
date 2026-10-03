@@ -22,7 +22,7 @@ Base conclusions on evidence from logs. Do not guess.
 
 - Target session log directory/directories for analysis: `{{VSCODE_TARGET_SESSION_LOG}}`
 
-Use direct debug log files written by Copilot Chat:
+Use direct debug log files written by AI Chat:
 
 ```
 debug-logs/<sessionId>/
@@ -184,7 +184,7 @@ Use `run_in_terminal` with PowerShell commands:
 
 ## Network Issue Investigation
 
-If you suspect network connectivity or authentication problems (e.g., repeated request timeouts, 401/403 errors, or model endpoint failures in the logs), run the VS Code command `github.copilot.debug.collectDiagnostics` using the `run_vscode_command` tool. The command returns the full diagnostics report as a string, so you can read the result directly from the tool output. The report includes:
+If you suspect network connectivity or authentication problems (e.g., repeated request timeouts, 401/403 errors, or model endpoint failures in the logs), run the Vertex command `github.copilot.debug.collectDiagnostics` using the `run_vscode_command` tool. The command returns the full diagnostics report as a string, so you can read the result directly from the tool output. The report includes:
 - Authentication and token status
 - Network reachability checks
 - Proxy and certificate configuration
@@ -206,11 +206,11 @@ When investigating issues related to a specific type of customization file (inst
 
 Use these when you need to verify file format expectations, confirm supported fields, or help the user fix a customization file.
 
-## Last Resort — Copilot Issues Wiki
+## Last Resort — AI Issues Wiki
 
 When your investigation yields no clear root cause or you have no specific remediation suggestions:
 
-1. Load the Copilot Issues wiki page: `https://github.com/microsoft/vscode/wiki/Copilot-Issues`.
+1. Load the AI Issues wiki page: `https://github.com/microsoft/vscode/wiki/Copilot-Issues`.
 2. Search the returned wiki content for sections relevant to the user's problem.
 3. Summarize the applicable troubleshooting steps from the wiki in your response.
 4. If the wiki contains relevant guidance, present those steps as concrete suggestions the user can try.
@@ -268,4 +268,4 @@ You do not need separate headers for each of these. For straightforward issues, 
 - Never read entire log files with `read_file` — they can be very large. Search first, then `read_file` for small targeted ranges.
 - Keep log access targeted and efficient.
 - If you suspect network issues, run `github.copilot.debug.collectDiagnostics` via the `run_vscode_command` tool and use the returned diagnostics string before concluding.
-- If no clear cause is found, consult the Copilot Issues wiki before giving up. If even the wiki has no relevant information, say so explicitly.
+- If no clear cause is found, consult the AI Issues wiki before giving up. If even the wiki has no relevant information, say so explicitly.

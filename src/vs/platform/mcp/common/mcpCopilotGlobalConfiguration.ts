@@ -20,7 +20,7 @@ const supportedRemoteProperties = new Set(['type', 'url', 'headers', 'transport'
 /** Rejects configuration that cannot be written without losing VS Code-only behavior. */
 export function getCopilotGlobalMcpConfigurationError({ config, inputs }: IInstallableMcpServer): string | undefined {
 	if (inputs !== undefined && (!Array.isArray(inputs) || inputs.length > 0)) {
-		return localize('unsupportedCopilotGlobalMcpInputs', "Interactive inputs are not supported in Copilot Global MCP configuration. Use environment variable references instead.");
+		return localize('unsupportedCopilotGlobalMcpInputs', "Interactive inputs are not supported in AI Global MCP configuration. Use environment variable references instead.");
 	}
 	if (!isObject(config) || (config.type !== McpServerType.LOCAL && config.type !== McpServerType.REMOTE)) {
 		return localize('invalidCopilotGlobalMcpServer', "The MCP server configuration is invalid.");
@@ -28,7 +28,7 @@ export function getCopilotGlobalMcpConfigurationError({ config, inputs }: IInsta
 	const supported = config.type === McpServerType.LOCAL ? supportedLocalProperties : supportedRemoteProperties;
 	for (const [key, value] of Object.entries(config)) {
 		if (value !== undefined && !supported.has(key)) {
-			return localize('unsupportedCopilotGlobalMcpProperty', "'{0}' is not supported in Copilot Global MCP configuration.", key);
+			return localize('unsupportedCopilotGlobalMcpProperty', "'{0}' is not supported in AI Global MCP configuration.", key);
 		}
 	}
 	const valid = config.type === McpServerType.LOCAL
@@ -44,7 +44,7 @@ export function getCopilotGlobalMcpConfigurationError({ config, inputs }: IInsta
 		return localize('invalidCopilotGlobalMcpServer', "The MCP server configuration is invalid.");
 	}
 	if (JSON.stringify(config).includes('${input:')) {
-		return localize('unsupportedCopilotGlobalMcpInputVariable', "VS Code input variables are not supported in Copilot Global MCP configuration. Use environment variable references instead.");
+		return localize('unsupportedCopilotGlobalMcpInputVariable', "Vertex input variables are not supported in AI Global MCP configuration. Use environment variable references instead.");
 	}
 	return undefined;
 }
@@ -55,11 +55,11 @@ export function parseCopilotGlobalMcpConfiguration(content: string): Record<stri
 	try {
 		document = JSON.parse(content);
 	} catch (error) {
-		throw new Error(localize('invalidCopilotGlobalMcpJson', "The Copilot Global MCP configuration must contain valid JSON: {0}", error instanceof Error ? error.message : String(error)));
+		throw new Error(localize('invalidCopilotGlobalMcpJson', "The AI Global MCP configuration must contain valid JSON: {0}", error instanceof Error ? error.message : String(error)));
 	}
 	const mcpServers = isObject(document) ? document.mcpServers : undefined;
 	if (!isObject(document) || (mcpServers !== undefined && !isObject(mcpServers))) {
-		throw new Error(localize('invalidCopilotGlobalMcpServers', "The Copilot Global MCP configuration must be a JSON object whose 'mcpServers' property is an object."));
+		throw new Error(localize('invalidCopilotGlobalMcpServers', "The AI Global MCP configuration must be a JSON object whose 'mcpServers' property is an object."));
 	}
 	const servers: [string, IMcpServerConfiguration][] = [];
 	for (const [name, raw] of Object.entries(mcpServers ?? {})) {

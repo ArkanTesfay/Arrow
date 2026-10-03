@@ -62,12 +62,12 @@ type AgentHostSessionSubscribeClassification = IAgentHostCopilotSkuClassificatio
 	outcome: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Terminal subscription outcome: success, failure, or timeout.' };
 	servedFromMemory: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the subscribed snapshot was already materialized when the request was received.' };
 	joinedRestore: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether this subscription joined restoration already in progress for the session.' };
-	sdkResumeOutcome: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Terminal Copilot SDK resume outcome: success, failure, fallbackCreate, incomplete, or notStarted.' };
-	sdkResumeAttemptCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of Copilot SDK resumeSession attempts observed while this subscription was active.' };
+	sdkResumeOutcome: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Terminal AI SDK resume outcome: success, failure, fallbackCreate, incomplete, or notStarted.' };
+	sdkResumeAttemptCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of AI SDK resumeSession attempts observed while this subscription was active.' };
 	timeToRestoreStartMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until session restoration began.' };
-	timeToSdkResumeStartMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until the first Copilot SDK resumeSession attempt began.' };
-	sdkResumeDurationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Total milliseconds spent awaiting Copilot SDK resumeSession attempts, including a retry without a missing custom agent.' };
-	timeToSdkResumeCompleteMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until the last Copilot SDK resume attempt completed.' };
+	timeToSdkResumeStartMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until the first AI SDK resumeSession attempt began.' };
+	sdkResumeDurationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Total milliseconds spent awaiting AI SDK resumeSession attempts, including a retry without a missing custom agent.' };
+	timeToSdkResumeCompleteMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until the last AI SDK resume attempt completed.' };
 	timeToRestoreCompleteMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Cumulative milliseconds from subscribe receipt until Agent Host session restoration produced state.' };
 	totalDurationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Milliseconds from subscribe receipt until the terminal outcome.' };
 };

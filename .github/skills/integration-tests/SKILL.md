@@ -1,14 +1,14 @@
 ---
 name: integration-tests
-description: Use when running integration tests in the VS Code repo. Covers scripts/test-integration.sh (macOS/Linux) and scripts/test-integration.bat (Windows), their supported arguments for filtering, and the difference between node.js integration tests and extension host tests.
+description: Use when running integration tests in the Vertex repo. Covers scripts/test-integration.sh (macOS/Linux) and scripts/test-integration.bat (Windows), their supported arguments for filtering, and the difference between node.js integration tests and extension host tests.
 ---
 
 # Running Integration Tests
 
-Integration tests in VS Code are split into two categories:
+Integration tests in Vertex are split into two categories:
 
 1. **Node.js integration tests** - files ending in `.integrationTest.ts` under `src/`. These run in Electron via the same Mocha runner as unit tests.
-2. **Extension host tests** - tests embedded in built-in extensions under `extensions/` (API tests, Git tests, TypeScript tests, etc.). These launch a full VS Code instance with `--extensionDevelopmentPath`.
+2. **Extension host tests** - tests embedded in built-in extensions under `extensions/` (API tests, Git tests, TypeScript tests, etc.). These launch a full Vertex instance with `--extensionDevelopmentPath`.
 
 ## Scripts
 
@@ -27,7 +27,7 @@ When run **with `--suite`**, only the matching extension host test suites are ru
 
 ### `--build` - Run against build output
 
-Selects the `out-build/` directory instead of `out/` for node.js integration tests and the shared VS Code modules used by the standalone JSON suite. This does not compile either output tree; the JSON extension tests still require `compile-extension:json-language-features-client` to generate `client/out/`.
+Selects the `out-build/` directory instead of `out/` for node.js integration tests and the shared Vertex modules used by the standalone JSON suite. This does not compile either output tree; the JSON extension tests still require `compile-extension:json-language-features-client` to generate `client/out/`.
 
 ```bash
 ./scripts/test-integration.sh --suite json --build
@@ -122,7 +122,7 @@ All other options (e.g. `--timeout`, `--coverage`, `--reporter`) are forwarded t
 
 ## Compilation requirement
 
-Tests run against compiled JavaScript output. Ensure the `VS Code - Build` watch task is running or that compilation has completed before running tests.
+Tests run against compiled JavaScript output. Ensure the `Vertex - Build` watch task is running or that compilation has completed before running tests.
 
 ## Distinction from unit tests
 

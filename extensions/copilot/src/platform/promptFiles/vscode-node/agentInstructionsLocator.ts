@@ -91,7 +91,7 @@ export class AgentInstructionsLocator extends Disposable {
 		// Reuses the existing extension config (default true) instead of hard-coding the qualified key.
 		const useCopilotInstructionsFiles = this.configurationService.getConfig(ConfigKey.UseInstructionFiles) !== false;
 		if (!useCopilotInstructionsFiles) {
-			logger?.logInfo('Copilot instructions files are disabled via configuration.');
+			logger?.logInfo('AI instructions files are disabled via configuration.');
 		} else {
 			const copilotInstructionsFile: IWorkspaceInstructionFile = { fileName: COPILOT_CUSTOM_INSTRUCTIONS_FILENAME, type: AgentInstructionFileType.copilotInstructionsMd };
 			promises.push(this.findFilesInRoots(rootFolders, GITHUB_CONFIG_FOLDER, [copilotInstructionsFile], token, resolvedAgentFiles)); // copilot-instructions.md in .github folder under workspace root

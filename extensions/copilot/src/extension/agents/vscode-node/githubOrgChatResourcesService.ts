@@ -148,10 +148,10 @@ export class GitHubOrgChatResourcesService extends Disposable implements IGitHub
 		// Check if user has Copilot access through an organization (Business/Enterprise subscription)
 		// and prefer that organization if available
 		const copilotOrganizations = this.authService.copilotToken?.organizationLoginList ?? [];
-		this.logService.trace(`[GitHubOrgChatResourcesService] Copilot organizations: ${JSON.stringify(copilotOrganizations)}`);
+		this.logService.trace(`[GitHubOrgChatResourcesService] AI organizations: ${JSON.stringify(copilotOrganizations)}`);
 		if (copilotOrganizations.length > 0) {
 			const copilotOrg = copilotOrganizations[0];
-			this.logService.trace(`[GitHubOrgChatResourcesService] Using Copilot sign-in organization: ${copilotOrg}`);
+			this.logService.trace(`[GitHubOrgChatResourcesService] Using AI sign-in organization: ${copilotOrg}`);
 			return copilotOrg;
 		}
 

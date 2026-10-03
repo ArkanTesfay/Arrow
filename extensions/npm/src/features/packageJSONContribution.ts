@@ -15,7 +15,7 @@ import { parseNpmViewOutput, ViewPackageInfo } from './npmViewParser';
 
 const LIMIT = 40;
 
-const USER_AGENT = 'Visual Studio Code';
+const USER_AGENT = 'Vertex';
 
 export class PackageJSONContribution implements IJSONContribution {
 

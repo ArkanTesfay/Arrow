@@ -13,8 +13,8 @@ import type { GhostTextCompletionItem } from './ghostText/ghostTextProvider';
 
 export const sendCompletionFeedbackCommand: Command = {
 	command: CMDSendCompletionsFeedbackChat,
-	title: 'Send Copilot Completion Feedback',
-	tooltip: 'Send feedback about the last shown Copilot completion item',
+	title: 'Send AI Completion Feedback',
+	tooltip: 'Send feedback about the last shown AI completion item',
 };
 
 export class CopilotCompletionFeedbackTracker extends Disposable {
@@ -43,7 +43,7 @@ async function openGitHubIssue(
 ) {
 	const body = generateGitHubIssueBody(accessor, item, telemetry);
 	await commands.executeCommand('workbench.action.openIssueReporter', {
-		issueTitle: 'Copilot completion feedback',
+		issueTitle: 'AI completion feedback',
 		issueSource: 'vscode',
 		issueBody: body,
 	});
@@ -60,7 +60,7 @@ function generateGitHubIssueBody(
 		return '';
 	}
 
-	return `## Copilot Completion Feedback
+	return `## AI Completion Feedback
 ### Describe the issue, feedback, or steps to reproduce it:
 
 

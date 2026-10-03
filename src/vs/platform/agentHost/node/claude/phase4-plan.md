@@ -80,7 +80,7 @@ getDescriptor(): IAgentDescriptor {
 getProtectedResources(): ProtectedResourceMetadata[] {
     return [{
         resource: 'https://api.github.com',
-        resource_name: 'GitHub Copilot',
+        resource_name: 'Vertex AI',
         authorization_servers: ['https://github.com/login/oauth'],
         scopes_supported: ['read:user', 'user:email'],
         required: true,
@@ -390,7 +390,7 @@ The PR is **done** when every box below is checked. Run them in order — earlie
 - [ ] No optional methods are present (`truncateSession?`, `getCustomizations?`, etc.).
 - [ ] `dispose()` is real (not a TODO) and disposes `_proxyHandle`.
 - [ ] Phase-6 subprocess-ownership invariant is in a code comment near `dispose()`.
-- [ ] Microsoft copyright header is on every new file.
+- [ ] Vertex copyright header is on every new file.
 
 ### 7.2 Registration & gating
 
@@ -403,7 +403,7 @@ The PR is **done** when every box below is checked. Run them in order — earlie
 
 ### 7.3 Compile + lint + layers
 
-- [ ] `VS Code - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
+- [ ] `Vertex - Build` task shows zero TypeScript errors. If task is unavailable, `npm run typecheck-client` exits 0.
 - [ ] `npm run eslint -- src/vs/platform/agentHost/node/claude/claudeAgent.ts src/vs/platform/agentHost/test/node/claudeAgent.test.ts` exits 0.
 - [ ] `npm run valid-layers-check` exits 0.
 - [ ] `npm run hygiene` exits 0.

@@ -189,7 +189,7 @@ export class CopilotInlineCompletionItemProvider extends Disposable implements I
 			this.logSuggestion(logContext, doc, list);
 			logContext.setResponseResults(list.items);
 
-			// Only offer the "Send Copilot Completion Feedback" command to paid users.
+			// Only offer the "Send AI Completion Feedback" command to paid users.
 			// Free and unauthenticated users would otherwise spam the issue tracker.
 			const copilotToken = this.copilotTokenManager.token;
 			const canSendCompletionFeedback = !!copilotToken && !copilotToken.isFreeUser && !copilotToken.isNoAuthUser;

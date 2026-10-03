@@ -3,12 +3,12 @@
 The Claude-side of the agent host: a `ClaudeAgent` implementation of `IAgent`
 that drives Anthropic-format tool-using sessions via the Claude Agent SDK,
 with all `messages` traffic proxied through a local server that translates
-Anthropic requests into GitHub Copilot CAPI calls.
+Anthropic requests into Vertex AI CAPI calls.
 
 ## Language
 
 **Agent Host**:
-The utility process that owns all `IAgent` providers (Copilot, Claude). Hosts
+The utility process that owns all `IAgent` providers (AI, Claude). Hosts
 this code.
 
 **Claude Agent**:
@@ -24,7 +24,7 @@ process**, shared across any Claude-family agents.
 _Avoid_: "Anthropic proxy", "language model server".
 
 **CAPI**:
-GitHub Copilot's chat completions API, accessed through `ICopilotApiService`.
+Vertex AI's chat completions API, accessed through `ICopilotApiService`.
 The terminal hop after the proxy.
 
 **Materialization** / `ClaudeAgentSession.materialize`:
@@ -512,7 +512,7 @@ subprocess (Phase 4), multi-tenant token isolation (Phase 4+), proxy
 
 Captured here so they aren't lost. None of these block Phase 2.
 
-- **HTTP proxy support** (`HTTP_PROXY` / `HTTPS_PROXY` env vars, VS Code's
+- **HTTP proxy support** (`HTTP_PROXY` / `HTTPS_PROXY` env vars, Vertex's
   `http.proxy` setting, PAC files, proxy auth). The Phase 2 proxy talks
   to CAPI through `ICopilotApiService`, so any outbound proxying is
   inherited from whatever HTTP client that service uses. If the agent
@@ -537,7 +537,7 @@ Conventions:
 - "Host" = the `ClaudeAgent` running in the agent host utility process.
 - "SDK" = the `@anthropic-ai/claude-agent-sdk` API + its bundled CLI
   subprocess.
-- "Reference extension" = the production Copilot extension's Claude
+- "Reference extension" = the production AI extension's Claude
   support under `extensions/copilot/src/extension/chatSessions/claude/`.
 - A "portrait" entry describes one IAgent surface, the SDK primitive(s)
   it lines up with, the direction of data flow, invariants, asymmetries,
@@ -727,7 +727,7 @@ single-threaded session contract.
 
 #### Sibling: how `CopilotAgent` implements the same surface
 
-The Copilot CLI agent ([`copilotAgentSession.ts`](../copilot/copilotAgentSession.ts))
+The AI CLI agent ([`copilotAgentSession.ts`](../copilot/copilotAgentSession.ts))
 implements the identical IAgent contract against a different SDK.
 The shape is the same; the SDK callbacks differ.
 
@@ -746,7 +746,7 @@ The shape is the same; the SDK callbacks differ.
 | `ExitPlanMode` analogue | Routed through `pending_confirmation` like a normal permission gate, with custom Approve/Deny labels and the plan body as `invocationMessage`. (`INTERACTIVE_CLAUDE_TOOLS` membership only signals that the SDK does not auto-approve it under any `permissionMode`, ensuring it always reaches the host.) On Approve, host writes `permissionMode: 'acceptEdits'` to `IAgentConfigurationService`; the next `sendMessage` forwards it via `Query.setPermissionMode` between turns. | `_pendingPlanReviews` map; `_resolveExitPlanMode` maps the response back to `IExitPlanModeResponse { approved, feedback?, selectedAction?, autoApproveEdits? }` |
 | Status (Phase 6) | Stub — both methods throw `TODO: Phase 7` ([`claudeAgent.ts:790, 794`](claudeAgent.ts#L790-L794)). Re-implementation explicitly mirrors `copilotAgent.ts:1239-1254` (see [phase7-plan.md](phase7-plan.md)) | Fully implemented |
 
-The Copilot CLI SDK pre-resolves the Claude-side fan-in: its single
+The AI CLI SDK pre-resolves the Claude-side fan-in: its single
 `onUserInputRequest` covers the `ask_user` case directly, and
 `handlePermissionRequest` carries a richer `kind` so the host can
 build a write-edit preview without inspecting tool-name strings.
@@ -1200,7 +1200,7 @@ is an internal concern of the agent. The IAgent surface exposes only:
 | `onArchivedChanged(uri, isArchived)` (optional) | none (SDK untouched) | The host owns worktree archive/unarchive cleanup for every provider. The provider hook handles provider-specific state only. |
 | `disposeSession(sessionId)` | `Query.interrupt()` + `Query.return()` (or asyncDispose) | Full teardown of one session. After provider teardown, the host loads persisted worktree metadata, deletes session data and checkpoint refs, then removes the worktree. |
 | `shutdown()` | per-session `Query.interrupt()` + asyncDispose, serialized through a sequencer; then SDK client stop | Graceful, async, **memoized** provider drain. Session-owned worktrees remain on disk across host restarts. |
-| `dispose()` | synchronous teardown of provider | Hard provider teardown. Copilot: kicks off `shutdown()` and chains `super.dispose()` in `.finally` (cooperatively reuses the memoized drain). Claude: aborts provisional controllers, then `super.dispose()` synchronously disposes `_sessions` (each wrapper interrupts/asyncDisposes its `Query`), then releases `_proxyHandle` — wrapper-before-proxy ordering is load-bearing. |
+| `dispose()` | synchronous teardown of provider | Hard provider teardown. AI: kicks off `shutdown()` and chains `super.dispose()` in `.finally` (cooperatively reuses the memoized drain). Claude: aborts provisional controllers, then `super.dispose()` synchronously disposes `_sessions` (each wrapper interrupts/asyncDisposes its `Query`), then releases `_proxyHandle` — wrapper-before-proxy ordering is load-bearing. |
 
 #### Birth axis: provisional → materialized
 
@@ -1345,7 +1345,7 @@ only the worktree-on-disk question. Concretely:
 
 There is **no required ordering** between archive and dispose. Both
 are independent triggers (UI archive vs. GC / explicit dispose) and
-both independently include worktree removal on the Copilot path.
+both independently include worktree removal on the AI path.
 Typical flow is the opposite of the question's premise: archive
 first (soft, reversible), then maybe dispose later (hard,
 irreversible).
@@ -1362,7 +1362,7 @@ background.
 |---|---|---|---|---|
 | `disposeSession(id)` | one session | async | n/a | Routes through the provider sequencer so it serializes against in-flight `sendMessage`. The host loads persisted worktree metadata before deleting the session database, so deletion also cleans up sessions created in an earlier process. |
 | `shutdown()` | all sessions | async, memoized | self | Drains provider sessions while preserving session-owned worktrees. Memoization (`_shutdownPromise`) means concurrent calls fold into one drain. Claude aborts provisionals first to unwind racing `sdk.startup()` awaits. |
-| `dispose()` | provider | sync surface; may chain async | Copilot: yes; Claude: no | Copilot: `shutdown().finally(super.dispose)` — cooperative. Claude: synchronous wrapper-then-proxy teardown, no graceful drain. The provider choice is intentional: Claude's wrapper is the stronger ownership and must dispose before the IPC handle. |
+| `dispose()` | provider | sync surface; may chain async | AI: yes; Claude: no | AI: `shutdown().finally(super.dispose)` — cooperative. Claude: synchronous wrapper-then-proxy teardown, no graceful drain. The provider choice is intentional: Claude's wrapper is the stronger ownership and must dispose before the IPC handle. |
 
 `AgentService.shutdown` fans out `provider.shutdown()` in parallel;
 `AgentService.dispose` calls `provider.dispose()` on every provider
@@ -1405,7 +1405,7 @@ internally decides whether `dispose` chains `shutdown` or not.
   final state) must hook into `shutdown`, not `dispose`. `dispose`
   may run after a crash with no async work permitted.
 
-#### Asymmetries between Copilot and Claude
+#### Asymmetries between AI and Claude
 
 | | CopilotAgent | ClaudeAgent |
 |---|---|---|
@@ -1416,7 +1416,7 @@ internally decides whether `dispose` chains `shutdown` or not.
 | `dispose` strategy | Chain `shutdown().finally(super.dispose)` | Synchronous wrapper-then-proxy teardown (no graceful drain) |
 | Sequencer | `_sessionSequencer` (per-session) | `_disposeSequencer` (drain only) |
 
-These asymmetries are deliberate. Copilot's worktree story requires
+These asymmetries are deliberate. AI's worktree story requires
 process-lifetime metadata to clean up correctly, so its dispose path
 is heavier and benefits from reusing the memoized graceful drain.
 Claude's wrapper owns the SDK `Query` directly and has a
@@ -1611,7 +1611,7 @@ row.
 
 | IAgent surface | SDK primitive(s) | What it does |
 |---|---|---|
-| `truncateSession?(session, turnId?)` (optional) | None on the Claude SDK; provider-specific RPC on Copilot. Claude composes via `forkSession` instead. | Mutates the session's transcript to keep turns up to and including `turnId` (or remove all turns if `turnId` is undefined). The session's URI / id is preserved — this is **in-place** mutation, not "make a new session." |
+| `truncateSession?(session, turnId?)` (optional) | None on the Claude SDK; provider-specific RPC on AI. Claude composes via `forkSession` instead. | Mutates the session's transcript to keep turns up to and including `turnId` (or remove all turns if `turnId` is undefined). The session's URI / id is preserved — this is **in-place** mutation, not "make a new session." |
 
 ##### Protocol semantics
 
@@ -1624,7 +1624,7 @@ cannot truncate in place leave it `undefined` and the host falls
 back to fork (which produces a new session id) at a higher layer
 when the user explicitly asks for "rewind here."
 
-##### Copilot: in-place via SDK RPC
+##### AI: in-place via SDK RPC
 
 CopilotAgent implements `truncateSession`
 ([copilotAgent.ts:1179-1212](../../node/copilot/copilotAgent.ts#L1179-L1212)).
@@ -1636,7 +1636,7 @@ Two key translations between protocol and SDK semantics:
 | `truncateSession(session, turnId)` | `entry.getNextTurnEventId(turnId)` → `entry.truncateAtEventId(eventId, turnId)` |
 | `truncateSession(session)` (omit turnId) | `entry.getFirstTurnEventId()` → `entry.truncateAtEventId(eventId)` (remove all) |
 
-The Copilot SDK exposes a session-mutation RPC
+The AI SDK exposes a session-mutation RPC
 (`truncateAtEventId`) that rewrites the on-disk transcript in
 place. The agent serializes the call through `_sessionSequencer`
 so it doesn't race with `sendMessage` or `disposeSession`.
@@ -1668,12 +1668,12 @@ land. The IAgent layer's optional `truncateSession?` makes this
 choice transparent to clients: they call it if available,
 otherwise compose with fork at the UI layer.
 
-##### Asymmetries between Copilot and Claude
+##### Asymmetries between AI and Claude
 
 | | CopilotAgent | ClaudeAgent |
 |---|---|---|
 | `truncateSession` | Implemented; serializes through `_sessionSequencer`; protocol→SDK eventId translation | Not implemented (deliberate; SDK has no in-place truncate) |
-| `setPendingMessages` (steering) | Implemented; injects via Copilot SDK's `send({ mode: 'immediate' })` | Implemented (planned Phase 9); yields `SDKUserMessage` with `priority: 'now'` into the existing prompt iterable |
+| `setPendingMessages` (steering) | Implemented; injects via AI SDK's `send({ mode: 'immediate' })` | Implemented (planned Phase 9); yields `SDKUserMessage` with `priority: 'now'` into the existing prompt iterable |
 | `setPendingMessages` (queued) | n/a — server consumes server-side | n/a — server consumes server-side |
 | `IAgentSteeringConsumedSignal` | Emitted on SDK ack | Emitted when the SDK echoes the `'now'`-priority message on the event stream after preempting the in-flight turn |
 
@@ -1684,7 +1684,7 @@ me first" — via different transports:
 | Surface | New turn | Steering |
 |---|---|---|
 | Claude Agent SDK | yield `SDKUserMessage` with `priority: 'next'` (or default) | yield `SDKUserMessage` with `priority: 'now'` |
-| Copilot CLI SDK | `session.send({ ... })` (no `mode`) | `session.send({ ..., mode: 'immediate' })` |
+| AI CLI SDK | `session.send({ ... })` (no `mode`) | `session.send({ ..., mode: 'immediate' })` |
 
 #### Invariants
 
@@ -1993,7 +1993,7 @@ platform-shared properties).
 | | Shape |
 |---|---|
 | Returns | `IAgentDescriptor { provider, displayName, description }` ([agentService.ts:160-165](../../common/agentService.ts#L160-L165)) |
-| CopilotAgent | Hardcoded literal `{ provider: 'copilotcli', displayName: 'Copilot', description: '…' }` ([copilotAgent.ts:256-262](../copilot/copilotAgent.ts#L256-L262)) |
+| CopilotAgent | Hardcoded literal `{ provider: 'copilotcli', displayName: 'AI', description: '…' }` ([copilotAgent.ts:256-262](../copilot/copilotAgent.ts#L256-L262)) |
 | Claude provider | Hardcoded literal `{ provider: 'claude', displayName: 'Claude', description: '…' }` |
 
 `AgentProvider` is `type AgentProvider = string` ([agentService.ts:158](../../common/agentService.ts#L158))
@@ -2020,9 +2020,9 @@ Description is a required, non-empty string — there is no fallback.
 | Result shape | `CCAModel[]` from `@vscode/copilot-api` — carries `vendor`, `supported_endpoints`, `model_picker_enabled`, `model_picker_category`, plus capability metadata |
 
 **This provider runs against CAPI, not Anthropic.** Claude models
-reach the IAgent provider through the same Copilot Chat API the
+reach the IAgent provider through the same AI Chat API the
 reference extension uses, not through Anthropic's API. The
-Copilot subscription is the auth principal; CAPI proxies the
+AI subscription is the auth principal; CAPI proxies the
 request to Anthropic's `/v1/messages` endpoint server-side. For
 the `models` observable this means the SDK's
 `Query.supportedModels()` (and the `models` field on
@@ -2142,9 +2142,9 @@ joins three sources:
 Two filters apply to the result:
 
 - **No-sidecar filter (CopilotAgent only).** Sessions without sidecar
-  metadata are *dropped* — so Copilot's `listSessions` returns only
+  metadata are *dropped* — so AI's `listSessions` returns only
   sessions this host has seen before. Sessions created on another
-  machine or in another VS Code install are invisible until they've
+  machine or in another Vertex install are invisible until they've
   been re-opened through this host. **Claude does NOT inherit this
   filter** — the Claude SDK's session list includes external
   Claude-CLI-created sessions that have no host-side sidecar but
@@ -2411,7 +2411,7 @@ hot-swap bucket (`Query.setPermissionMode()` is bijective);
 `isolation` and `cwd` are not (no SDK setter; they pin the
 subprocess) so they stay creation-time.
 
-#### Asymmetries between Copilot and Claude
+#### Asymmetries between AI and Claude
 
 | Surface | CopilotAgent | Claude provider |
 |---|---|---|
@@ -2462,7 +2462,7 @@ client.
   reference extension's picker.
 - **`getSessionMetadata?` is a parity surface.** Where the SDK
   has a single-file probe (`getSessionInfo` on Claude,
-  `getSessionMetadata` on Copilot), the provider should implement
+  `getSessionMetadata` on AI), the provider should implement
   this method. Providers that lack the primitive omit the method
   rather than fall back to filtering `listSessions()`.
 - **`resolveSessionConfig` is synthetic and provider-owned.** No

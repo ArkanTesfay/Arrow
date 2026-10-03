@@ -1,6 +1,6 @@
-# Copilot Agent Runtime — Customization Surface Spec
+# AI Agent Runtime — Customization Surface Spec
 
-> **Specification change gate:** This is a scoped external-runtime snapshot, not a change log. Update it only after deliberately re-auditing the referenced runtime contract; do not patch it for VS Code implementation bugs.
+> **Specification change gate:** This is a scoped external-runtime snapshot, not a change log. Update it only after deliberately re-auditing the referenced runtime contract; do not patch it for Vertex implementation bugs.
 
 > **Purpose:** Definitive reference for every customization mechanism that affects agent behavior when a user sends a message. Intended for building a UI that collects all customizations into a single view.
 >
@@ -26,7 +26,7 @@ Each pattern is defined in `src/helpers/repo-helpers.ts` → `instructionPattern
 
 | Convention | File Pattern | Notes |
 |------------|-------------|-------|
-| Copilot | `{repo}/.github/copilot-instructions.md` | Primary repo instructions |
+| AI | `{repo}/.github/copilot-instructions.md` | Primary repo instructions |
 | Codex / OpenAI | `{repo}/AGENTS.md` | OpenAI model convention |
 | Claude / Anthropic | `{repo}/CLAUDE.md` | Claude model convention |
 | Claude (alt) | `{repo}/.claude/CLAUDE.md` | Secondary Claude location |
@@ -94,10 +94,10 @@ Reusable prompt-based capabilities exposed as `/skill-name` slash commands.
 
 | Source | File Pattern | Code Reference |
 |--------|-------------|----------------|
-| Repo (Copilot) | `{repo}/.github/skills/*/SKILL.md` | `loader.ts` collectProjectDirs |
+| Repo (AI) | `{repo}/.github/skills/*/SKILL.md` | `loader.ts` collectProjectDirs |
 | Repo (Agents) | `{repo}/.agents/skills/*/SKILL.md` | `loader.ts` collectProjectDirs |
 | Repo (Claude) | `{repo}/.claude/skills/*/SKILL.md` | `loader.ts` collectProjectDirs |
-| User (Copilot) | `~/.copilot/skills/*/SKILL.md` | `loader.ts` personalDirs |
+| User (AI) | `~/.copilot/skills/*/SKILL.md` | `loader.ts` personalDirs |
 | User (Claude) | `~/.claude/skills/*/SKILL.md` | `loader.ts` personalDirs |
 | Env var | Dirs listed in `COPILOT_SKILLS_DIRS` (comma-separated) | `loader.ts` |
 | Plugins | `{pluginRoot}/skills/*/SKILL.md` | `skills.ts` |
@@ -153,9 +153,9 @@ Sub-agent definitions available via the task tool or direct user selection.
 
 | Source | File Pattern | Code Reference |
 |--------|-------------|----------------|
-| Repo (Copilot) | `{repo}/.github/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
+| Repo (AI) | `{repo}/.github/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
 | Repo (Claude) | `{repo}/.claude/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
-| User (Copilot) | `~/.github/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
+| User (AI) | `~/.github/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
 | User (Claude) | `~/.claude/agents/*.md`, `*.agent.md` | `useCustomAgents.ts` |
 | Plugins | `{pluginRoot}/agents/*.md`, `*.agent.md` | `agent-loader.ts` |
 | Builtin | `src/agents/definitions/*.agent.yaml` | YAML agent loader |
@@ -200,7 +200,7 @@ Model Context Protocol servers that expose additional tools and resources.
 | 2 | Workspace | `{cwd}/.mcp.json` | `mcpConfigMerger.ts` |
 | 3 | VSCode | `{cwd}/.vscode/mcp.json` | `vsCodeWorkspaceMcpConfig.ts` |
 | 4 | Plugins | `{pluginRoot}/.mcp.json`, `{pluginRoot}/.github/mcp.json` | `mcp-loader.ts` |
-| 5 | Windows ODR | Registry `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Mcp` | `odrMcpRegistry.ts` |
+| 5 | Windows ODR | Registry `HKLM\SOFTWARE\Vertex\Windows\CurrentVersion\Mcp` | `odrMcpRegistry.ts` |
 | 6 (highest) | CLI flag | `--additional-mcp-config <json\|@filepath>` | `mcpConfigMerger.ts` |
 
 ### 5.2 Config Schema

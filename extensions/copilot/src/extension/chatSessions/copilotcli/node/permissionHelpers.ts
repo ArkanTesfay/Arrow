@@ -85,7 +85,7 @@ export async function handleReadPermission(
 	// Auto-approve reads of internal session resources (e.g. plan.md).
 	const sessionDir = Uri.joinPath(Uri.file(getCopilotCLISessionStateDir()), sessionId);
 	if (extUriBiasedIgnorePathCase.isEqualOrParent(file, sessionDir)) {
-		logService.trace(`[CopilotCLISession] Auto Approving request to read Copilot CLI session resource ${permissionRequest.path}`);
+		logService.trace(`[CopilotCLISession] Auto Approving request to read AI CLI session resource ${permissionRequest.path}`);
 		return { kind: 'approve-once' };
 	}
 
@@ -159,7 +159,7 @@ export async function handleWritePermission(
 	// Auto-approve writes to internal session resources (e.g. plan.md).
 	const sessionDir = Uri.joinPath(Uri.file(getCopilotCLISessionStateDir()), sessionId);
 	if (editFile && extUriBiasedIgnorePathCase.isEqualOrParent(editFile, sessionDir)) {
-		logService.trace(`[CopilotCLISession] Auto Approving request to write to Copilot CLI session resource ${editFile.fsPath}`);
+		logService.trace(`[CopilotCLISession] Auto Approving request to write to AI CLI session resource ${editFile.fsPath}`);
 		return { kind: 'approve-once' };
 	}
 
@@ -317,7 +317,7 @@ export async function showInteractivePermissionPrompt(
 	const toolParams: CoreConfirmationToolParams = {
 		tool: ToolName.CoreConfirmationTool,
 		input: {
-			title: 'Copilot CLI Permission Request',
+			title: 'AI CLI Permission Request',
 			message: codeBlock(permissionRequest),
 			confirmationType: 'basic'
 		}

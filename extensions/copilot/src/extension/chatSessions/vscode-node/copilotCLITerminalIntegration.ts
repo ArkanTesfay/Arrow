@@ -134,7 +134,7 @@ ELECTRON_RUN_AS_NODE=1 "${process.execPath}" "${path.join(storageLocation, COPIL
 
 		const provideTerminalProfile = async () => {
 			const shellInfo = await this.getShellInfo([]);
-			const options = await getCommonTerminalOptions('GitHub Copilot CLI', this._authenticationService, this._otelService, 'panel');
+			const options = await getCommonTerminalOptions('Vertex AI CLI', this._authenticationService, this._otelService, 'panel');
 			this.sendTerminalOpenTelemetry('new', shellInfo?.shell ?? 'unknown', 'newFromTerminalProfile', 'panel');
 			if (!shellInfo) {
 				// Create a profile with the user's default shell as a fallback.
@@ -225,7 +225,7 @@ ELECTRON_RUN_AS_NODE=1 "${process.execPath}" "${path.join(storageLocation, COPIL
 		/* __GDPR__
 			"copilotcli.terminal.open" : {
 				"owner": "DonJayamanne",
-				"comment": "Event sent when a Copilot CLI terminal is opened.",
+				"comment": "Event sent when a AI CLI terminal is opened.",
 				"sessionType" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Whether the terminal is for a new session or resuming an existing one." },
 				"shell" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "The shell type used for the terminal." },
 				"terminalCreationMethod" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "How the terminal was created." },
@@ -423,7 +423,7 @@ async function getCommonTerminalOptions(name: string, authenticationService: IAu
 		options.env = {
 			// Old Token name for GitHub integrations (deprecate once the new variable has been adopted widely)
 			GH_TOKEN: session.accessToken,
-			// New Token name for Copilot
+			// New Token name for AI
 			COPILOT_GITHUB_TOKEN: session.accessToken,
 			// Forward OTel config so the CLI binary exports traces/metrics to the same endpoint.
 			// Pass an empty env so all vars are explicitly included in TerminalOptions.env,

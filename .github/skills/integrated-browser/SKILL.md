@@ -1,11 +1,11 @@
 ---
 name: integrated-browser
-description: Use this when working on the VS Code integrated browser ("browserView") to understand its architecture and mental model. Covers the embedded Chromium browser, its editor tab, navigation, overlay/layout, sessions, and agent browser tools under `src/vs/platform/browserView` and `src/vs/workbench/contrib/browserView`.
+description: Use this when working on the Vertex integrated browser ("browserView") to understand its architecture and mental model. Covers the embedded Chromium browser, its editor tab, navigation, overlay/layout, sessions, and agent browser tools under `src/vs/platform/browserView` and `src/vs/workbench/contrib/browserView`.
 ---
 
 # Integrated Browser Architecture
 
-The integrated browser ("browserView") embeds a **real Chromium browser** in VS Code, backed by an Electron `WebContentsView`. It renders live pages, presents each as an editor tab, and lets agents drive those pages through tools. It powers the in-product browser tab and the agent "browser" tools. It is **not** the old `extensions/simple-browser` (an iframe-in-a-webview), which now delegates to this on desktop.
+The integrated browser ("browserView") embeds a **real Chromium browser** in Vertex, backed by an Electron `WebContentsView`. It renders live pages, presents each as an editor tab, and lets agents drive those pages through tools. It powers the in-product browser tab and the agent "browser" tools. It is **not** the old `extensions/simple-browser` (an iframe-in-a-webview), which now delegates to this on desktop.
 
 It's a heavyweight, security-sensitive, multi-process primitive, and **almost every design decision follows from that.** This file describes the load-bearing ideas that rarely change. It deliberately does **not** enumerate current features/tools/commands/settings — those churn; the live `features/` and `tools/` folders are the source of truth. Build the mental model here, then go read the specific code you're changing.
 
@@ -51,7 +51,7 @@ The single most error-prone area — the cause of nearly every "won't move / mis
 - **Alignment.** The editor renders an empty DOM stub, measures its screen rect, and ships bounds to main. CSS zoom and screen pixels disagree, so bounds are **pixel-snapped**. New layout that moves the page must feed this bounds computation, not just move a DOM box.
 - **Z-order.** The native view paints *above* all workbench UI, so menus/popups/hovers/dialogs that should sit over the page would be hidden. The workbench detects overlap and **hides the native view**, swapping in a placeholder. New floating UI over the page must be detectable by that machinery — a high CSS z-index won't do it.
 - **Flicker masking.** While hidden/repositioning, a periodic screenshot stands in. Screenshots are also the only legit way page imagery reaches the renderer/agents — nobody reads native pixels.
-- **Focus & keyboard.** Focus is bridged explicitly. A **preload script** (injected into every page in an isolated world) decides which keystrokes the page keeps vs forwards to VS Code keybindings. Treat it as a **trust boundary**: assume a hostile page, keep it minimal and side-effect-free.
+- **Focus & keyboard.** Focus is bridged explicitly. A **preload script** (injected into every page in an isolated world) decides which keystrokes the page keeps vs forwards to Vertex keybindings. Treat it as a **trust boundary**: assume a hostile page, keep it minimal and side-effect-free.
 
 ## A browser tab is a real editor, extended by contributions
 

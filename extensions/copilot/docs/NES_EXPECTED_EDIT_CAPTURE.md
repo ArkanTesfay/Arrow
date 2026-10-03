@@ -7,7 +7,7 @@ A feature that allows users to record/capture their "expected suggestion" when a
 ## Getting Started
 
 ### 1. Enable the Feature
-Add this setting to your VS Code `settings.json`:
+Add this setting to your Vertex `settings.json`:
 
 ```json
 {
@@ -32,7 +32,7 @@ That's it! Auto-capture on rejection is enabled by default. To disable it (you c
 4. Press **Cmd+Enter** (Mac) / **Ctrl+Enter** (Windows/Linux) to save, or **Esc** to cancel
 
 **When NES didn't appear but should have:**
-1. Open the Command Palette (**Cmd+Shift+P** / **Ctrl+Shift+P**) and run **"Copilot: Record Expected Edit (NES)"**
+1. Open the Command Palette (**Cmd+Shift+P** / **Ctrl+Shift+P**) and run **"AI: Record Expected Edit (NES)"**
 2. Type the code you expected NES to suggest
 3. Press **Cmd+Enter** / **Ctrl+Enter** to save
 
@@ -41,7 +41,7 @@ That's it! Auto-capture on rejection is enabled by default. To disable it (you c
 ### 3. Submit Your Feedback
 Once you've captured some edits:
 1. Open Command Palette (**Cmd+Shift+P** / **Ctrl+Shift+P**)
-2. Run **"Copilot: Submit NES Captures"**
+2. Run **"AI: Submit NES Captures"**
 3. Review the files to be included (you can exclude sensitive files)
 4. Click **Submit Feedback** to create a PR
 
@@ -49,21 +49,21 @@ Once you've captured some edits:
 
 | Action | Keybinding |
 |--------|------------|
-| Start capture manually | Command Palette → **Copilot: Record Expected Edit (NES)** |
+| Start capture manually | Command Palette → **AI: Record Expected Edit (NES)** |
 | Save capture | **Cmd+Enter** / **Ctrl+Enter** |
 | Save as "no edit expected" | **Cmd+Enter** / **Ctrl+Enter** with no edits made |
 | Cancel capture | **Esc** |
 
 | Command | Description |
 |---------|-------------|
-| Copilot: Record Expected Edit (NES) | Start a capture session |
-| Copilot: Submit NES Captures | Upload feedback to internal repo |
+| AI: Record Expected Edit (NES) | Start a capture session |
+| AI: Submit NES Captures | Upload feedback to internal repo |
 
 ## How It Works
 
 ### Trigger Points
 - **Automatic**: Capture starts when you reject an NES suggestion (if `onReject` setting is enabled)
-- **Manual**: Run **"Copilot: Record Expected Edit (NES)"** from the Command Palette when NES didn't appear but should have
+- **Manual**: Run **"AI: Record Expected Edit (NES)"** from the Command Palette when NES didn't appear but should have
 
 ### Capture Session
 When capture mode is active:
@@ -215,7 +215,7 @@ A metadata file is saved alongside each recording with capture context:
 
 ## Feedback Submission
 
-When you run **"Copilot: Submit NES Captures"**:
+When you run **"AI: Submit NES Captures"**:
 
 1. All captures from `.copilot/nes-feedback/` are collected
 2. A preview dialog shows which files will be included
@@ -224,7 +224,7 @@ When you run **"Copilot: Submit NES Captures"**:
 
 ### Privacy & Filtering
 Sensitive files are **automatically excluded** from submissions:
-- VS Code settings (`settings.json`, `launch.json`)
+- Vertex settings (`settings.json`, `launch.json`)
 - Credentials (`.npmrc`, `.env`, `.gitconfig`, etc.)
 - Private keys (`.pem`, `.key`, `id_rsa`, etc.)
 - Sensitive directories (`.aws/`, `.ssh/`, `.gnupg/`)

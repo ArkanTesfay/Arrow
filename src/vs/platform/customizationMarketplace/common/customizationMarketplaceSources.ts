@@ -39,7 +39,7 @@ export const CustomizationMarketplaceSources = {
 	},
 	CopilotConnectors: {
 		id: 'copilotConnectors',
-		displayName: localize('customizationMarketplace.copilotConnectors', "Copilot Connectors"),
+		displayName: localize('customizationMarketplace.copilotConnectors', "AI Connectors"),
 		enablementSetting: CustomizationMarketplaceConfiguration.CopilotConnectorsEnabled,
 	},
 } as const satisfies Record<string, ICustomizationMarketplaceSourceInfo>;

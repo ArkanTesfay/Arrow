@@ -1,7 +1,7 @@
 {
   "name": "copilot-chat",
-  "displayName": "GitHub Copilot",
-  "description": "AI chat features powered by Copilot",
+  "displayName": "Vertex AI",
+  "description": "AI chat features powered by AI",
   "version": "0.69.0",
   "build": "1",
   "completionsCoreVersion": "1.378.1799",
@@ -325,7 +325,7 @@
         "displayName": "%copilot.tools.getVSCodeAPI.name%",
         "icon": "$(references)",
         "userDescription": "%copilot.vscode.tool.description%",
-        "modelDescription": "Get comprehensive VS Code API documentation and references for extension development. This tool provides authoritative documentation for VS Code's extensive API surface, including proposed APIs, contribution points, and best practices. Use this tool for understanding complex VS Code API interactions.\n\nWhen to use this tool:\n- User asks about specific VS Code APIs, interfaces, or extension capabilities\n- Need documentation for VS Code extension contribution points (commands, views, settings, etc.)\n- Questions about proposed APIs and their usage patterns\n- Understanding VS Code extension lifecycle, activation events, and packaging\n- Best practices for VS Code extension development architecture\n- API examples and code patterns for extension features\n- Troubleshooting extension-specific issues or API limitations\n\nWhen NOT to use this tool:\n- Creating simple standalone files or scripts unrelated to VS Code extensions\n- General programming questions not specific to VS Code extension development\n- Questions about using VS Code as an editor (user-facing features)\n- Non-extension related development tasks\n- File creation or editing that doesn't involve VS Code extension APIs\n\nCRITICAL usage guidelines:\n1. Always include specific API names, interfaces, or concepts in your query\n2. Mention the extension feature you're trying to implement\n3. Include context about proposed vs stable APIs when relevant\n4. Reference specific contribution points when asking about extension manifest\n5. Be specific about the VS Code version or API version when known\n\nScope: This tool is for EXTENSION DEVELOPMENT ONLY - building tools that extend VS Code itself, not for general file creation or non-extension programming tasks.",
+        "modelDescription": "Get comprehensive Vertex API documentation and references for extension development. This tool provides authoritative documentation for Vertex's extensive API surface, including proposed APIs, contribution points, and best practices. Use this tool for understanding complex Vertex API interactions.\n\nWhen to use this tool:\n- User asks about specific Vertex APIs, interfaces, or extension capabilities\n- Need documentation for Vertex extension contribution points (commands, views, settings, etc.)\n- Questions about proposed APIs and their usage patterns\n- Understanding Vertex extension lifecycle, activation events, and packaging\n- Best practices for Vertex extension development architecture\n- API examples and code patterns for extension features\n- Troubleshooting extension-specific issues or API limitations\n\nWhen NOT to use this tool:\n- Creating simple standalone files or scripts unrelated to Vertex extensions\n- General programming questions not specific to Vertex extension development\n- Questions about using Vertex as an editor (user-facing features)\n- Non-extension related development tasks\n- File creation or editing that doesn't involve Vertex extension APIs\n\nCRITICAL usage guidelines:\n1. Always include specific API names, interfaces, or concepts in your query\n2. Mention the extension feature you're trying to implement\n3. Include context about proposed vs stable APIs when relevant\n4. Reference specific contribution points when asking about extension manifest\n5. Be specific about the Vertex version or API version when known\n\nScope: This tool is for EXTENSION DEVELOPMENT ONLY - building tools that extend Vertex itself, not for general file creation or non-extension programming tasks.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -582,7 +582,7 @@
         "icon": "$(new-folder)",
         "userDescription": "%github.copilot.tools.createNewWorkspace.userDescription%",
         "when": "config.github.copilot.chat.newWorkspaceCreation.enabled",
-        "modelDescription": "Get comprehensive setup steps to help the user create complete project structures in a VS Code workspace. This tool is designed for full project initialization and scaffolding, not for creating individual files.\n\nWhen to use this tool:\n- User wants to create a new complete project from scratch\n- Setting up entire project frameworks (TypeScript projects, React apps, Node.js servers, etc.)\n- Initializing Model Context Protocol (MCP) servers with full structure\n- Creating VS Code extensions with proper scaffolding\n- Setting up Next.js, Vite, or other framework-based projects\n- User asks for \"new project\", \"create a workspace\", \"set up a [framework] project\"\n- Need to establish complete development environment with dependencies, config files, and folder structure\n\nWhen NOT to use this tool:\n- Creating single files or small code snippets\n- Adding individual files to existing projects\n- Making modifications to existing codebases\n- User asks to \"create a file\" or \"add a component\"\n- Simple code examples or demonstrations\n- Debugging or fixing existing code\n\nThis tool provides complete project setup including:\n- Folder structure creation\n- Package.json and dependency management\n- Configuration files (tsconfig, eslint, etc.)\n- Initial boilerplate code\n- Development environment setup\n- Build and run instructions\n\nUse other file creation tools for individual files within existing projects.",
+        "modelDescription": "Get comprehensive setup steps to help the user create complete project structures in a Vertex workspace. This tool is designed for full project initialization and scaffolding, not for creating individual files.\n\nWhen to use this tool:\n- User wants to create a new complete project from scratch\n- Setting up entire project frameworks (TypeScript projects, React apps, Node.js servers, etc.)\n- Initializing Model Context Protocol (MCP) servers with full structure\n- Creating Vertex extensions with proper scaffolding\n- Setting up Next.js, Vite, or other framework-based projects\n- User asks for \"new project\", \"create a workspace\", \"set up a [framework] project\"\n- Need to establish complete development environment with dependencies, config files, and folder structure\n\nWhen NOT to use this tool:\n- Creating single files or small code snippets\n- Adding individual files to existing projects\n- Making modifications to existing codebases\n- User asks to \"create a file\" or \"add a component\"\n- Simple code examples or demonstrations\n- Debugging or fixing existing code\n\nThis tool provides complete project setup including:\n- Folder structure creation\n- Package.json and dependency management\n- Configuration files (tsconfig, eslint, etc.)\n- Initial boilerplate code\n- Development environment setup\n- Build and run instructions\n\nUse other file creation tools for individual files within existing projects.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -601,13 +601,13 @@
       },
       {
         "name": "copilot_installExtension",
-        "displayName": "Install Extension in VS Code",
+        "displayName": "Install Extension in Vertex",
         "when": "!config.github.copilot.chat.installExtensionSkill.enabled",
         "toolReferenceName": "installExtension",
         "legacyToolReferenceFullNames": [
           "new/installExtension"
         ],
-        "modelDescription": "Install an extension in VS Code. Use this tool to install an extension in Visual Studio Code as part of a new workspace creation process only.",
+        "modelDescription": "Install an extension in Vertex. Use this tool to install an extension in Vertex as part of a new workspace creation process only.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -629,12 +629,12 @@
       },
       {
         "name": "copilot_runVscodeCommand",
-        "displayName": "Run VS Code Command",
+        "displayName": "Run Vertex Command",
         "toolReferenceName": "runCommand",
         "legacyToolReferenceFullNames": [
           "new/runVscodeCommand"
         ],
-        "modelDescription": "Run a command in VS Code. Use this tool to run a command in Visual Studio Code as part of a new workspace creation process only.",
+        "modelDescription": "Run a command in Vertex. Use this tool to run a command in Vertex as part of a new workspace creation process only.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -673,7 +673,7 @@
         "legacyToolReferenceFullNames": [
           "newJupyterNotebook"
         ],
-        "modelDescription": "Generates a new Jupyter Notebook (.ipynb) in VS Code. Jupyter Notebooks are interactive documents commonly used for data exploration, analysis, visualization, and combining code with narrative text. Prefer creating plain Python files or similar unless a user explicitly requests creating a new Jupyter Notebook or already has a Jupyter Notebook opened or exists in the workspace.",
+        "modelDescription": "Generates a new Jupyter Notebook (.ipynb) in Vertex. Jupyter Notebooks are interactive documents commonly used for data exploration, analysis, visualization, and combining code with narrative text. Prefer creating plain Python files or similar unless a user explicitly requests creating a new Jupyter Notebook or already has a Jupyter Notebook opened or exists in the workspace.",
         "userDescription": "%copilot.tools.newJupyterNotebook.description%",
         "inputSchema": {
           "type": "object",
@@ -1238,7 +1238,7 @@
         "displayName": "Session Store SQL",
         "toolReferenceName": "sessionStoreSql",
         "when": "github.copilot.sessionSearch.enabled",
-        "userDescription": "Query your Copilot session history using SQL",
+        "userDescription": "Query your AI session history using SQL",
         "modelDescription": "Query the local session store containing history from past coding sessions. Uses SQLite syntax (NOT DuckDB or Postgres). SQL queries are read-only — only SELECT and WITH are allowed. Use `datetime('now', '-1 day')` for date math (NOT `now() - INTERVAL '1 day'`), FTS5 `MATCH` for text search.\n\nTables: `sessions`, `turns`, `session_files`, `session_refs`, `checkpoints`, `search_index`. For column details and query patterns, use the **chronicle** skill.\n\nActions: 'query' (execute SQL — supports JOINs, FTS5 MATCH, aggregations), 'reindex' (rebuild index from debug logs).",
         "tags": [],
         "canBeReferencedInPrompt": false,
@@ -1362,7 +1362,7 @@
       {
         "id": "github.copilot.default",
         "name": "GitHubCopilot",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1430,7 +1430,7 @@
             "disambiguation": [
               {
                 "category": "create_new_workspace_or_extension",
-                "description": "The user wants to create a complete Visual Studio Code workspace from scratch, such as a new application or a Visual Studio Code extension. Use this category only if the question relates to generating or creating new workspaces in Visual Studio Code. Do not use this category for updating existing code or generating sample code snippets",
+                "description": "The user wants to create a complete Vertex workspace from scratch, such as a new application or a Vertex extension. Use this category only if the question relates to generating or creating new workspaces in Vertex. Do not use this category for updating existing code or generating sample code snippets",
                 "examples": [
                   "Scaffold a Node server.",
                   "Create a sample project which uses the fileSystemProvider API.",
@@ -1446,7 +1446,7 @@
             "disambiguation": [
               {
                 "category": "create_jupyter_notebook",
-                "description": "The user wants to create a new Jupyter notebook in Visual Studio Code.",
+                "description": "The user wants to create a new Jupyter notebook in Vertex.",
                 "examples": [
                   "Create a notebook to analyze this CSV file."
                 ]
@@ -1479,7 +1479,7 @@
       {
         "id": "github.copilot.editingSession",
         "name": "GitHubCopilot",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.edits.description%",
         "isDefault": true,
         "locations": [
@@ -1492,7 +1492,7 @@
       {
         "id": "github.copilot.editingSessionEditor",
         "name": "GitHubCopilot",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.edits.description%",
         "isDefault": true,
         "locations": [
@@ -1503,7 +1503,7 @@
       {
         "id": "github.copilot.editsAgent",
         "name": "agent",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.agent.description%",
         "locations": [
           "panel"
@@ -1560,7 +1560,7 @@
             "disambiguation": [
               {
                 "category": "create_new_workspace_or_extension",
-                "description": "The user wants to create a complete Visual Studio Code workspace from scratch, such as a new application or a Visual Studio Code extension. Use this category only if the question relates to generating or creating new workspaces in Visual Studio Code. Do not use this category for updating existing code or generating sample code snippets",
+                "description": "The user wants to create a complete Vertex workspace from scratch, such as a new application or a Vertex extension. Use this category only if the question relates to generating or creating new workspaces in Vertex. Do not use this category for updating existing code or generating sample code snippets",
                 "examples": [
                   "Scaffold a Node server.",
                   "Create a sample project which uses the fileSystemProvider API.",
@@ -1576,7 +1576,7 @@
             "disambiguation": [
               {
                 "category": "create_jupyter_notebook",
-                "description": "The user wants to create a new Jupyter notebook in Visual Studio Code.",
+                "description": "The user wants to create a new Jupyter notebook in Vertex.",
                 "examples": [
                   "Create a notebook to analyze this CSV file."
                 ]
@@ -1609,7 +1609,7 @@
       {
         "id": "github.copilot.notebook",
         "name": "GitHubCopilot",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1630,7 +1630,7 @@
       {
         "id": "github.copilot.notebookEditorAgent",
         "name": "GitHubCopilot",
-        "fullName": "GitHub Copilot",
+        "fullName": "Vertex AI",
         "description": "%copilot.description%",
         "isDefault": true,
         "locations": [
@@ -1651,7 +1651,7 @@
       {
         "id": "github.copilot.vscode",
         "name": "vscode",
-        "fullName": "VS Code",
+        "fullName": "Vertex",
         "description": "%copilot.vscode.description%",
         "when": "!github.copilot.interactiveSession.disabled",
         "sampleRequest": "%copilot.vscode.sampleRequest%",
@@ -1661,7 +1661,7 @@
         "disambiguation": [
           {
             "category": "vscode_configuration_questions",
-            "description": "The user wants to learn about, use, or configure the Visual Studio Code. Use this category if the users question is specifically about commands, settings, keybindings, extensions and other features available in Visual Studio Code. Do not use this category to answer questions about generating code or creating new projects including Visual Studio Code extensions.",
+            "description": "The user wants to learn about, use, or configure the Vertex. Use this category if the users question is specifically about commands, settings, keybindings, extensions and other features available in Vertex. Do not use this category to answer questions about generating code or creating new projects including Vertex extensions.",
             "examples": [
               "Switch to light mode.",
               "Keyboard shortcut to toggle terminal visibility.",
@@ -1722,7 +1722,7 @@
             "disambiguation": [
               {
                 "category": "terminal_state_questions",
-                "description": "The user wants to learn about specific state such as the selection, command, or failed command in the integrated terminal in Visual Studio Code.",
+                "description": "The user wants to learn about specific state such as the selection, command, or failed command in the integrated terminal in Vertex.",
                 "examples": [
                   "Why did the latest terminal command fail?"
                 ]
@@ -1735,11 +1735,11 @@
     "languageModelChatProviders": [
       {
         "vendor": "copilot",
-        "displayName": "Copilot"
+        "displayName": "AI"
       },
       {
         "vendor": "copilotcli",
-        "displayName": "Copilot CLI",
+        "displayName": "AI CLI",
         "when": "false"
       },
       {
@@ -2182,7 +2182,7 @@
                   },
                   "modelOptions": {
                     "type": "object",
-                    "markdownDescription": "Sampling parameters to send with requests to this model. These override Copilot's defaults but are overridden by explicit per-request values. Set a property to `null` to omit it and use the model server's default.",
+                    "markdownDescription": "Sampling parameters to send with requests to this model. These override AI's defaults but are overridden by explicit per-request values. Set a property to `null` to omit it and use the model server's default.",
                     "properties": {
                       "temperature": {
                         "type": [
@@ -2239,7 +2239,7 @@
             "apiKey": {
               "type": "string",
               "secret": true,
-              "description": "API key for the models. If not set then Entra ID (Azure AD) authentication with your Microsoft account credentials will be used.",
+              "description": "API key for the models. If not set then Entra ID (Azure AD) authentication with your Vertex account credentials will be used.",
               "title": "API Key"
             },
             "models": {
@@ -2363,7 +2363,7 @@
     ],
     "interactiveSession": [
       {
-        "label": "GitHub Copilot",
+        "label": "Vertex AI",
         "id": "copilot",
         "icon": "",
         "when": "!github.copilot.interactiveSession.disabled"
@@ -2447,66 +2447,66 @@
         "command": "github.copilot.cli.sessions.delete",
         "title": "%github.copilot.command.deleteAgentSession%",
         "icon": "$(close)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "agents.github.copilot.cli.deleteSessions",
         "title": "%github.copilot.command.deleteAgentSession%",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.resumeInTerminal",
         "title": "%github.copilot.command.cli.sessions.resumeInTerminal%",
         "icon": "$(terminal)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.rename",
         "title": "%github.copilot.command.cli.sessions.rename%",
         "icon": "$(edit)",
-        "category": "Copilot CLI",
+        "category": "AI CLI",
         "enablement": "!sessionItem.isMultiSelection"
       },
       {
         "command": "github.copilot.cli.sessions.setTitle",
         "title": "%github.copilot.command.cli.sessions.setTitle%",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.openRepository",
         "title": "%github.copilot.command.cli.sessions.openRepository%",
         "icon": "$(folder-opened)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.openWorktreeInNewWindow",
         "title": "%github.copilot.command.cli.sessions.openWorktreeInNewWindow%",
         "icon": "$(folder-opened)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.openWorktreeInTerminal",
         "title": "%github.copilot.command.cli.sessions.openWorktreeInTerminal%",
         "icon": "$(terminal)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.copyWorktreeBranchName",
         "title": "%github.copilot.command.cli.sessions.copyWorktreeBranchName%",
         "icon": "$(copy)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.commitToWorktree",
         "title": "%github.copilot.command.cli.sessions.commitToWorktree%",
         "icon": "$(git-commit)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.sessions.commitToRepository",
         "title": "%github.copilot.command.cli.sessions.commitToRepository%",
         "icon": "$(git-commit)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.cli.newSession",
@@ -2524,7 +2524,7 @@
         "command": "github.copilot.cli.openInCopilotCLI",
         "title": "%github.copilot.command.cli.openInCopilotCLI%",
         "icon": "$(terminal)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.chat.compact",
@@ -2846,7 +2846,7 @@
       },
       {
         "command": "github.copilot.chat.startCopilotDebugCommand",
-        "title": "Start Copilot Debug"
+        "title": "Start AI Debug"
       },
       {
         "command": "github.copilot.chat.clearTemporalContext",
@@ -2954,22 +2954,22 @@
       {
         "command": "github.copilot.nes.captureExpected.start",
         "title": "Record Expected Edit (NES)",
-        "category": "Copilot"
+        "category": "AI"
       },
       {
         "command": "github.copilot.nes.captureExpected.confirm",
         "title": "Confirm and Save Expected Edit Capture",
-        "category": "Copilot"
+        "category": "AI"
       },
       {
         "command": "github.copilot.nes.captureExpected.abort",
         "title": "Cancel Expected Edit Capture",
-        "category": "Copilot"
+        "category": "AI"
       },
       {
         "command": "github.copilot.nes.captureExpected.submit",
         "title": "Submit NES Captures",
-        "category": "Copilot"
+        "category": "AI"
       },
       {
         "command": "github.copilot.debug.collectWorkspaceIndexDiagnostics",
@@ -3026,132 +3026,132 @@
         "command": "github.copilot.chat.openSuggestionsPanel",
         "title": "Open Completions Panel",
         "enablement": "github.copilot.extensionUnification.activated && !isWeb",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.toggleStatusMenu",
         "title": "Open Status Menu",
         "enablement": "github.copilot.extensionUnification.activated",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.completions.disable",
         "title": "Disable Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated && config.editor.inlineSuggest.enabled && github.copilot.completions.enabled",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.completions.enable",
         "title": "Enable Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated && !(config.editor.inlineSuggest.enabled && github.copilot.completions.enabled)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.completions.toggle",
         "title": "Toggle (Enable/Disable) Inline Suggestions",
         "enablement": "github.copilot.extensionUnification.activated && github.copilot.activated",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.openModelPicker",
         "title": "Change Completions Model",
-        "category": "GitHub Copilot",
+        "category": "Vertex AI",
         "enablement": "github.copilot.extensionUnification.activated && !isWeb && github.copilot.completions.hasMultipleModels"
       },
       {
         "command": "github.copilot.chat.applyCopilotCLIAgentSessionChanges",
         "title": "%github.copilot.command.applyCopilotCLIAgentSessionChanges%",
         "enablement": "!chatSessionRequestInProgress",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.applyCopilotCLIAgentSessionChanges.apply",
         "title": "%github.copilot.chat.applyCopilotCLIAgentSessionChanges.apply%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(git-stash-pop)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.mergeCopilotCLIAgentSessionChanges.merge",
         "title": "%github.copilot.chat.mergeCopilotCLIAgentSessionChanges.merge%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(git-merge)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.mergeCopilotCLIAgentSessionChanges.mergeAndSync",
         "title": "%github.copilot.chat.mergeCopilotCLIAgentSessionChanges.mergeAndSync%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(sync)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.commit",
         "title": "%github.copilot.command.sessions.commit%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-commit)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.commitAndSync",
         "title": "%github.copilot.command.sessions.commitAndSync%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(sync)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.sync",
         "title": "%github.copilot.command.sessions.sync%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(sync)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.createPullRequestCopilotCLIAgentSession.createPR",
         "title": "%github.copilot.chat.createPullRequestCopilotCLIAgentSession.createPR%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-pull-request-create)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.createDraftPullRequestCopilotCLIAgentSession.createDraftPR",
         "title": "%github.copilot.chat.createDraftPullRequestCopilotCLIAgentSession.createDraftPR%",
         "enablement": "!chatSessionRequestInProgress && !sessions.hasGitOperationInProgress",
         "icon": "$(git-pull-request-draft)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.discardChanges",
         "title": "%github.copilot.command.sessions.discardChanges%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(discard)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.addFileReference",
         "title": "%github.copilot.command.chat.copilotCLI.addFileReference%",
         "enablement": "github.copilot.chat.copilotCLI.hasSession",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.addSelection",
         "title": "%github.copilot.command.chat.copilotCLI.addSelection%",
         "enablement": "github.copilot.chat.copilotCLI.hasSession",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.acceptDiff",
         "title": "%github.copilot.command.chat.copilotCLI.acceptDiff%",
         "enablement": "github.copilot.chat.copilotCLI.hasActiveDiff",
         "icon": "$(check)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.chat.copilotCLI.rejectDiff",
         "title": "%github.copilot.command.chat.copilotCLI.rejectDiff%",
         "enablement": "github.copilot.chat.copilotCLI.hasActiveDiff",
         "icon": "$(close)",
-        "category": "Copilot CLI"
+        "category": "AI CLI"
       },
       {
         "command": "github.copilot.chat.checkoutPullRequestReroute",
@@ -3175,30 +3175,30 @@
         "command": "github.copilot.chat.cloudSessions.openRepository",
         "title": "%github.copilot.command.cloudSessions.openRepository.title%",
         "icon": "$(repo)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.chat.cloudSessions.clearCaches",
         "title": "%github.copilot.command.cloudSessions.clearCaches.title%",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.refreshChanges",
         "title": "%github.copilot.command.sessions.refreshChanges%",
         "icon": "$(refresh)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       },
       {
         "command": "github.copilot.sessions.initializeRepository",
         "title": "%github.copilot.command.sessions.initializeRepository%",
         "enablement": "!chatSessionRequestInProgress",
         "icon": "$(repo)",
-        "category": "GitHub Copilot"
+        "category": "Vertex AI"
       }
     ],
     "configuration": [
       {
-        "title": "GitHub Copilot Chat",
+        "title": "Vertex AI Chat",
         "id": "stable",
         "properties": {
           "github.copilot.chat.backgroundAgent.enabled": {
@@ -3254,7 +3254,7 @@
               "pl"
             ],
             "enumDescriptions": [
-              "Use VS Code's configured display language",
+              "Use Vertex's configured display language",
               "English",
               "français",
               "italiano",
@@ -3399,7 +3399,7 @@
             "additionalProperties": {
               "type": "boolean"
             },
-            "markdownDescription": "Enable or disable auto triggering of Copilot completions for specified [languages](https://code.visualstudio.com/docs/languages/identifiers). You can still trigger suggestions manually using `Alt + \\`",
+            "markdownDescription": "Enable or disable auto triggering of AI completions for specified [languages](https://code.visualstudio.com/docs/languages/identifiers). You can still trigger suggestions manually using `Alt + \\`",
             "agentsWindow": {
               "default": {
                 "markdown": true,
@@ -3410,7 +3410,7 @@
           "github.copilot.selectedCompletionModel": {
             "type": "string",
             "default": "",
-            "markdownDescription": "The currently selected completion model ID. To select from a list of available models, use the __\"Change Completions Model\"__ command or open the model picker (from the Copilot menu in the VS Code title bar, select __\"Configure Code Completions\"__ then __\"Change Completions Model\"__. The value must be a valid model ID. An empty value indicates that the default model will be used."
+            "markdownDescription": "The currently selected completion model ID. To select from a list of available models, use the __\"Change Completions Model\"__ command or open the model picker (from the AI menu in the Vertex title bar, select __\"Configure Code Completions\"__ then __\"Change Completions Model\"__. The value must be a valid model ID. An empty value indicates that the default model will be used."
           },
           "github.copilot.chat.reviewAgent.enabled": {
             "type": "boolean",
@@ -3653,7 +3653,7 @@
                       "text": "Use underscore for field names."
                     },
                     {
-                      "text": "Always add a comment: 'Generated by Copilot'."
+                      "text": "Always add a comment: 'Generated by AI'."
                     }
                   ]
                 }
@@ -3667,7 +3667,7 @@
                   "file": ".copilot-codeGeneration-instructions.md"
                 },
                 {
-                  "text": "Always add a comment: 'Generated by Copilot'."
+                  "text": "Always add a comment: 'Generated by AI'."
                 }
               ]
             ],
@@ -5277,7 +5277,7 @@
             "policyReference": {
               "name": "CopilotOtelEnabled"
             },
-            "markdownDescription": "Enable OpenTelemetry trace/metric/log emission for Copilot Chat operations. Recognized enterprise OTel settings replace personal OTel settings, but env var `COPILOT_OTEL_ENABLED` can still override enablement. Requires window reload.",
+            "markdownDescription": "Enable OpenTelemetry trace/metric/log emission for AI Chat operations. Recognized enterprise OTel settings replace personal OTel settings, but env var `COPILOT_OTEL_ENABLED` can still override enablement. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5295,7 +5295,7 @@
             "policyReference": {
               "name": "CopilotOtelProtocol"
             },
-            "markdownDescription": "OTel exporter type for Copilot Chat telemetry. Enterprise-managed OTel settings replace personal OTel settings. A configured output file, including env var `COPILOT_OTEL_FILE_EXPORTER_PATH`, can still select file export. Requires window reload.",
+            "markdownDescription": "OTel exporter type for AI Chat telemetry. Enterprise-managed OTel settings replace personal OTel settings. A configured output file, including env var `COPILOT_OTEL_FILE_EXPORTER_PATH`, can still select file export. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5313,7 +5313,7 @@
             "policyReference": {
               "name": "CopilotOtelOtlpProtocol"
             },
-            "markdownDescription": "OTLP wire protocol for Copilot Chat OTel data, mirroring `OTEL_EXPORTER_OTLP_PROTOCOL`. `http/protobuf` selects the protobuf-over-HTTP exporter; the default (empty) uses `http/json`. Env vars `OTEL_EXPORTER_OTLP_PROTOCOL`, then `COPILOT_OTEL_PROTOCOL`, take precedence over enterprise-managed or personal settings. Requires window reload.",
+            "markdownDescription": "OTLP wire protocol for AI Chat OTel data, mirroring `OTEL_EXPORTER_OTLP_PROTOCOL`. `http/protobuf` selects the protobuf-over-HTTP exporter; the default (empty) uses `http/json`. Env vars `OTEL_EXPORTER_OTLP_PROTOCOL`, then `COPILOT_OTEL_PROTOCOL`, take precedence over enterprise-managed or personal settings. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5325,7 +5325,7 @@
             "policyReference": {
               "name": "CopilotOtelEndpoint"
             },
-            "markdownDescription": "OTLP collector endpoint URL for Copilot Chat OTel data. Env vars `COPILOT_OTEL_ENDPOINT`, then `OTEL_EXPORTER_OTLP_ENDPOINT`, take precedence over enterprise-managed or personal settings. Requires window reload.",
+            "markdownDescription": "OTLP collector endpoint URL for AI Chat OTel data. Env vars `COPILOT_OTEL_ENDPOINT`, then `OTEL_EXPORTER_OTLP_ENDPOINT`, take precedence over enterprise-managed or personal settings. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5352,7 +5352,7 @@
             "policyReference": {
               "name": "CopilotOtelCaptureIdentity"
             },
-            "markdownDescription": "Capture the authenticated Copilot account name, operating system username, and machine hostname in OpenTelemetry. **Contains personally identifying data.** Independent of content capture. `null` means no personal preference (off by default). `COPILOT_OTEL_CAPTURE_IDENTITY` overrides personal settings; explicit enterprise policy overrides both. Enabling requires window reload; an effective denial applies immediately to subsequent exports.",
+            "markdownDescription": "Capture the authenticated AI account name, operating system username, and machine hostname in OpenTelemetry. **Contains personally identifying data.** Independent of content capture. `null` means no personal preference (off by default). `COPILOT_OTEL_CAPTURE_IDENTITY` overrides personal settings; explicit enterprise policy overrides both. Enabling requires window reload; an effective denial applies immediately to subsequent exports.",
             "tags": [
               "advanced"
             ]
@@ -5364,7 +5364,7 @@
             "policyReference": {
               "name": "CopilotOtelServiceName"
             },
-            "markdownDescription": "OTel `service.name` resource attribute for Copilot Chat OTel data. Env var `OTEL_SERVICE_NAME` takes precedence over enterprise-managed or personal settings. Requires window reload.",
+            "markdownDescription": "OTel `service.name` resource attribute for AI Chat OTel data. Env var `OTEL_SERVICE_NAME` takes precedence over enterprise-managed or personal settings. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5379,7 +5379,7 @@
             "policyReference": {
               "name": "CopilotOtelResourceAttributes"
             },
-            "markdownDescription": "Additional OTel resource attributes for Copilot Chat OTel data, as a `{ \"key\": \"value\" }` map. When enterprise OTel settings apply, personal OTel settings are ignored. Merged per-key with env var `OTEL_RESOURCE_ATTRIBUTES`: enterprise-managed values take precedence over environment values, which take precedence over personal settings. Requires window reload.",
+            "markdownDescription": "Additional OTel resource attributes for AI Chat OTel data, as a `{ \"key\": \"value\" }` map. When enterprise OTel settings apply, personal OTel settings are ignored. Merged per-key with env var `OTEL_RESOURCE_ATTRIBUTES`: enterprise-managed values take precedence over environment values, which take precedence over personal settings. Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -5394,7 +5394,7 @@
             "policyReference": {
               "name": "CopilotOtelHeaders"
             },
-            "markdownDescription": "Extra OTLP exporter headers (e.g. auth tokens) for Copilot Chat OTel data, as a `{ \"key\": \"value\" }` map. Applied directly to the OTLP exporter, not via environment variables. When enterprise OTel settings apply, personal OTel settings are ignored. Merged per-key with env var `OTEL_EXPORTER_OTLP_HEADERS` (env values take precedence, including over enterprise-managed values). **Contains potentially sensitive credentials.** Requires window reload.",
+            "markdownDescription": "Extra OTLP exporter headers (e.g. auth tokens) for AI Chat OTel data, as a `{ \"key\": \"value\" }` map. Applied directly to the OTLP exporter, not via environment variables. When enterprise OTel settings apply, personal OTel settings are ignored. Merged per-key with env var `OTEL_EXPORTER_OTLP_HEADERS` (env values take precedence, including over enterprise-managed values). **Contains potentially sensitive credentials.** Requires window reload.",
             "tags": [
               "advanced"
             ]
@@ -6694,11 +6694,11 @@
       {
         "type": "copilotcli",
         "name": "cli",
-        "displayName": "Copilot CLI",
+        "displayName": "AI CLI",
         "icon": "$(copilot)",
-        "welcomeTitle": "Copilot CLI",
-        "welcomeMessage": "Run tasks in the background with the Copilot CLI",
-        "inputPlaceholder": "Run tasks in the background with the Copilot CLI, type `#` for adding context",
+        "welcomeTitle": "AI CLI",
+        "welcomeMessage": "Run tasks in the background with the AI CLI",
+        "inputPlaceholder": "Run tasks in the background with the AI CLI, type `#` for adding context",
         "order": 1,
         "canDelegate": true,
         "description": "%github.copilot.session.providerDescription.background%",
@@ -6912,7 +6912,7 @@
         {
           "icon": "copilot",
           "id": "copilot-cli",
-          "title": "GitHub Copilot CLI",
+          "title": "Vertex AI CLI",
           "titleTemplate": "${sequence}"
         }
       ]

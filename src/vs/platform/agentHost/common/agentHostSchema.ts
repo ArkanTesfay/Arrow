@@ -835,7 +835,7 @@ export const platformRootSchema = createSchema({
 	[AgentHostGlobalAutoApproveEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
 		title: localize('agentHost.config.globalAutoApproveEnabled.title', "Global Auto Approve"),
-		description: localize('agentHost.config.globalAutoApproveEnabled.description', "Whether VS Code's global auto-approve setting is enabled. When `true`, every tool call is auto-approved, equivalent to a session using Allow all."),
+		description: localize('agentHost.config.globalAutoApproveEnabled.description', "Whether Vertex's global auto-approve setting is enabled. When `true`, every tool call is auto-approved, equivalent to a session using Allow all."),
 		default: false,
 	}),
 	[AgentHostAutoApprovePolicyRestrictedConfigKey]: schemaProperty<boolean>({
@@ -861,13 +861,13 @@ export const platformRootSchema = createSchema({
 	[AgentHostAutoReplyEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
 		title: localize('agentHost.config.autoReplyEnabled.title', "Auto Reply"),
-		description: localize('agentHost.config.autoReplyEnabled.description', "Whether VS Code's auto-reply setting is enabled. When `true`, `ask_user` questions are auto-answered instead of blocking on the user, mirroring autopilot mode."),
+		description: localize('agentHost.config.autoReplyEnabled.description', "Whether Vertex's auto-reply setting is enabled. When `true`, `ask_user` questions are auto-answered instead of blocking on the user, mirroring autopilot mode."),
 		default: false,
 	}),
 	[AgentHostSystemProxyEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
 		title: localize('agentHost.config.systemProxyEnabled.title', "System Proxy Discovery"),
-		description: localize('agentHost.config.systemProxyEnabled.description', "Whether Copilot sessions automatically discover and use the operating system's proxy configuration."),
+		description: localize('agentHost.config.systemProxyEnabled.description', "Whether AI sessions automatically discover and use the operating system's proxy configuration."),
 		default: true,
 	}),
 	[AgentHostGitHubMcpServerEnabledConfigKey]: schemaProperty<boolean>({
@@ -878,8 +878,8 @@ export const platformRootSchema = createSchema({
 	}),
 	[AgentHostMcpConnectorsEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
-		title: localize('agentHost.config.mcpConnectorsEnabled.title', "Copilot Connectors"),
-		description: localize('agentHost.config.mcpConnectorsEnabled.description', "Whether Copilot agent sessions expose MCP servers provided by connected Copilot Connectors."),
+		title: localize('agentHost.config.mcpConnectorsEnabled.title', "AI Connectors"),
+		description: localize('agentHost.config.mcpConnectorsEnabled.description', "Whether AI agent sessions expose MCP servers provided by connected AI Connectors."),
 		default: false,
 	}),
 	[AgentHostMarkdownPlanRichLinksEnabledConfigKey]: schemaProperty<boolean>({
@@ -913,8 +913,8 @@ export const platformRootSchema = createSchema({
 	}),
 	[AgentHostMigrateLegacyCopilotCliEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
-		title: localize('agentHost.config.migrateLegacyCopilotCliEnabled.title', "Migrate Legacy Copilot CLI Sessions"),
-		description: localize('agentHost.config.migrateLegacyCopilotCliEnabled.description', "Whether un-adopted extension-host Copilot CLI sessions are surfaced as adoptable agent-host sessions and migrated in place when opened."),
+		title: localize('agentHost.config.migrateLegacyCopilotCliEnabled.title', "Migrate Legacy AI CLI Sessions"),
+		description: localize('agentHost.config.migrateLegacyCopilotCliEnabled.description', "Whether un-adopted extension-host AI CLI sessions are surfaced as adoptable agent-host sessions and migrated in place when opened."),
 		default: false,
 	}),
 	[AgentHostSessionCatalogEnabledConfigKey]: schemaProperty<boolean>({
@@ -951,8 +951,8 @@ export const platformRootSchema = createSchema({
 	}),
 	[AgentHostCopilotMultiRootEnabledConfigKey]: schemaProperty<boolean>({
 		type: 'boolean',
-		title: localize('agentHost.config.copilotMultiRootEnabled.title', "Copilot Multiple Working Directories"),
-		description: localize('agentHost.config.copilotMultiRootEnabled.description', "Whether the Copilot provider advertises support for multiple working directories, letting a session span every folder of a multi-root workspace."),
+		title: localize('agentHost.config.copilotMultiRootEnabled.title', "AI Multiple Working Directories"),
+		description: localize('agentHost.config.copilotMultiRootEnabled.description', "Whether the AI provider advertises support for multiple working directories, letting a session span every folder of a multi-root workspace."),
 		default: false,
 	}),
 	[AgentHostClaudeMultiRootEnabledConfigKey]: schemaProperty<boolean>({

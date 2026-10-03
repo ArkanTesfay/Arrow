@@ -36,11 +36,11 @@ export class McpCopilotGlobalConfigurationService implements IMcpCopilotGlobalCo
 		}
 		try {
 			const data = await raceTimeout(this.loadDiscoveryData(), 5000, () => {
-				this._logService.warn('[MCP] Timed out resolving the Copilot Global MCP configuration after 5000ms.');
+				this._logService.warn('[MCP] Timed out resolving the AI Global MCP configuration after 5000ms.');
 			});
 			return data ? getCopilotGlobalMcpConfigurationResource(data) : undefined;
 		} catch (error) {
-			this._logService.warn('[MCP] Unable to resolve the Copilot Global MCP configuration.', error);
+			this._logService.warn('[MCP] Unable to resolve the AI Global MCP configuration.', error);
 			return undefined;
 		}
 	}

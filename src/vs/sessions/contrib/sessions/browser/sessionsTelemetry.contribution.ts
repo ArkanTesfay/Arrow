@@ -951,7 +951,7 @@ type SessionActionEvent = {
 // Classifications
 
 type SessionRequestSentClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	editorSessionsByProvider: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'JSON map of cumulative editor chat starts by bounded provider category. No remote addresses or extension identifiers.' };
 	editorMessages: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Cumulative user messages accepted in editor windows, including queued and steering submissions, excluding retries and Agents window messages.' };
 	editorMessagesWithOtherSessionInProgress: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; isMeasurement: true; comment: 'Editor submissions with a different session known to the submitting window in progress, counted once per message.' };
@@ -1001,7 +1001,7 @@ type SessionRequestSentClassification = {
 };
 
 type SessionArchivedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user archives a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1020,7 +1020,7 @@ type SessionArchivedClassification = {
 };
 
 type SessionUnarchivedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user unarchives a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1039,7 +1039,7 @@ type SessionUnarchivedClassification = {
 };
 
 type SessionDeletedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user deletes a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1058,7 +1058,7 @@ type SessionDeletedClassification = {
 };
 
 type ChatDeletedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user deletes a chat from a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1077,7 +1077,7 @@ type ChatDeletedClassification = {
 };
 
 type ChatRenamedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user renames a chat in a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1096,7 +1096,7 @@ type ChatRenamedClassification = {
 };
 
 type SessionRenamedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user renames a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1115,7 +1115,7 @@ type SessionRenamedClassification = {
 };
 
 type CreatePullRequestClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Create Pull Request command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1134,7 +1134,7 @@ type CreatePullRequestClassification = {
 };
 
 type CreateDraftPullRequestClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Create Draft Pull Request command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1153,7 +1153,7 @@ type CreateDraftPullRequestClassification = {
 };
 
 type UpdatePullRequestClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Update (Sync) Pull Request command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1172,7 +1172,7 @@ type UpdatePullRequestClassification = {
 };
 
 type MergePullRequestClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Merge Pull Request command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1191,7 +1191,7 @@ type MergePullRequestClassification = {
 };
 
 type CheckoutPullRequestClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Checkout Pull Request command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1210,7 +1210,7 @@ type CheckoutPullRequestClassification = {
 };
 
 type InitializeRepositoryClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Initialize Repository command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1229,7 +1229,7 @@ type InitializeRepositoryClassification = {
 };
 
 type CommitClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Commit command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1248,7 +1248,7 @@ type CommitClassification = {
 };
 
 type CommitAndSyncClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Commit and Sync command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1267,7 +1267,7 @@ type CommitAndSyncClassification = {
 };
 
 type SessionRestoredClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user restores a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1286,7 +1286,7 @@ type SessionRestoredClassification = {
 };
 
 type FixCIChecksClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user runs the Fix CI Checks command for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1326,7 +1326,7 @@ type FeedbackAddedEvent = {
 };
 
 type FeedbackAddedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user adds a new agent feedback comment to a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1367,7 +1367,7 @@ type FeedbackConvertedEvent = {
 };
 
 type FeedbackConvertedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when an external review comment (code review or PR review) is converted into agent feedback for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1408,7 +1408,7 @@ type FeedbackReplyAddedEvent = {
 };
 
 type FeedbackReplyAddedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user adds a reply to an existing agent feedback thread in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1451,7 +1451,7 @@ type FeedbackSubmittedEvent = {
 };
 
 type FeedbackSubmittedClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user submits the accumulated agent feedback for a session in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1495,7 +1495,7 @@ type SessionStickinessToggledEvent = {
 };
 
 type SessionStickinessToggledClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user toggles a session\'s stickiness in the sessions grid in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1533,7 +1533,7 @@ type SessionMaximizeToggledEvent = {
 };
 
 type SessionMaximizeToggledClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the action occurred, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Reports when the user toggles the maximized state of a session view in the sessions grid in the Agents window.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };
@@ -1559,7 +1559,7 @@ type SessionSummaryEvent = ISessionLifecycleSummary & {
 };
 
 type SessionSummaryClassification = {
-	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'Copilot entitlement SKU when the summary was emitted, or signedOut or unknown when no SKU is available.' };
+	copilotSku: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'AI entitlement SKU when the summary was emitted, or signedOut or unknown when no SKU is available.' };
 	owner: 'benibenj';
 	comment: 'Single per-session summary emitted when a tracked session is finished (archived, deleted, or observed as archived/deleted in another client). Aggregates everything that happened during the session\'s lifetime.';
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'SHA-1 hash of the globally unique session identifier, used to correlate events for the same session without exposing provider or resource details.' };

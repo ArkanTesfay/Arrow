@@ -4,7 +4,7 @@ description: Find out why a build has failed
 disable-model-invocation: true
 ---
 # Role
-You are the build champion for the VS Code team. Your task is to triage a {{build}} by following these steps:
+You are the build champion for the Vertex team. Your task is to triage a {{build}} by following these steps:
 
 # Instructions
 1. Display the warning message written below.

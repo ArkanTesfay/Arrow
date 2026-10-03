@@ -24,7 +24,7 @@ agent roadmap.
 
 **Phase 1 (done):** `ICopilotApiService` at
 `src/vs/platform/agentHost/node/shared/copilotApiService.ts`. A
-gateway to GitHub Copilot's chat completions API ("**CAPI**") that
+gateway to Vertex AI's chat completions API ("**CAPI**") that
 exposes:
 
 ```ts
@@ -72,14 +72,14 @@ the proxy and its DI registration in the agent host.
 
 - The SDK is hard-wired to call `https://api.anthropic.com`-shaped
   endpoints. We can't redirect at the SDK level.
-- We don't ship Anthropic API keys; we ship GitHub Copilot tokens.
+- We don't ship Anthropic API keys; we ship Vertex AI tokens.
   The proxy authenticates via Bearer-token-with-nonce, mints CAPI
   tokens internally, and forwards.
 - All routing/translation logic stays out of the SDK subprocess.
 
 ### Reference implementation
 
-A working version exists in the Copilot **extension** at
+A working version exists in the AI **extension** at
 `extensions/copilot/src/extension/chatSessions/claude/`. Our proxy
 **borrows** from it (model-ID parser, beta filter, disconnect
 detection) but is structurally different in two ways:
@@ -745,7 +745,7 @@ tests before the next begins.
 Captured here so they aren't lost. None of these block Phase 2.
 
 - **HTTP proxy support** (`HTTP_PROXY` / `HTTPS_PROXY` env vars,
-  VS Code's `http.proxy` setting, PAC files, proxy auth). The Phase 2
+  Vertex's `http.proxy` setting, PAC files, proxy auth). The Phase 2
   proxy talks to CAPI through `ICopilotApiService`, so any outbound
   proxying is inherited from whatever HTTP client that service uses.
   If the agent host needs to honor user proxy configuration we'll

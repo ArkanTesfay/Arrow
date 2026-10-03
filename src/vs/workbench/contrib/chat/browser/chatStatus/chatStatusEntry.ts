@@ -343,7 +343,7 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
 
 	private getEntryProps(): IStatusbarEntry {
 		let text = '$(copilot)';
-		let ariaLabel = localize('chatStatusAria', "Copilot status");
+		let ariaLabel = localize('chatStatusAria', "AI status");
 		let kind: StatusbarEntryKind | undefined;
 		let tooltip = this.dashboardTooltip;
 
@@ -365,7 +365,7 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
 			// Disabled
 			if (this.chatEntitlementService.sentiment.disabled || this.chatEntitlementService.sentiment.untrusted) {
 				text = '$(copilot-unavailable)';
-				ariaLabel = localize('copilotDisabledStatus', "Copilot disabled");
+				ariaLabel = localize('copilotDisabledStatus', "AI disabled");
 			}
 
 			// Signed out — keep showing Sign-in affordance even when BYOK models are present
@@ -384,7 +384,7 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
 
 			// Copilot Resumed (limit reset after the user was previously blocked)
 			else if (this.quotaResumeState === 'resumed') {
-				const resumedLabel = localize('chatResumedStatus', "Copilot Resumed");
+				const resumedLabel = localize('chatResumedStatus', "AI Resumed");
 				text = `$(copilot) ${resumedLabel}`;
 				ariaLabel = resumedLabel;
 				kind = 'prominent';
@@ -414,7 +414,7 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
 		}
 
 		const baseResult = {
-			name: localize('chatStatus', "Copilot Status"),
+			name: localize('chatStatus', "AI Status"),
 			text,
 			ariaLabel,
 			command: ToggleTooltipCommand,
@@ -431,9 +431,9 @@ export class ChatStatusBarEntry extends Disposable implements IWorkbenchContribu
 		const showSignInLabel = !this.isSignInTitleBarAffordanceVisible();
 		const signInLabel = localize('signIn', "Sign In");
 		return {
-			name: localize('chatStatus', "Copilot Status"),
+			name: localize('chatStatus', "AI Status"),
 			text: showSignInLabel ? `$(copilot) ${signInLabel}` : '$(copilot)',
-			ariaLabel: showSignInLabel ? signInLabel : localize('chatStatusAria', "Copilot status"),
+			ariaLabel: showSignInLabel ? signInLabel : localize('chatStatusAria', "AI status"),
 			command: CHAT_SETUP_ACTION_ID,
 			showInAllWindows: true,
 			kind: undefined,

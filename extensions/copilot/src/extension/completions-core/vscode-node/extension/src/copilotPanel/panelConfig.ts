@@ -9,8 +9,8 @@ import { PanelConfig } from '../panelShared/basePanelTypes';
 
 // Configuration for the GitHub Copilot Suggestions Panel
 export const copilotPanelConfig: PanelConfig = {
-	panelTitle: 'GitHub Copilot Suggestions',
-	webviewId: 'GitHub Copilot Suggestions',
+	panelTitle: 'Vertex AI Suggestions',
+	webviewId: 'Vertex AI Suggestions',
 	webviewScriptName: 'suggestionsPanelWebview.js',
 	contextVariable: CopilotPanelVisible,
 	commands: {

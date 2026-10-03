@@ -9,7 +9,7 @@ import { ITelemetryService } from '../../../telemetry/common/telemetry.js';
 
 const SECONDARY_ASSIGNMENT_CONTEXT_PROPERTY = 'secondary.assignmentcontext';
 
-// __GDPR__COMMON__ "secondary.assignmentcontext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Secondary experiment assignment context assigned by CAPI during Copilot model calls." }
+// __GDPR__COMMON__ "secondary.assignmentcontext" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Secondary experiment assignment context assigned by CAPI during AI model calls." }
 
 export class CopilotSecondaryAssignmentContext {
 

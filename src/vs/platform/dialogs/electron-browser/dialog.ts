@@ -26,7 +26,7 @@ export function createNativeAboutDialogDetails(productService: IProductService, 
 	const copilotSdkVersion = formatCopilotVersion(productService.copilotVersions?.sdk);
 
 	const getDetails = (useAgo: boolean): string => {
-		return localize({ key: 'aboutDetail', comment: ['Electron, Chromium, Node.js, V8 and Copilot are product names that need no translation'] },
+		return localize({ key: 'aboutDetail', comment: ['Electron, Chromium, Node.js, V8 and AI are product names that need no translation'] },
 			"Version: {0}\nCommit: {1}\nDate: {2}\nElectron: {3}\nElectronBuildId: {4}\nChromium: {5}\nNode.js: {6}\nV8: {7}\n@github/copilot: {8}\n@github/copilot-sdk: {9}\nOS: {10}",
 			version,
 			productService.commit || 'Unknown',

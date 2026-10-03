@@ -264,10 +264,10 @@ export class CopilotConnectorsService extends Disposable implements ICopilotConn
 				throw new CancellationError();
 			}
 			if (session.account.id !== authentication.session.account.id) {
-				throw new CopilotConnectorsError(localize('copilotConnectors.wrongAccount', "Authorize connectors with the same GitHub account that you use for GitHub Copilot."));
+				throw new CopilotConnectorsError(localize('copilotConnectors.wrongAccount', "Authorize connectors with the same GitHub account that you use for Vertex AI."));
 			}
 			if (!hasConnectorScope(session, false)) {
-				throw new CopilotConnectorsError(localize('copilotConnectors.permissionNotGranted', "GitHub did not grant permission to manage Copilot connectors. Try authorizing connectors again."));
+				throw new CopilotConnectorsError(localize('copilotConnectors.permissionNotGranted', "GitHub did not grant permission to manage AI connectors. Try authorizing connectors again."));
 			}
 			this.resetCatalogContext();
 		} finally {
@@ -514,14 +514,14 @@ export class CopilotConnectorsService extends Disposable implements ICopilotConn
 		const endpoint = this.productService.defaultChatAgent?.mcpConnectorsUrl;
 		if (!endpoint || !isHttpsUrl(endpoint)) {
 			if (requireAuthentication) {
-				throw new CopilotConnectorsError(localize('copilotConnectors.unavailable', "Copilot connectors are not available in this product."));
+				throw new CopilotConnectorsError(localize('copilotConnectors.unavailable', "AI connectors are not available in this product."));
 			}
 			return undefined;
 		}
 		const provider = this.defaultAccountService.getDefaultAccountAuthenticationProvider();
 		if (provider.enterprise) {
 			if (requireAuthentication) {
-				throw new CopilotConnectorsError(localize('copilotConnectors.enterpriseUnavailable', "Copilot connectors are not available for this GitHub Enterprise account."));
+				throw new CopilotConnectorsError(localize('copilotConnectors.enterpriseUnavailable', "AI connectors are not available for this GitHub Enterprise account."));
 			}
 			return undefined;
 		}
@@ -620,7 +620,7 @@ export class CopilotConnectorsMarketplaceProvider implements ICustomizationMarke
 		const words = text ? text.toLowerCase().split(/\s+/) : [];
 		const requestedPageSize = options.pageSize ?? 30;
 		if (text.length > maxSearchQueryLength || words.length > maxSearchWords || !Number.isSafeInteger(requestedPageSize) || requestedPageSize <= 0) {
-			throw new CopilotConnectorsError(localize('copilotConnectors.invalidQuery', "Use a positive page size and at most {0} characters and {1} words to search Copilot connectors.", maxSearchQueryLength, maxSearchWords));
+			throw new CopilotConnectorsError(localize('copilotConnectors.invalidQuery', "Use a positive page size and at most {0} characters and {1} words to search AI connectors.", maxSearchQueryLength, maxSearchWords));
 		}
 		const pageSize = Math.min(requestedPageSize, 100);
 		for (const [key, value] of [...this.continuations]) {
@@ -673,7 +673,7 @@ function connectedConnectorNames(connectors: readonly ICopilotConnector[]): stri
 }
 
 function invalidConnectorPage(): CopilotConnectorsError {
-	return new CopilotConnectorsError(localize('copilotConnectors.invalidCursor', "The Copilot connectors page is invalid. Start a new search."));
+	return new CopilotConnectorsError(localize('copilotConnectors.invalidCursor', "The AI connectors page is invalid. Start a new search."));
 }
 
 function connectorSignInRequired(): CopilotConnectorsError {
@@ -745,7 +745,7 @@ export function toCopilotConnectorMarketplaceEntry(connector: ICopilotConnector)
 		url: connector.documentation,
 		externalUrl: connector.documentation?.toString(true),
 		icon: connector.icon,
-		publisher: localize('copilotConnectors.publisher', "GitHub Copilot"),
+		publisher: localize('copilotConnectors.publisher', "Vertex AI"),
 		installation: { kind: 'copilotConnector', name: connector.name },
 	};
 }
@@ -753,7 +753,7 @@ export function toCopilotConnectorMarketplaceEntry(connector: ICopilotConnector)
 function parseConnectors(value: unknown, scoped: boolean): readonly ICopilotConnector[] {
 	const plugins = asRecord(value)?.plugins;
 	if (!Array.isArray(plugins) || plugins.length > maxConnectors) {
-		throw new CopilotConnectorsError(localize('copilotConnectors.invalidResponse', "Copilot connectors returned an invalid response."));
+		throw new CopilotConnectorsError(localize('copilotConnectors.invalidResponse', "AI connectors returned an invalid response."));
 	}
 	const connectors: ICopilotConnector[] = [];
 	for (const value of plugins) {
@@ -765,11 +765,11 @@ function parseConnectors(value: unknown, scoped: boolean): readonly ICopilotConn
 		const metadata = asRecord(plugin.metadata);
 		const connection = scoped ? asRecord(plugin.connection) : undefined;
 		const displayName = text(metadata?.displayName) ?? name;
-		const description = text(metadata?.description) ?? text(plugin.description) ?? localize('copilotConnectors.defaultDescription', "Connect {0} to GitHub Copilot.", displayName);
+		const description = text(metadata?.description) ?? text(plugin.description) ?? localize('copilotConnectors.defaultDescription', "Connect {0} to Vertex AI.", displayName);
 		const mcpServers = asRecord(asRecord(plugin.mcpServers)?.mcpServers);
 		const mcpServerEntries = Object.entries(mcpServers ?? {});
 		if (mcpServerEntries.length > maxMcpServersPerConnector) {
-			throw new CopilotConnectorsError(localize('copilotConnectors.invalidResponse', "Copilot connectors returned an invalid response."));
+			throw new CopilotConnectorsError(localize('copilotConnectors.invalidResponse', "AI connectors returned an invalid response."));
 		}
 		connectors.push({
 			name,

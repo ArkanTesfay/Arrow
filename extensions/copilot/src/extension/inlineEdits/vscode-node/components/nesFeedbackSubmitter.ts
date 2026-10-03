@@ -60,7 +60,7 @@ export class NesFeedbackSubmitter {
 			// Check if feedback folder exists and has files
 			const files = await this._collectFeedbackFiles(feedbackFolderUri);
 			if (files.length === 0) {
-				window.showInformationMessage('No NES feedback captures found to submit. Use "Copilot: Record Expected Edit (NES)" to capture feedback first.');
+				window.showInformationMessage('No NES feedback captures found to submit. Use "AI: Record Expected Edit (NES)" to capture feedback first.');
 				return;
 			}
 
@@ -602,7 +602,7 @@ export class NesFeedbackSubmitter {
 				`- **Submitted by:** ${username}\n` +
 				`- **Timestamp:** ${timestamp}\n` +
 				`- **Files:** ${fileCount} file(s)\n\n` +
-				`This feedback was automatically submitted via the "Copilot: Submit NES Feedback" command.`
+				`This feedback was automatically submitted via the "AI: Submit NES Feedback" command.`
 		};
 
 		const response = await fetch(url, {

@@ -57,7 +57,7 @@ export class CopilotSandboxPolicyDisplay {
 		try {
 			await this._fileService.writeFile(resource, VSBuffer.fromString(markdown));
 		} catch (err) {
-			this._logService.error(err, `[Copilot:${this._sessionId}] Failed to write sandbox policy`);
+			this._logService.error(err, `[AI:${this._sessionId}] Failed to write sandbox policy`);
 			throw err;
 		}
 		return {

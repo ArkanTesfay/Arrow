@@ -1,6 +1,6 @@
-# GitHub Authentication for Visual Studio Code
+# GitHub Authentication for Vertex
 
-**Notice:** This extension is bundled with Visual Studio Code. It can be disabled but not uninstalled.
+**Notice:** This extension is bundled with Vertex. It can be disabled but not uninstalled.
 
 ## Features
 

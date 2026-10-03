@@ -62,7 +62,7 @@ export class WorkspaceTags implements IWorkbenchContribution {
 			return;
 		}
 
-		let value = await this.nativeHostService.windowsGetStringRegKey('HKEY_LOCAL_MACHINE', 'SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion', 'EditionID');
+		let value = await this.nativeHostService.windowsGetStringRegKey('HKEY_LOCAL_MACHINE', 'SOFTWARE\\Vertex\\Windows NT\\CurrentVersion', 'EditionID');
 		if (value === undefined) {
 			value = 'Unknown';
 		}

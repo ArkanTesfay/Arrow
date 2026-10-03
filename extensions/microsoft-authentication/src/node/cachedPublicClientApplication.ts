@@ -260,12 +260,12 @@ export class CachedPublicClientApplication implements ICachedPublicClientApplica
 		response: Parameters<DeviceCodeRequest['deviceCodeCallback']>[0],
 		deferredPromise: DeferredPromise<AuthenticationResult | null>
 	): Promise<void> {
-		const button = l10n.t('Copy & Continue to Microsoft');
+		const button = l10n.t('Copy & Continue to Vertex');
 		const modalResult = await window.showInformationMessage(
 			l10n.t({ message: 'Your Code: {0}', args: [response.userCode], comment: ['The {0} will be a code, e.g. 123-456'] }),
 			{
 				modal: true,
-				detail: l10n.t('To finish authenticating, navigate to Microsoft and paste in the above one-time code.')
+				detail: l10n.t('To finish authenticating, navigate to Vertex and paste in the above one-time code.')
 			}, button);
 
 		if (modalResult !== button) {

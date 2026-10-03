@@ -153,7 +153,7 @@ export class GeminiNativeBYOKLMProvider extends AbstractLanguageModelChatProvide
 			const abortController = new AbortController();
 			const cancelSub = token.onCancellationRequested(() => {
 				abortController.abort();
-				this._logService.trace('Gemini request aborted via VS Code cancellation token');
+				this._logService.trace('Gemini request aborted via Vertex cancellation token');
 			});
 
 			const rawEffort = options.modelConfiguration?.reasoningEffort;
@@ -331,7 +331,7 @@ export class GeminiNativeBYOKLMProvider extends AbstractLanguageModelChatProvide
 						"resumeEventSeen": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "Whether a system resume event was seen during the request", "isMeasurement": true },
 						"subType": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Sub-type of the request" },
 						"modelCallId": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "Unique identifier for this model call" },
-						"parentRequestId": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "For a subagent: the VS Code chat request id of the parent turn that invoked this subagent (matches panel.request.parentRequestId)." },
+						"parentRequestId": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "For a subagent: the Vertex chat request id of the parent turn that invoked this subagent (matches panel.request.parentRequestId)." },
 						"parentModelCallId": { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "Model call ID of the parent request for subagent calls" },
 						"iterationNumber": { "classification": "SystemMetaData", "purpose": "FeatureInsight", "comment": "Iteration number within the tool calling loop" }
 					}

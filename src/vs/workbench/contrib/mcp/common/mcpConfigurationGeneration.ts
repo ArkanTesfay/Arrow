@@ -56,7 +56,7 @@ export function getMcpGenerationSchema(format: McpResourceFormat): IJSONSchema {
 	};
 	return {
 		description: format === McpResourceFormat.WorkspaceRoot
-			? 'Prefer portable command/args/env or HTTP url/headers. Preserve any required VS Code inputs, cwd, envFile, OAuth or SSE transport: these require explicit approval to use .vscode/mcp.json instead of .mcp.json.'
+			? 'Prefer portable command/args/env or HTTP url/headers. Preserve any required Vertex inputs, cwd, envFile, OAuth or SSE transport: these require explicit approval to use .vscode/mcp.json instead of .mcp.json.'
 			: undefined,
 		oneOf: [stdio, http].map((schema, index) => ({
 			...schema,
@@ -76,7 +76,7 @@ export function normalizeMcpGeneratedConfiguration(result: McpGeneratedConfigura
 		return result.server;
 	}
 	if (result.format !== format) {
-		throw new Error(localize('mcp.generation.formatMismatch', "The MCP setup extension returned an unexpected configuration format. Update the Copilot extension and try again."));
+		throw new Error(localize('mcp.generation.formatMismatch', "The MCP setup extension returned an unexpected configuration format. Update the AI extension and try again."));
 	}
 	const normalized = format === McpResourceFormat.CopilotGlobal
 		? fromCopilotMcpServerConfiguration(result.server)

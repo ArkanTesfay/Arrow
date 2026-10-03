@@ -265,7 +265,7 @@ async function resolveMcpServerForAgentHostDelivery(
 		);
 	}
 
-	// Only the window's own Copilot runtime is known to read the same machine's Copilot-home config.
+	// Only the window's own AI runtime is known to read the same machine's Copilot-home config.
 	if (source.kind === AgentHostMcpServerSourceKind.CopilotHome
 		&& sessionType === AGENT_HOST_COPILOT_CLI_SESSION_TYPE
 		&& collection?.remoteAuthority === windowRemoteAuthority) {

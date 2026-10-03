@@ -33,7 +33,7 @@ import { ICopilotCLISessionService } from '../copilotcli/node/copilotcliSessionS
 /**
  * Message shown when user needs to trust a folder to continue.
  */
-export const UNTRUSTED_FOLDER_MESSAGE = l10n.t('The selected folder is not trusted. Please trust the folder to continue with the {0}.', 'Copilot CLI');
+export const UNTRUSTED_FOLDER_MESSAGE = l10n.t('The selected folder is not trusted. Please trust the folder to continue with the {0}.', 'AI CLI');
 
 // #region FolderRepositoryManager (abstract base)
 
@@ -658,10 +658,10 @@ export abstract class FolderRepositoryManager extends Disposable implements IFol
 
 		const isDelegation = !sessionId;
 		const title = isDelegation
-			? l10n.t('Delegate to Copilot CLI')
+			? l10n.t('Delegate to AI CLI')
 			: l10n.t('Uncommitted Changes');
 		const message = isDelegation
-			? l10n.t('Copilot CLI will work in an isolated worktree to implement your requested changes.')
+			? l10n.t('AI CLI will work in an isolated worktree to implement your requested changes.')
 			+ '\n\n'
 			+ l10n.t('The selected repository has uncommitted changes. Should these changes be included in the new worktree?')
 			: l10n.t('The selected repository has uncommitted changes. Should these changes be included in the new worktree?');

@@ -453,7 +453,7 @@ export class CloudSandboxApiService extends Disposable implements ICloudSandboxA
 		const repository = parseNwo(request.repoNwo);
 		const context = await this._request(`${this._tasksBaseUrl()}/tasks`, 'mc.taskClient.create', 'createTask', {
 			'Accept': 'application/json',
-			'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+			'AI-Integration-Id': COPILOT_INTEGRATION_ID,
 		}, token, CREATE_TIMEOUT_MS, {
 			environment_id: CLOUD_SANDBOX_ON_DEMAND_ENVIRONMENT_ID,
 			// Persisted for display, so replayed history shows the prompt no run was started for.
@@ -504,7 +504,7 @@ export class CloudSandboxApiService extends Disposable implements ICloudSandboxA
 		try {
 			const context = await this._request(`${this._tasksBaseUrl()}/tasks/${encodeURIComponent(taskId)}`, 'mc.taskClient.delete', 'deleteTask', {
 				'Accept': 'application/json',
-				'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+				'AI-Integration-Id': COPILOT_INTEGRATION_ID,
 			}, CancellationToken.None, REQUEST_TIMEOUT_MS, undefined, 'DELETE');
 			// A rejected delete resolves rather than throwing, so the status decides.
 			if (!isSuccess(context)) {
@@ -528,7 +528,7 @@ export class CloudSandboxApiService extends Disposable implements ICloudSandboxA
 		const url = `${this._tasksBaseUrl()}/tasks/${encodeURIComponent(taskId)}/events`;
 		const context = await this._request(url, 'mc.taskClient.events', 'getTaskEvents', {
 			'Accept': 'application/vnd.github.ahp+json',
-			'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+			'AI-Integration-Id': COPILOT_INTEGRATION_ID,
 		}, token, DISCOVERY_TIMEOUT_MS);
 		if (!isSuccess(context)) {
 			await this._throwForStatus('task events', context);
@@ -620,7 +620,7 @@ export class CloudSandboxApiService extends Disposable implements ICloudSandboxA
 		const path = action === 'get' ? '' : `/${action}`;
 		const url = `${GITHUB_DOT_COM_COPILOT_API_BASE_URI}/agents/environments/${encodeURIComponent(environmentId)}${path}${toQuery(searchParams)}`;
 		return this._request(url, `mc.environmentClient.${action}`, action === 'get' ? 'getEnvironment' : action, {
-			'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+			'AI-Integration-Id': COPILOT_INTEGRATION_ID,
 		}, token, REQUEST_TIMEOUT_MS, undefined, undefined, onRequest);
 	}
 
@@ -628,7 +628,7 @@ export class CloudSandboxApiService extends Disposable implements ICloudSandboxA
 	private async _sendTask(url: string, action: 'list' | 'get', token: CancellationToken): Promise<IRequestContext> {
 		const context = await this._retryWhileRateLimited(`task ${action}`, token, () => this._request(url, `mc.taskClient.${action}`, action === 'list' ? 'listTasks' : 'getTask', {
 			'Accept': 'application/json',
-			'Copilot-Integration-Id': COPILOT_INTEGRATION_ID,
+			'AI-Integration-Id': COPILOT_INTEGRATION_ID,
 		}, token, DISCOVERY_TIMEOUT_MS));
 		if (!isSuccess(context)) {
 			await this._throwForStatus(`task ${action}`, context);

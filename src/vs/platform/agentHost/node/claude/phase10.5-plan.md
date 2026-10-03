@@ -40,7 +40,7 @@ Replace Claude's dual-map session lifecycle (`_provisionalSessions` + `_sessions
 **Out of scope**
 
 - `IAgent` API changes.
-- Copilot agent refactor (`src/vs/platform/agentHost/node/copilot/copilotAgent.ts`) - owned by a separate phase.
+- AI agent refactor (`src/vs/platform/agentHost/node/copilot/copilotAgent.ts`) - owned by a separate phase.
 - New protocol events/methods beyond existing session progress/materialize forwarding.
 - Cross-phase feature work from phases 11+.
 

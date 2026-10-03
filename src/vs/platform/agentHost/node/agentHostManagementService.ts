@@ -74,7 +74,7 @@ export class AgentHostManagementService implements IAgentHostManagementService {
 
 	refreshCopilotConnectorSessions(): Promise<void> {
 		if (!this._agentService.refreshCopilotConnectorSessions) {
-			throw new Error('Copilot Connector session refresh is unavailable');
+			throw new Error('AI Connector session refresh is unavailable');
 		}
 		return this._runMutation(() => this._agentService.refreshCopilotConnectorSessions!());
 	}

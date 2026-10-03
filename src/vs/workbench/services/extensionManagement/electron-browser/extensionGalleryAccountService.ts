@@ -198,7 +198,7 @@ export class MicrosoftGalleryAccountProvider extends AbstractGalleryAccountProvi
 		try {
 			tid = getClaimsFromJWT(rawToken).tid;
 		} catch (error) {
-			this.logService.error('[Marketplace] Unable to decode the Microsoft token to determine account eligibility — treating as ineligible.', error);
+			this.logService.error('[Marketplace] Unable to decode the Vertex token to determine account eligibility — treating as ineligible.', error);
 			return false;
 		}
 		if (!tid) {
@@ -214,7 +214,7 @@ export class MicrosoftGalleryAccountProvider extends AbstractGalleryAccountProvi
 	private async getSession(): Promise<AuthenticationSession | undefined> {
 		const scopes = this.scopes;
 		if (!scopes) {
-			this.logService.error('[Marketplace] extensionsGallery.accessScopes is not configured — the Microsoft marketplace path cannot request a session.');
+			this.logService.error('[Marketplace] extensionsGallery.accessScopes is not configured — the Vertex marketplace path cannot request a session.');
 			return undefined;
 		}
 		const sessions = await this.authenticationService.getSessions('microsoft', scopes);
@@ -239,7 +239,7 @@ export class MicrosoftGalleryAccountProvider extends AbstractGalleryAccountProvi
 	override async signIn(): Promise<void> {
 		const scopes = this.scopes;
 		if (!scopes) {
-			this.logService.error('[Marketplace] extensionsGallery.accessScopes is not configured — cannot sign in to the Microsoft marketplace path.');
+			this.logService.error('[Marketplace] extensionsGallery.accessScopes is not configured — cannot sign in to the Vertex marketplace path.');
 			return;
 		}
 

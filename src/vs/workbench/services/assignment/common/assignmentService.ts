@@ -617,7 +617,7 @@ registry.registerConfiguration({
 	'properties': {
 		'workbench.enableExperiments': {
 			'type': 'boolean',
-			'description': localize('workbench.enableExperiments', "Fetches experiments to run from a Microsoft online service."),
+			'description': localize('workbench.enableExperiments', "Fetches experiments to run from a Vertex online service."),
 			'default': true,
 			'scope': ConfigurationScope.APPLICATION,
 			'restricted': true,

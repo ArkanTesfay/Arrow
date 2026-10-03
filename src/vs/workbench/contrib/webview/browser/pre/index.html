@@ -218,7 +218,7 @@
 
 						return () => {
 							if (acquired && !${allowMultipleAPIAcquire}) {
-								throw new Error('An instance of the VS Code API has already been acquired');
+								throw new Error('An instance of the Vertex API has already been acquired');
 							}
 							acquired = true;
 							return Object.freeze({

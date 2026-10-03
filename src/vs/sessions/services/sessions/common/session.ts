@@ -19,7 +19,7 @@ export { getHighestPriorityPullRequestIcon };
 export interface ISessionType {
 	/** Unique identifier (e.g., 'copilot-cli', 'copilot-cloud', 'agent-host-claude'). */
 	readonly id: string;
-	/** Display label (e.g., 'Copilot CLI', 'Cloud'). */
+	/** Display label (e.g., 'AI CLI', 'Cloud'). */
 	readonly label: string;
 	/** Icon for this session type. */
 	readonly icon: ThemeIcon;

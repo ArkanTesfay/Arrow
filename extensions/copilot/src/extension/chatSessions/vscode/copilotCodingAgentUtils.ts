@@ -151,7 +151,7 @@ export function getAuthorDisplayName(author: { login: string } | null): string {
 		return 'Unknown';
 	}
 	if (author.login.startsWith('copilot')) {
-		return 'Copilot';
+		return 'AI';
 	}
 	return author.login;
 }

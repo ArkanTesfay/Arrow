@@ -174,7 +174,7 @@ export class RequestLogTree extends Disposable implements IExtensionContribution
 			const saveUri = await vscode.window.showSaveDialog({
 				defaultUri: vscode.Uri.file(path.join(os.homedir(), defaultFilename)),
 				filters: {
-					'Copilot Markdown': ['copilotmd'],
+					'AI Markdown': ['copilotmd'],
 					'Markdown': ['md'],
 					'All Files': ['*']
 				},
@@ -232,7 +232,7 @@ export class RequestLogTree extends Disposable implements IExtensionContribution
 			}
 
 			if (resource.scheme !== ChatRequestScheme.chatRequestScheme) {
-				vscode.window.showWarningMessage('This command only works for Copilot request documents.');
+				vscode.window.showWarningMessage('This command only works for AI request documents.');
 				return;
 			}
 
@@ -245,7 +245,7 @@ export class RequestLogTree extends Disposable implements IExtensionContribution
 				defaultUri: vscode.Uri.file(path.join(os.homedir(), defaultFilename)),
 				filters: {
 					'Markdown': ['md'],
-					'Copilot Markdown': ['copilotmd'],
+					'AI Markdown': ['copilotmd'],
 					'All Files': ['*']
 				},
 				title: 'Save Markdown As'

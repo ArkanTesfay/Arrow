@@ -525,7 +525,7 @@ export class InlineCompletionContribution implements vscode.Disposable, TokenBud
 			// Register with chat always.
 			this.registrations.add(this.languageContextProviderService.registerContextProvider(provider, [ProviderTarget.Completions, ProviderTarget.NES]));
 			this.telemetrySender.sendInlineCompletionProviderTelemetry(KnownSources.completion, true);
-			logService.info('Registered TypeScript context provider with Copilot inline completions.');
+			logService.info('Registered TypeScript context provider with AI inline completions.');
 		} catch (error) {
 			logService.error('Error checking if server plugin is installed:', error);
 		}
@@ -618,8 +618,8 @@ export class InlineCompletionContribution implements vscode.Disposable, TokenBud
 	private async getCopilotApi(): Promise<Copilot.ContextProviderApiV1 | undefined> {
 		const copilotExtension = vscode.extensions.getExtension('GitHub.copilot');
 		if (copilotExtension === undefined) {
-			// this.telemetrySender.sendActivationFailedTelemetry(ErrorLocation.Client, ErrorPart.CopilotExtension, 'Copilot extension not found', undefined);
-			// this.logService.error('Copilot extension not found');
+			// this.telemetrySender.sendActivationFailedTelemetry(ErrorLocation.Client, ErrorPart.CopilotExtension, 'AI extension not found', undefined);
+			// this.logService.error('AI extension not found');
 			return undefined;
 		}
 		try {
@@ -628,10 +628,10 @@ export class InlineCompletionContribution implements vscode.Disposable, TokenBud
 		} catch (error) {
 			if (error instanceof Error) {
 				this.telemetrySender.sendActivationFailedTelemetry(ErrorLocation.Client, ErrorPart.CopilotExtension, error.message, error.stack);
-				this.logService.error('Error activating Copilot extension:', error.message);
+				this.logService.error('Error activating AI extension:', error.message);
 			} else {
 				this.telemetrySender.sendActivationFailedTelemetry(ErrorLocation.Client, ErrorPart.CopilotExtension, 'Unknown error', undefined);
-				this.logService.error('Error activating Copilot extension: Unknown error.');
+				this.logService.error('Error activating AI extension: Unknown error.');
 			}
 			return undefined;
 		}

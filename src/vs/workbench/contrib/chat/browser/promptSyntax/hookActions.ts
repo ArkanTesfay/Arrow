@@ -419,7 +419,7 @@ export async function showConfigureHooksQuickPick(
 							pickerItems.push(...vscodeOnly.map(makeItem));
 						}
 						if (copilotOnly.length > 0) {
-							pickerItems.push({ type: 'separator', label: localize('hookSection.copilotCliOnly', "Copilot Agents") });
+							pickerItems.push({ type: 'separator', label: localize('hookSection.copilotCliOnly', "AI Agents") });
 							pickerItems.push(...copilotOnly.map(makeItem));
 						}
 					}

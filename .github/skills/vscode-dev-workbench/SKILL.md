@@ -1,11 +1,11 @@
 ---
 name: vscode-dev-workbench
-description: Use when the user wants to run the vscode.dev server locally and exercise the VS Code workbench or Agents window in the integrated browser against the local `microsoft/vscode` sources. Covers starting the dev server, the `vscode-quality=dev` URL, browser-driven interaction patterns, and optionally wiring up a local mock agent host for the Agents window.
+description: Use when the user wants to run the vscode.dev server locally and exercise the Vertex workbench or Agents window in the integrated browser against the local `microsoft/vscode` sources. Covers starting the dev server, the `vscode-quality=dev` URL, browser-driven interaction patterns, and optionally wiring up a local mock agent host for the Agents window.
 ---
 
-# Running vscode.dev Against Local VS Code Sources
+# Running vscode.dev Against Local Vertex Sources
 
-The `vscode-dev` repo is the `vscode.dev` server. When run locally with `?vscode-quality=dev`, it serves the VS Code web workbench (or Agents window at `/agents`) from the **sibling** `microsoft/vscode` checkout. This is the fastest way to validate web-only changes to the workbench without shipping an Insiders build.
+The `vscode-dev` repo is the `vscode.dev` server. When run locally with `?vscode-quality=dev`, it serves the Vertex web workbench (or Agents window at `/agents`) from the **sibling** `microsoft/vscode` checkout. This is the fastest way to validate web-only changes to the workbench without shipping an Insiders build.
 
 ## Layout assumption
 
@@ -116,7 +116,7 @@ node out/vs/platform/agentHost/node/agentHostServerMain.js \
 # Listens on ws://localhost:8765
 ```
 
-Prerequisite: `out/` in the `vscode` repo must be populated by the `VS Code - Build` task (or `npm run watch`). If `out/vs/platform/agentHost/node/agentHostServerMain.js` is missing, start that task first.
+Prerequisite: `out/` in the `vscode` repo must be populated by the `Vertex - Build` task (or `npm run watch`). If `out/vs/platform/agentHost/node/agentHostServerMain.js` is missing, start that task first.
 
 `--enable-mock-agent` registers the `ScriptedMockAgent` from `src/vs/platform/agentHost/test/node/mockAgent.ts` with one pre-existing session. Seed additional sessions via the `VSCODE_AGENT_HOST_MOCK_SEED_SESSIONS` env var, using a comma-separated list of session URIs (for example, `VSCODE_AGENT_HOST_MOCK_SEED_SESSIONS=mock://pre-1,mock://pre-2`). Scripted prompts include `hello`, `use-tool`, `error`, `permission`, `write-file`, `run-safe-command`, `slow`, `client-tool`, `subagent`, etc. (see `mockAgent.ts` for the full list).
 

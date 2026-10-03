@@ -13,7 +13,7 @@ import { ITelemetryService } from './telemetry.js';
 
 export type ErrorEventFragment = {
 	owner: 'lramos15, sbatten';
-	comment: 'Whenever an error in VS Code is thrown.';
+	comment: 'Whenever an error in Vertex is thrown.';
 	callstack: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The callstack of the error.' };
 	msg?: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The message of the error. Normally the first line int the callstack.' };
 	file?: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The file the error originated from.' };
@@ -39,7 +39,7 @@ type UnhandledErrorEvent = ErrorEvent & ListenerLeakDiagEvent & {
 };
 
 type UnhandledErrorClassification = ErrorEventFragment & ListenerLeakDiagFragment & {
-	copilotSku?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The raw Copilot entitlement SKU for the authenticated GitHub account.' };
+	copilotSku?: { classification: 'SystemMetaData'; purpose: 'FeatureInsight'; comment: 'The raw AI entitlement SKU for the authenticated GitHub account.' };
 };
 
 export interface ErrorEvent {

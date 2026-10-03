@@ -88,7 +88,7 @@ export function fsPath(arg: URIContainer | string): string {
 	const uri = parseUri(arg);
 
 	if (!fsSchemes.has(uri.scheme)) {
-		throw new Error(`Copilot currently does not support URI with scheme: ${uri.scheme}`);
+		throw new Error(`AI currently does not support URI with scheme: ${uri.scheme}`);
 	}
 
 	if (platform() === 'win32') {

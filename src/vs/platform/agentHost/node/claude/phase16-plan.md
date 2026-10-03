@@ -29,7 +29,7 @@ Resolve a Claude session's customizations (agents, skills, slash commands, MCP s
 
 **Out of scope**
 - **Any lifecycle change.** `createSession` stays provisional + cold; no eager/warm materialization, no `_sessionSequencer` change, no `onDidMaterializeSession` rework, no JSONL-write-timing work. (The retired original Phase 16 owned those — explicitly dropped.)
-- **CopilotAgent** behavior — unchanged. If a shared module is factored out, Copilot keeps identical behavior behind its own config.
+- **CopilotAgent** behavior — unchanged. If a shared module is factored out, AI keeps identical behavior behind its own config.
 - **Shipping file content bytes** through the protocol — like CopilotAgent, we ship the editable `uri` only; the client reads content on open.
 - **Client-pushed customization sync** (`setClientCustomizations` / `IAgentPluginManager`) — unchanged; only the *discovered* tier changes.
 
@@ -41,7 +41,7 @@ Resolve a Claude session's customizations (agents, skills, slash commands, MCP s
 
 ## Approach
 
-Build a Claude-specific disk resolver that reuses the shared frontmatter/MCP parsers (`pluginParsers.ts`) — the genuinely reusable layer — and encodes Claude's own roots (`~/.claude/**`, `.claude/commands`, `settings.json`/`.mcp.json` MCP), rather than forcing the Copilot-convention-coded `SessionCustomizationDiscovery` onto Claude. `getSessionCustomizations` returns `client-pushed ∪ disk-resolved`, where the disk-resolved set is unfiltered while provisional and intersected with the live SDK snapshot (by name, per type) once a `ClaudeSdkPipeline` exists. The synthetic-stub bundler is retired (real URIs replace stub URIs).
+Build a Claude-specific disk resolver that reuses the shared frontmatter/MCP parsers (`pluginParsers.ts`) — the genuinely reusable layer — and encodes Claude's own roots (`~/.claude/**`, `.claude/commands`, `settings.json`/`.mcp.json` MCP), rather than forcing the AI-convention-coded `SessionCustomizationDiscovery` onto Claude. `getSessionCustomizations` returns `client-pushed ∪ disk-resolved`, where the disk-resolved set is unfiltered while provisional and intersected with the live SDK snapshot (by name, per type) once a `ClaudeSdkPipeline` exists. The synthetic-stub bundler is retired (real URIs replace stub URIs).
 
 ## Steps
 
@@ -103,7 +103,7 @@ Build a Claude-specific disk resolver that reuses the shared frontmatter/MCP par
 
 ## Decisions
 
-- **D1 — Claude-specific resolver reusing `pluginParsers.ts` (grill-confirmed).** Reuse `pluginParsers.ts` (the genuinely provider-neutral layer); write Claude's own root-walking + watcher under `node/claude/customizations/`. Do **not** reuse or factor `node/copilot/sessionCustomizationDiscovery.ts` — it's Copilot-convention-coded and couples the providers. Least coupling, no layering risk.
+- **D1 — Claude-specific resolver reusing `pluginParsers.ts` (grill-confirmed).** Reuse `pluginParsers.ts` (the genuinely provider-neutral layer); write Claude's own root-walking + watcher under `node/claude/customizations/`. Do **not** reuse or factor `node/copilot/sessionCustomizationDiscovery.ts` — it's AI-convention-coded and couples the providers. Least coupling, no layering risk.
 - **D2 — SDK-known-but-not-on-disk → show as a non-editable entry (grill-confirmed).** Items the live SDK reports but the disk scan can't locate (built-ins, plugin-provided, unscanned dirs) are surfaced with name+description and a synthetic non-`file:` URI so the workbench renders them **read-only** — keeping the active capability list complete while only locatable items are editable. As shipped, the stub bundler was **deleted entirely** (not merely reduced): the fallback is generated declaratively inline in `buildDiscoveredCustomizations` via `claude-internal:` / `agent-builtin:` URIs, so no stub files are written to disk. (Council majority leaned *drop*; user chose *show* to keep the list honest.)
 - **D2b — Read-only built-in agents + skills (post-plan addition).** Beyond the SDK-only fallback, a **curated** set of built-in slash commands (`CLAUDE_BUILTIN_COMMANDS`, 13) and built-in agents (`CLAUDE_BUILTIN_AGENTS`, 5) is surfaced read-only **pre-materialize** for discoverability (the SDK can't report its command/agent set before a live session exists). Post-materialize, the live `supportedCommands()` / `supportedAgents()` set supersedes the curated list. Lives in `claudeBuiltinCommands.ts` on the `agent-builtin:` scheme; each description is literally prefixed `(Built-In) `. These entries are display-only — `contrib/chat` is deliberately untouched, so clicking a built-in does not render content (accepted limitation; a read-only editor view is a future request).
 - **D3 — Commands ARE skills (no separate category).** Per the customizations spec (`src/vs/sessions/copilot-customizations-spec.md` §3), slash commands in `.claude/commands/*.md` are *a variant of skills, treated internally as skills*, with skills winning same-name conflicts. The resolver therefore scans `.claude/commands/` but maps the results to `ClaudeCustomizationKind.Skill` (no `Command` kind, no separate commands container) and collects skills before commands so skills win. The SDK's `supportedCommands()` set (which represents loaded skills) filters disk skills. Commands are scanned as **flat `<name>.md`**.
@@ -117,7 +117,7 @@ Build a Claude-specific disk resolver that reuses the shared frontmatter/MCP par
 - **Name-match false positives in the post-materialize filter.** SDK names matched against disk entries by name alone could collide across kinds or aliases (`SlashCommand.aliases`). *Mitigation:* match by `(name, type)` case-insensitively; keep source-kind on each entry (D3).
 - **Layering (`node/claude` → shared/copilot).** If any factoring reaches into `node/copilot`, `valid-layers-check` may complain. *Mitigation:* keep the resolver Claude-local (D1); run `npm run valid-layers-check`.
 - **`FakeQuery` throws for `supportedAgents`/`mcpServerStatus`.** Live-filter tests need modeled snapshots. *Mitigation:* step 8 updates the fake. ([claudeAgent.test.ts:~459](../../test/node/claudeAgent.test.ts#L459))
-- **Watcher leaks / event storms.** Unbounded re-scan on rapid disk changes. *Mitigation:* debounce + cancelable scan (the Copilot `SessionDiscoveredEntry` pattern); register watcher as a session disposable.
+- **Watcher leaks / event storms.** Unbounded re-scan on rapid disk changes. *Mitigation:* debounce + cancelable scan (the AI `SessionDiscoveredEntry` pattern); register watcher as a session disposable.
 - **`settings.json` MCP format drift vs `.mcp.json`.** `parseMcpServerDefinitionMap` normalizes `{mcpServers:…}` and flat maps; confirm Claude's `settings.json` MCP block matches. *Mitigation:* defensive parse + fall through on shape mismatch.
 
 ## Verification
@@ -192,7 +192,7 @@ Must-fixes found and **resolved**:
 
 ### Steps 4–5 (SDK filter + session wiring)
 - **Step 4** lives in `claudeSessionCustomizationDiscovery.ts` as `buildDiscoveredCustomizations(discovered, mcpServers, userHome, sdk?)` rather than inside the projector: `sdk` undefined → full mapped set; `sdk` present → disk filtered by `(name, type)` against the SDK agent/command sets, SDK-known-not-on-disk added as **non-editable** entries via `nonEditableUri('agent'|'skill'|'mcp', name)` (`claude-internal:` scheme), `CLAUDE_SDK_DEFAULT_AGENT_NAME` ('general-purpose') hidden, MCP state enriched via `deriveMcpState(status)`. `projectSessionCustomizations` was widened to take `discovered: readonly Customization[]` (was a single optional) and just spreads them.
-- **Step 5**: `ClaudeAgentSession` constructor gained required `@IFileService` + `@INativeEnvironmentService` (VS Code DI has **no `optional` decorator** — confirmed; an `@optional` attempt was reverted). `getSessionCustomizations` now scans disk (project + user) in parallel, pulls the SDK snapshot when a pipeline exists (swallowing failures → unfiltered fallback), builds, and projects. `_sdkBundler` field + its construction removed.
+- **Step 5**: `ClaudeAgentSession` constructor gained required `@IFileService` + `@INativeEnvironmentService` (Vertex DI has **no `optional` decorator** — confirmed; an `@optional` attempt was reverted). `getSessionCustomizations` now scans disk (project + user) in parallel, pulls the SDK snapshot when a pipeline exists (swallowing failures → unfiltered fallback), builds, and projects. `_sdkBundler` field + its construction removed.
 - **Test harness**: added a `claudeFileEnvServices(disposables)` helper (in-memory `FileService` on `Schemas.file` + mock `INativeEnvironmentService` with `userHome = /mock-home`) spread into the `createTestContext` and `buildCtxWith` `ServiceCollection`s. Nothing is seeded under the mock home, so the disk scan is deterministically empty → existing projection tests still assert `length === 1` (client-pushed only).
 
 ### Tests (Steps 4–5)
@@ -202,7 +202,7 @@ Must-fixes found and **resolved**:
 ### Step 6 (watcher)
 - `ClaudeCustomizationWatcher extends Disposable` added to the discovery module: recursive watch on both `.claude` roots + a non-recursive `<cwd>` watch whose trigger is narrowed to `<cwd>/.mcp.json` (so unrelated workspace-root edits don't re-scan). `affects()` matches descendants, so any change under a `.claude` root triggers; debounce via `RunOnceScheduler` (300ms default, last constructor arg overridable → tests use 5ms). Failed `fileService.watch` calls are warn-logged, not fatal.
 - Wired in the session ctor (`new ClaudeCustomizationWatcher(this.workingDirectory, userHome, this._fileService, this._logService)`), both the watcher and its `onDidChange` subscription `_register`ed.
-- **DI note:** VS Code's `InstantiationService` injects `undefined` for an unregistered service rather than throwing — so adding the watcher (which reads `userHome` at construction) surfaced 4 more session-constructing test `ServiceCollection`s that lacked the env service (previously only the 2 `getSessionCustomizations` tests failed). Wired `claudeFileEnvServices` into those 4 blocks (2007 / 3122 / 3173 / 3530).
+- **DI note:** Vertex's `InstantiationService` injects `undefined` for an unregistered service rather than throwing — so adding the watcher (which reads `userHome` at construction) surfaced 4 more session-constructing test `ServiceCollection`s that lacked the env service (previously only the 2 `getSessionCustomizations` tests failed). Wired `claudeFileEnvServices` into those 4 blocks (2007 / 3122 / 3173 / 3530).
 - Test: *watcher fires once (debounced) for changes under watched roots and ignores unrelated edits* — **green** (9 total in the discovery suite). `claudeAgent.test.ts` back to **124 green**.
 
 ### Step 7 (retire bundler + agent-name resolution)

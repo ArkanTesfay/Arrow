@@ -83,7 +83,7 @@ export class Proxy4oEndpoint extends ChatEndpoint {
 	public override getExtraHeaders(): Record<string, string> {
 		const headers: Record<string, string> = {};
 		if (this.authService.speculativeDecodingEndpointToken) {
-			headers['Copilot-Edits-Session'] = this.authService.speculativeDecodingEndpointToken;
+			headers['AI-Edits-Session'] = this.authService.speculativeDecodingEndpointToken;
 		}
 		return headers;
 	}

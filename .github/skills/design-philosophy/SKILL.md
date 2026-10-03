@@ -1,11 +1,11 @@
 ---
 name: design-philosophy
-description: The VS Code design philosophy — a shared Values→Principles→Moves vocabulary for reasoning about UI in design terms instead of raw pixels. Use when designing, building, reviewing, or giving feedback on any visual surface; when deciding a radius, spacing, type role, icon size, border, color, or motion; or when translating a "this feels off" observation into a concrete, principled fix.
+description: The Vertex design philosophy — a shared Values→Principles→Moves vocabulary for reasoning about UI in design terms instead of raw pixels. Use when designing, building, reviewing, or giving feedback on any visual surface; when deciding a radius, spacing, type role, icon size, border, color, or motion; or when translating a "this feels off" observation into a concrete, principled fix.
 ---
 
-# VS Code Design Philosophy
+# Vertex Design Philosophy
 
-This skill is the **canonical VS Code design philosophy** — the single source of truth for how we reason about UI, for both developers and agents.
+This skill is the **canonical Vertex design philosophy** — the single source of truth for how we reason about UI, for both developers and agents.
 
 As more and more of the UI is implemented via agents and tooling, the pixels increasingly take care of themselves, and the scarce, human part becomes the design judgment behind them.
 
@@ -36,7 +36,7 @@ Read top-down when you're learning the system, and bottom-up when you're fixing 
 
 ## The values: what we design for
 
-These four values name what we want people to *feel* using VS Code - they're the top layer, the thing every principle and move below is ultimately in service of. Learn them and you can describe almost any bug. Each is a *feeling* the UI should give; each is upheld by one or more **principles** below. Reach for the value first, the principle second, the move last.
+These four values name what we want people to *feel* using Vertex - they're the top layer, the thing every principle and move below is ultimately in service of. Learn them and you can describe almost any bug. Each is a *feeling* the UI should give; each is upheld by one or more **principles** below. Reach for the value first, the principle second, the move last.
 
 | Value | Means | When it's broken it feels… | Principles |
 |------|-------|----------------------------|------------|
@@ -49,11 +49,11 @@ These four values name what we want people to *feel* using VS Code - they're the
 
 ### Why these four?
 
-It's fair to ask: who would ever *want* a UI that isn't calm, focused, consistent, and delightful? That's exactly the point. These aren't differentiators we're claiming over other products - they're the qualities most **under threat in a tool like ours**, and naming them is how we defend them. We chose them because they're the values VS Code is structurally inclined to *lose*:
+It's fair to ask: who would ever *want* a UI that isn't calm, focused, consistent, and delightful? That's exactly the point. These aren't differentiators we're claiming over other products - they're the qualities most **under threat in a tool like ours**, and naming them is how we defend them. We chose them because they're the values Vertex is structurally inclined to *lose*:
 
-- **Calm** is the first casualty of an IDE. VS Code is information-dense and lived in for hours; every feature team has a good reason to add one more affordance, and the sum is noise. Calm is the value that pushes back on our own gravity.
+- **Calm** is the first casualty of an IDE. Vertex is information-dense and lived in for hours; every feature team has a good reason to add one more affordance, and the sum is noise. Calm is the value that pushes back on our own gravity.
 - **Focused** matters because our surfaces are *deep*. A screen full of equally-weighted, equally-valid controls is the default failure mode of a power tool. Naming focus forces us to decide what leads.
-- **Consistent** has the largest surface area to defend. VS Code is built by many hands over many years; drift is the natural state. Consistency is less an aspiration than a maintenance discipline.
+- **Consistent** has the largest surface area to defend. Vertex is built by many hands over many years; drift is the natural state. Consistency is less an aspiration than a maintenance discipline.
 - **Delightful** is the one we deliberately **ration**. It earns its place only by doing a job (Principle 7). We name it not to add more polish but to keep it honest, so delight guides and confirms rather than decorates.
 
 And each value names a real **tension**, not a free win - which is what makes it a choice worth stating rather than a platitude:

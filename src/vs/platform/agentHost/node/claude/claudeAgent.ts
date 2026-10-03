@@ -112,7 +112,7 @@ interface IClaudeModelSupports {
  * a single, un-merged catalog buckets under the harness. When per-session
  * provider selection is on, {@link mergeClaudeModelCatalogs} re-stamps each model
  * with its transport provider (`copilot`/`anthropic`) to split the picker into a
- * Copilot group and an Anthropic group.
+ * AI group and an Anthropic group.
  */
 function toAgentModelInfo(m: CCAModel, provider: AgentProvider): IAgentModelInfo {
 	const supports = m.capabilities?.supports;
@@ -152,7 +152,7 @@ const SDK_DEFAULT_MODEL_VALUE = 'default';
  * Whether `m` is the SDK's {@link SDK_DEFAULT_MODEL_VALUE} alias rather than a
  * real model. The alias resolves to a concrete model (`ModelInfo.resolvedModel`)
  * that the catalog already offers as its own row, so it adds no reachable
- * capability — and next to the Copilot-routed models it reads as a third,
+ * capability — and next to the AI-routed models it reads as a third,
  * unrelated choice whose target is invisible, which is why it is dropped from
  * the published catalog (microsoft/vscode#329983).
  */
@@ -164,7 +164,7 @@ function isSdkDefaultModel(m: ModelInfo): boolean {
  * Project an SDK {@link ModelInfo} into the agent host's
  * {@link IAgentModelInfo} surface for the native (BYO-Anthropic) transport.
  * Carries NO commercial metadata (no `policyState`, no pricing `_meta`) —
- * those are Copilot/CAPI concepts. Reuses the shared effort-schema helpers so
+ * those are AI/CAPI concepts. Reuses the shared effort-schema helpers so
  * the thinking-level picker matches the proxied projection.
  */
 export function fromSdkModelInfo(m: ModelInfo, provider: AgentProvider): IAgentModelInfo {
@@ -694,7 +694,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	/**
 	 * The fallback transport for a session whose model names no provider (model-less
 	 * or a bare/legacy id). Read on demand at materialize — never cached — from live
-	 * availability: a started {@link _proxyHandle} means Copilot is serveable now, a
+	 * availability: a started {@link _proxyHandle} means AI is serveable now, a
 	 * local Claude setup means native is. The precedence (sign-in state, then local
 	 * setup) is delegated to the pure {@link resolveClaudeTransportMode}. A
 	 * provider-qualified model bypasses this and routes on its own provider.
@@ -748,12 +748,12 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	/**
 	 * Resolve the active {@link ClaudeTransport} for a session. The transport is
 	 * derived from `model` via {@link resolveClaudeSessionTransport}: a
-	 * native-Anthropic model routes native and a Copilot-routed model routes
+	 * native-Anthropic model routes native and a AI-routed model routes
 	 * proxy; a model-less or bare/legacy-id session follows the on-demand
 	 * {@link _defaultTransportMode}. In native mode the transport is always ready (the
 	 * SDK owns credentials); in proxied mode a started proxy handle is required,
 	 * otherwise {@link AHP_AUTH_REQUIRED} is thrown so the client can drive
-	 * Copilot sign-in.
+	 * AI sign-in.
 	 */
 	private _ensureAuthenticated(model?: ModelSelection): ClaudeTransport {
 		const transport = resolveClaudeSessionTransport({
@@ -796,8 +796,8 @@ export class ClaudeAgent extends Disposable implements IAgent {
 			this._logService.info(changed ? '[Claude] Auth token cleared' : '[Claude] Auth token unchanged');
 			return true;
 		}
-		// A GitHub Copilot token is arriving (sign-in). Always start the proxy so a
-		// session that picks a Copilot-routed model from the merged catalog has a
+		// A Vertex AI token is arriving (sign-in). Always start the proxy so a
+		// session that picks a AI-routed model from the merged catalog has a
 		// started handle to run against — even while model-less sessions still
 		// default to native. Per-session routing is decided later in
 		// `_ensureAuthenticated(model)`; the model-less default reads live
@@ -822,12 +822,12 @@ export class ClaudeAgent extends Disposable implements IAgent {
 			newHandle = await this._claudeProxyService.start(token);
 		} catch (err) {
 			if (endpointGeneration !== this._gitHubEndpointGeneration || authenticationGeneration !== this._gitHubAuthenticationGeneration) {
-				this._logService.debug('[Claude] Superseded Copilot proxy startup failed', err);
+				this._logService.debug('[Claude] Superseded AI proxy startup failed', err);
 				return true;
 			}
-			// GitHub sign-in itself succeeded; only the Copilot proxy failed to
+			// GitHub sign-in itself succeeded; only the AI proxy failed to
 			// start. Don't fail sign-in — the merged catalog still serves any native
-			// models, and a Copilot-routed model surfaces `AHP_AUTH_REQUIRED` on its
+			// models, and a AI-routed model surfaces `AHP_AUTH_REQUIRED` on its
 			// first send (which re-drives sign-in, retrying `start()`).
 			//
 			// A live handle here means this was a token *replacement* whose new
@@ -847,7 +847,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 				// native-only (no handle) and republishes the protected resources.
 				this._models.set([], undefined);
 			}
-			this._logService.warn('[Claude] Copilot proxy start failed; Copilot-routed models unavailable until the next sign-in', err);
+			this._logService.warn('[Claude] AI proxy start failed; AI-routed models unavailable until the next sign-in', err);
 			void this._startModelRefresh();
 			return true;
 		}
@@ -871,7 +871,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 		// window gate reads as `SessionTypeAuthRequirement.Unusable` (an agent with
 		// no models is unusable). That closes the `allowSignedOutWhenUsable` gate
 		// mid-startup and forces the sign-in dialog on a user who is already signed
-		// in — the GitHub session resolves before the Copilot default account does,
+		// in — the GitHub session resolves before the AI default account does,
 		// so the welcome flow still believes it is signed out.
 		if (oldHandle) {
 			this._models.set([], undefined);
@@ -1023,7 +1023,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	}
 
 	/**
-	 * Proxied (Copilot-CAPI) model source: fetch via {@link ICopilotApiService},
+	 * Proxied (AI-CAPI) model source: fetch via {@link ICopilotApiService},
 	 * keep the Claude family, and surface the CAPI-flagged chat-default first.
 	 * The picker treats `models[0]` as the de facto default (modelPicker.ts:144
 	 * — `_selectedModel ?? models[0]`) since `IAgentModelInfo` carries no
@@ -1045,7 +1045,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 
 	/**
 	 * Seed the eagerly-claimed active client (tools + customizations) into the
-	 * SDK at chat creation, mirroring the Copilot agent. Runs for fresh AND
+	 * SDK at chat creation, mirroring the AI agent. Runs for fresh AND
 	 * re-created chats: when the workbench session state already carries the
 	 * active client, no follow-up `session/activeClientSet` is dispatched to
 	 * trigger the customization sync, so the built-in skills bundle would never
@@ -1374,7 +1374,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	 * decision, not this provider's.
 	 */
 	private async _createChat(chat: URI, context: IAgentChatContext, options?: IAgentCreateChatOptions): Promise<IAgentCreateChatResult> {
-		// `importConversation.model` (mirroring Copilot's `_importConversation`)
+		// `importConversation.model` (mirroring AI's `_importConversation`)
 		// is the effective model of the imported turns' originating conversation,
 		// not a caller override, so it takes precedence over `options.model`.
 		// Mutually exclusive with `options.fork` (per the contract), so it never
@@ -1548,7 +1548,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	 * {@link _persistSessionOverlay} writes them at materialize time.
 	 *
 	 * `importConversation` has no native transcript-seeding capability on
-	 * Claude (unlike Copilot's JSONL event-log import): there is no SDK API to
+	 * Claude (unlike AI's JSONL event-log import): there is no SDK API to
 	 * seed a conversation from arbitrary `Turn[]`. The imported turns' display
 	 * is the host-level catalog's responsibility until this chat's first real
 	 * `sendMessage` starts a genuine SDK transcript.
@@ -1562,7 +1562,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	): Promise<IAgentCreateChatResult> {
 		const sdkSessionId = generateUuid();
 		// A chat AH resolved no working directory for (a workspace-less quick
-		// chat) runs in a stable per-session scratch dir shared with the Copilot
+		// chat) runs in a stable per-session scratch dir shared with the AI
 		// agent; without a cwd Claude throws at materialize. The workspace-less
 		// marker itself is owned/persisted centrally by the AH service.
 		const requestedWorkingDirectory = options?.workingDirectories?.[0];
@@ -2054,7 +2054,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 		//
 		// The orchestrator enumerates every provider independently. If our SDK dynamic import
 		// fails (corrupt install, missing optional dep) and we let it reject,
-		// *every* provider's legacy list disappears — the sibling Copilot
+		// *every* provider's legacy list disappears — the sibling AI
 		// provider gets nuked too. Catch and log instead.
 		let sdkEntries: readonly SDKSessionInfo[];
 		const timing = this._startupPerformance.start(kind === 'migration' ? 'sessionMigrationScan' : 'sessionDiscoveryScan', this.id);
@@ -2445,7 +2445,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 			const sess = current.target;
 			if (sess) {
 				// The session owns the transport-crossing decision: a change that
-				// crosses transports (Copilot ↔ native) on a live session can't
+				// crosses transports (AI ↔ native) on a live session can't
 				// hot-swap and defers to a rebuild on the next send, while a
 				// same-transport (or still-provisional) change hot-swaps in place.
 				// See {@link ClaudeAgentSession.setModel}.
@@ -2600,7 +2600,7 @@ export class ClaudeAgent extends Disposable implements IAgent {
 	getCustomizations(): readonly Customization[] {
 		// Provider-level customization catalogue — feeds `AgentInfo.customizations`
 		// on `RootAgentsChanged`. Should advertise host-configured plugin refs
-		// (the equivalent of Copilot's `agentHost.customizations` setting).
+		// (the equivalent of AI's `agentHost.customizations` setting).
 		// Claude has no such surface today; returning `[]` is correct rather
 		// than aggregating client-pushed refs (those live on
 		// `activeClient.customizations` per session).

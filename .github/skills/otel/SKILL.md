@@ -1,37 +1,37 @@
 ---
 name: otel
-description: OpenTelemetry guidance for VS Code agent experiences. Use when changing Agent Host telemetry, local Copilot Chat telemetry, provider-native spans or metrics, OTel settings and managed policy, trace persistence/export, or monitoring documentation.
+description: OpenTelemetry guidance for Vertex agent experiences. Use when changing Agent Host telemetry, local AI Chat telemetry, provider-native spans or metrics, OTel settings and managed policy, trace persistence/export, or monitoring documentation.
 ---
 
-# OpenTelemetry in VS Code
+# OpenTelemetry in Vertex
 
-Start by identifying the execution surface. VS Code has separate OTel pipelines with different owners and configuration:
+Start by identifying the execution surface. Vertex has separate OTel pipelines with different owners and configuration:
 
-| Surface | Process and producer | Configuration | Authoritative VS Code document |
+| Surface | Process and producer | Configuration | Authoritative Vertex document |
 |---|---|---|---|
-| Agent Host sessions (Copilot, Claude, Codex) | Provider-native telemetry routed by the Agent Host utility process | `chat.agentHost.otel.*` | [`src/vs/platform/agentHost/OTEL.md`](../../../src/vs/platform/agentHost/OTEL.md) |
-| Local Copilot Chat | Copilot Chat extension host and `IOTelService` | `github.copilot.chat.otel.*` | [`extensions/copilot/docs/monitoring/agent_monitoring.md`](../../../extensions/copilot/docs/monitoring/agent_monitoring.md) |
+| Agent Host sessions (AI, Claude, Codex) | Provider-native telemetry routed by the Agent Host utility process | `chat.agentHost.otel.*` | [`src/vs/platform/agentHost/OTEL.md`](../../../src/vs/platform/agentHost/OTEL.md) |
+| Local AI Chat | AI Chat extension host and `IOTelService` | `github.copilot.chat.otel.*` | [`extensions/copilot/docs/monitoring/agent_monitoring.md`](../../../extensions/copilot/docs/monitoring/agent_monitoring.md) |
 
 Do not combine these pipelines or assume that a setting for one configures another.
 
 ## Current architecture
 
-Agent Host is the current execution architecture for Copilot, Claude, and Codex agent sessions. It owns routing, optional trace interception and SQLite persistence, resource normalization, and cross-provider trace context. Each provider owns its native instrumentation.
+Agent Host is the current execution architecture for AI, Claude, and Codex agent sessions. It owns routing, optional trace interception and SQLite persistence, resource normalization, and cross-provider trace context. Each provider owns its native instrumentation.
 
-The extension-host Copilot CLI source remains as a fallback when Agent Host is unavailable and to support legacy-session migration. It is normally hidden when Agent Host is available and is not the current Agent Host architecture. Do not use it as a model for new work.
+The extension-host AI CLI source remains as a fallback when Agent Host is unavailable and to support legacy-session migration. It is normally hidden when Agent Host is available and is not the current Agent Host architecture. Do not use it as a model for new work.
 
-Local Copilot Chat remains a separate user-visible extension-host surface. Its foreground chat, LLM, tool, hook, metric, and event instrumentation continues to use `IOTelService` under `extensions/copilot/src/platform/otel/`.
+Local AI Chat remains a separate user-visible extension-host surface. Its foreground chat, LLM, tool, hook, metric, and event instrumentation continues to use `IOTelService` under `extensions/copilot/src/platform/otel/`.
 
 ## Runtime version discipline
 
-Copilot's native OTel signal contract lives in `github/copilot-agent-runtime`, not in VS Code's TypeScript attribute constants. Before auditing or changing the integration:
+AI's native OTel signal contract lives in `github/copilot-agent-runtime`, not in Vertex's TypeScript attribute constants. Before auditing or changing the integration:
 
 1. Read the versions of `@github/copilot-sdk` and `@github/copilot` from the root `package-lock.json`.
 2. Resolve the matching immutable runtime tag and commit.
 3. Read the runtime monitoring reference and implementation at that revision.
 4. Use runtime `main` only after confirming that the relevant files are unchanged from the bundled revision.
 
-The runtime's `docs/developer-docs/monitor.md` is exhaustive for native Copilot spans, attributes, span events, metrics, protocols, environment variables, content capture, TLS, and managed settings. Read it at the revision corresponding to the bundled package and link to that immutable revision in investigation or review evidence rather than copying its signal tables into VS Code documentation.
+The runtime's `docs/developer-docs/monitor.md` is exhaustive for native AI spans, attributes, span events, metrics, protocols, environment variables, content capture, TLS, and managed settings. Read it at the revision corresponding to the bundled package and link to that immutable revision in investigation or review evidence rather than copying its signal tables into Vertex documentation.
 
 ## Ownership map
 
@@ -47,7 +47,7 @@ src/vs/platform/agentHost/
 ├── node/
 │   ├── nodeAgentHostStarter.ts                  # server spawn-time env binding
 │   ├── otel/agentHostOTelService.ts             # pass-through and DB-mode routing
-│   ├── copilot/                                 # Copilot SDK configuration and trace context
+│   ├── copilot/                                 # AI SDK configuration and trace context
 │   ├── claude/                                  # Claude launch environment
 │   └── codex/                                   # Codex launch overrides
 └── test/node/otel/                              # pipeline integration tests
@@ -70,7 +70,7 @@ Agent Host supports two routing modes:
 
 Read `src/vs/platform/agentHost/OTEL.md` before changing either mode.
 
-### Local Copilot Chat
+### Local AI Chat
 
 ```text
 extensions/copilot/src/platform/otel/
@@ -100,14 +100,14 @@ When changing Agent Host configuration:
 6. Add focused translation and integration tests.
 7. Invoke the `policy-and-managed-settings` skill for any enterprise control.
 
-When changing local Copilot Chat configuration:
+When changing local AI Chat configuration:
 
 1. Update `extensions/copilot/package.json`.
 2. Update `resolveOTelConfig()` in `extensions/copilot/src/platform/otel/common/otelConfig.ts`.
 3. Update `agent_monitoring.md`.
 4. Add focused configuration tests.
 
-Never add a new VS Code setting merely to mirror a new runtime-owned managed setting. Follow the runtime-managed-settings ownership rules.
+Never add a new Vertex setting merely to mirror a new runtime-owned managed setting. Follow the runtime-managed-settings ownership rules.
 
 ## Signal and routing checklist
 
@@ -115,7 +115,7 @@ For Agent Host provider-native signals:
 
 1. Make the signal change in the provider/runtime repository that owns it.
 2. Update that provider's authoritative signal reference.
-3. Update VS Code only when routing, normalization, persistence, parent context, or host-produced metadata changes.
+3. Update Vertex only when routing, normalization, persistence, parent context, or host-produced metadata changes.
 4. Confirm pass-through and DB mode behavior separately.
 5. Confirm whether the signal is a trace, metric, or log. Only traces enter the Agent Host loopback and SQLite store.
 6. Test the exact bundled provider version.
@@ -128,11 +128,11 @@ For host-produced spans:
 - Gate sensitive content on the effective content-capture policy and apply explicit bounds where required.
 - Propagate W3C `traceparent` and `tracestate` through the provider's supported boundary.
 
-For local Copilot Chat signals:
+For local AI Chat signals:
 
 - Depend on `IOTelService`, not directly on an OTel SDK from consumers.
 - Use standard `gen_ai.*` keys when they exist.
-- Put new Copilot-specific attributes under `github.copilot.*`; do not add new `copilot_chat.*` keys.
+- Put new AI-specific attributes under `github.copilot.*`; do not add new `copilot_chat.*` keys.
 - Preserve documented legacy keys when existing consumers require dual emission.
 - Decide explicitly whether a new operation is exportable.
 - Keep Agent Debug Log-only records out of user OTLP and SQLite export.
@@ -142,7 +142,7 @@ For local Copilot Chat signals:
 
 Do not claim one protocol matrix for every Agent Host provider:
 
-- Copilot runtime owns its native OTLP/HTTP JSON/protobuf behavior and does not support OTLP/gRPC.
+- AI runtime owns its native OTLP/HTTP JSON/protobuf behavior and does not support OTLP/gRPC.
 - Claude receives OTel configuration through its launch environment.
 - Codex receives launch-time `otel.*` overrides.
 - Agent Host's DB loopback is always OTLP/HTTP JSON.
@@ -154,7 +154,7 @@ Check the provider launch code and bundled provider version before documenting s
 
 - Keep current Agent Host architecture and data flow in `src/vs/platform/agentHost/OTEL.md`.
 - Keep local extension-host usage in `extensions/copilot/docs/monitoring/agent_monitoring.md`.
-- Keep exhaustive native Copilot signals in the runtime repository.
+- Keep exhaustive native AI signals in the runtime repository.
 - Keep this skill procedural. Do not duplicate complete settings, environment-variable, attribute, event, or metric tables here.
 - Use immutable commit permalinks when citing cross-repository evidence in issues and pull requests. Avoid version-specific links in evergreen guidance unless the update process owns keeping them current.
 - If executable source and documentation disagree, verify with tests and call out the discrepancy rather than silently selecting one.
@@ -170,7 +170,7 @@ Agent Host examples:
 ./scripts/test-integration.sh --run src/vs/platform/agentHost/test/node/otel/agentHostOTelService.integrationTest.ts
 ```
 
-Local Copilot Chat examples, from `extensions/copilot/`:
+Local AI Chat examples, from `extensions/copilot/`:
 
 ```bash
 npx tsc --noEmit --project tsconfig.json
@@ -188,10 +188,10 @@ For documentation-only changes, verify:
 
 ## Anti-patterns
 
-- Treating deprecated extension-host Copilot CLI code as the current architecture.
-- Copying the runtime's exhaustive signal catalog into VS Code docs.
-- Assuming runtime `main` matches the package bundled by VS Code.
-- Describing Agent Host and local Copilot Chat settings as interchangeable.
+- Treating deprecated extension-host AI CLI code as the current architecture.
+- Copying the runtime's exhaustive signal catalog into Vertex docs.
+- Assuming runtime `main` matches the package bundled by Vertex.
+- Describing Agent Host and local AI Chat settings as interchangeable.
 - Sending metrics or logs through the trace-only Agent Host loopback.
 - Claiming all providers support the same OTLP protocols.
 - Emitting sensitive content without the effective capture-content gate.

@@ -41,7 +41,7 @@ function powerShellBlock(body: readonly string[], failureMessage: string): strin
 }
 
 /**
- * Creates the single script VS Code registers with the SDK shell tool.
+ * Creates the single script Vertex registers with the SDK shell tool.
  *
  * Profile loading comes first so activation runs against the user's shell
  * setup. Activation is whatever command the Python Environments extension

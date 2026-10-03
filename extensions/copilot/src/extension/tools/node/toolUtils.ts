@@ -209,10 +209,10 @@ export async function assertFileNotContentExcluded(accessor: ServicesAccessor, u
 	const ignoreService = accessor.get(IIgnoreService);
 	const promptPathRepresentationService = accessor.get(IPromptPathRepresentationService);
 	if (await ignoreService.isCopilotIgnored(uri, undefined, contents)) {
-		throw new Error(`File ${promptPathRepresentationService.getFilePath(uri)} is configured to be ignored by Copilot`);
+		throw new Error(`File ${promptPathRepresentationService.getFilePath(uri)} is configured to be ignored by AI`);
 	}
 	if (realPath && !extUriBiasedIgnorePathCase.isEqual(realPath, uri) && await ignoreService.isCopilotIgnored(realPath, undefined, contents)) {
-		throw new Error(`File ${promptPathRepresentationService.getFilePath(realPath)} is configured to be ignored by Copilot`);
+		throw new Error(`File ${promptPathRepresentationService.getFilePath(realPath)} is configured to be ignored by AI`);
 	}
 }
 

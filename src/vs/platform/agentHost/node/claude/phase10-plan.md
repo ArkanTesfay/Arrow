@@ -12,7 +12,7 @@ Let a workbench client register custom tools on a Claude session via
 SDK's `Options.mcpServers` in-process MCP path, invoke them when the model
 calls them, and route the result back through
 `IAgent.onClientToolCallComplete(session, toolCallId, result)` — matching the
-behavior the Copilot agent already ships.
+behavior the AI agent already ships.
 
 ## Scope
 
@@ -56,7 +56,7 @@ behavior the Copilot agent already ships.
   and uses yield-restart for the in-process tool path.
 - MCP gateway (`_gateway` / `_gatewayIdleTimeout`) lifecycle. **Roadmap
   correction (see Decisions):** the production extension's `_gateway` field is
-  the VS Code `McpGateway` adapter exposing external editor MCP servers over
+  the Vertex `McpGateway` adapter exposing external editor MCP servers over
   HTTP — it has nothing to do with in-process tools built from
   `createSdkMcpServer`. There are no external resources to idle out here.
 - `setClientCustomizations` / `setCustomizationEnabled` (Phase 11).
@@ -572,7 +572,7 @@ materializer. Tool-set changes between turns trigger
   a value (designed for the permission-deny path); we need a sibling
   `rejectAll(error)` for `CancellationError` on session dispose / rebind.
 - **`tool_use_id` recovery → `ClaudeToolUseIdBridge`.** Resolved during
-  grilling. Copilot's SDK passes `toolCallId` into the handler directly;
+  grilling. AI's SDK passes `toolCallId` into the handler directly;
   the Anthropic SDK does not. The bridge sits between Phase 7's stream
   mapper and the MCP handler, matching on `(toolName, canonicalStringify(args))`
   (canonical = recursively sorted object keys). Either side can arrive first.
@@ -728,7 +728,7 @@ Workspace launch/log skills available:
 - **Bonus**: `vscode-dev-workbench` — for browser-driven testing of the Agents window if needed.
 
 **Scenario** (Phase 10 acceptance):
-1. Use the `launch` skill to start Code OSS with `--agents` and authenticate to GitHub Copilot.
+1. Use the `launch` skill to start Code OSS with `--agents` and authenticate to Vertex AI.
 2. Open a new Claude session in the Agents window.
 3. Drive the workbench to register a client tool via the protocol
    (`session/activeClientToolsChanged`) with a minimal `ToolDefinition`
@@ -747,7 +747,7 @@ Workspace launch/log skills available:
 
 - Roadmap: `./roadmap.md` (Phase 10 — Client-provided tools (in-process MCP))
 - Council convergence on: registry placement, multi-client semantics, tool-diff granularity, no-gateway, restart trigger, JSON-Schema → Zod approach.
-- Copilot analog: [copilotAgent.ts:935-954](src/vs/platform/agentHost/node/copilot/copilotAgent.ts), [copilotAgentSession.ts:570-635](src/vs/platform/agentHost/node/copilot/copilotAgentSession.ts).
+- AI analog: [copilotAgent.ts:935-954](src/vs/platform/agentHost/node/copilot/copilotAgent.ts), [copilotAgentSession.ts:570-635](src/vs/platform/agentHost/node/copilot/copilotAgentSession.ts).
 - Production claude extension reference (templates only, do NOT port wholesale): [ideMcpServer.ts](extensions/copilot/src/extension/chatSessions/claude/common/mcpServers/ideMcpServer.ts), [claudeCodeAgent.ts:432-491](extensions/copilot/src/extension/chatSessions/claude/node/claudeCodeAgent.ts).
 - SDK types: [sdk.d.ts:2962-2969](node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts) (`tool` signature), [sdk.d.ts:948-961](node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts) (`McpSdkServerConfigWithInstance`), [sdk.d.ts:1442-1450](node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts) (`Options.mcpServers`).
 - Protocol types: [state.ts:1551-1568](src/vs/platform/agentHost/common/state/protocol/state.ts) (`ToolDefinition`), [state.ts:1408-1427](src/vs/platform/agentHost/common/state/protocol/state.ts) (`ToolCallResult`).
@@ -817,7 +817,7 @@ Workspace launch/log skills available:
 - `FakeQuery.setMcpServers stays unmodeled (Phase 10 never calls Query.setMcpServers for client tools)`
 
 **Design decisions in this pass**
-- **No agent-side signal emission from the MCP handler.** The plan's step-5 TODO ("emit the agent-side signal that surfaces this tool call to the workbench") turned out to be redundant: the standard stream mapper already emits `SessionToolCallStart` at `content_block_start` and `SessionToolCallReady` at `content_block_stop` for every `tool_use` block — including the MCP/client ones, since the SDK yields the same stream events. The handler just parks on the registry. The `registerAndFire` wrapper is kept (instead of a bare deferred) so a future synchronous responder can't race the registration. Documented inline in `claudeClientToolMcpServer.ts`. Copilot's analog at `copilotAgentSession.ts:597-616` does the same thing — the handler is a thin park, no out-of-band signal.
+- **No agent-side signal emission from the MCP handler.** The plan's step-5 TODO ("emit the agent-side signal that surfaces this tool call to the workbench") turned out to be redundant: the standard stream mapper already emits `SessionToolCallStart` at `content_block_start` and `SessionToolCallReady` at `content_block_stop` for every `tool_use` block — including the MCP/client ones, since the SDK yields the same stream events. The handler just parks on the registry. The `registerAndFire` wrapper is kept (instead of a bare deferred) so a future synchronous responder can't race the registration. Documented inline in `claudeClientToolMcpServer.ts`. AI's analog at `copilotAgentSession.ts:597-616` does the same thing — the handler is a thin park, no out-of-band signal.
 - **Bridge stays alive across rebinds.** `cancelAndDispose` is permanent (used only at session dispose); added `resetPendingForRebind()` that rejects parked resolves but leaves the bridge usable. Reason: the router / mapper hold a stable bridge reference (passed at construction), and rebuilding it on every rebind would require a getter callback through 3 layers. The bridge has no per-Query state to leak.
 - **`bridge` constructor param made optional (default `undefined`)** on `ClaudeSdkPipeline`, `ClaudeSdkMessageRouter`, and `mapSDKMessageToAgentSignals` so the wide existing test surface (mapper / signals / router / pipeline tests numbering 50+) compiles unchanged. Production code paths always pass a real bridge from the session. No production behavior change.
 - **`Options.mcpServers` carried via a typed collaborators bag** (`IClaudeSessionCollaborators`) rather than as a positional fifth arg, so future additions don't keep growing the materializer signature.

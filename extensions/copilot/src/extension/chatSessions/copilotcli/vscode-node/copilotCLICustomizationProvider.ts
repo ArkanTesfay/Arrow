@@ -26,7 +26,7 @@ export class CopilotCLICustomizationProvider extends Disposable implements vscod
 
 	static get metadata(): vscode.ChatSessionCustomizationProviderMetadata {
 		return {
-			label: 'Copilot CLI',
+			label: 'AI CLI',
 			iconId: 'copilot',
 			supportedTypes: [
 				vscode.ChatSessionCustomizationType.Agent,

@@ -366,7 +366,7 @@ export interface AuthenticateResult {
  */
 export const GITHUB_COPILOT_PROTECTED_RESOURCE: ProtectedResourceMetadata = {
 	resource: 'https://api.github.com',
-	resource_name: 'GitHub Copilot',
+	resource_name: 'Vertex AI',
 	authorization_servers: ['https://github.com/login/oauth'],
 	scopes_supported: ['read:user', 'user:email'],
 	required: true,
@@ -1141,7 +1141,7 @@ export interface IMcpNotification {
 export interface IActiveClient {
 	/** Client identifier (matches `clientId` from `initialize`). */
 	readonly clientId: string;
-	/** Human-readable client name (e.g. `"VS Code"`), if provided. */
+	/** Human-readable client name (e.g. `"Vertex"`), if provided. */
 	readonly displayName: string | undefined;
 	/** This client's tools. Assigning replaces the set (full replacement). */
 	tools: readonly ToolDefinition[];

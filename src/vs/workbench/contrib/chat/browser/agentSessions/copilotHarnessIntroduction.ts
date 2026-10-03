@@ -21,7 +21,7 @@ export function getCopilotHarnessIntroductionContent(
 	buttons: CopilotHarnessIntroductionButtonVariant = 'dismiss',
 ): { title: string; description: string; actions: IChatInputNotificationCommandAction[]; dismissible: boolean } {
 	const feedbackUrl = 'https://github.com/microsoft/vscode/issues';
-	let title = localize('copilotHarnessTitle', "You're using a new Copilot experience");
+	let title = localize('copilotHarnessTitle', "You're using a new AI experience");
 	let description: string;
 	switch (copy) {
 		case 'current':
@@ -31,7 +31,7 @@ export function getCopilotHarnessIntroductionContent(
 			description = localize('copilotHarnessCapabilitiesDescription', "This agent harness brings new capabilities to the way you already work. If anything seems off, [let us know]({0}).", feedbackUrl);
 			break;
 		case 'agent':
-			title = localize('copilotHarnessAgentTitle', "You're using a new Copilot agent");
+			title = localize('copilotHarnessAgentTitle', "You're using a new AI agent");
 			description = localize('copilotHarnessAgentDescription', "Continue your sessions across windows and apps, without changing how you work. [Let us know]({0}) how it goes.", feedbackUrl);
 			break;
 		case 'original':

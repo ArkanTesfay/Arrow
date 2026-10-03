@@ -19,7 +19,7 @@ export function projectCopilotSandboxPolicy(data: Extract<SessionEvent, { type: 
 	const failClosed = data.failClosed || data.sandboxEnabledByUndeterminedPolicy === true;
 	const sandboxFailClosed = data.sandboxEnabledByUndeterminedPolicy ?? (data.failClosed && sandbox?.enabled !== true);
 	if (failClosed) {
-		logService.warn(`[Copilot:${sessionId}] Sandbox policy fail-closed: source=${data.source}, failClosed=${data.failClosed}, sandboxEnabledByUndeterminedPolicy=${data.sandboxEnabledByUndeterminedPolicy === true}; forcing enabled=true, allowBypass=false`);
+		logService.warn(`[AI:${sessionId}] Sandbox policy fail-closed: source=${data.source}, failClosed=${data.failClosed}, sandboxEnabledByUndeterminedPolicy=${data.sandboxEnabledByUndeterminedPolicy === true}; forcing enabled=true, allowBypass=false`);
 	}
 	return {
 		enabled: failClosed || sandbox?.enabled === true,

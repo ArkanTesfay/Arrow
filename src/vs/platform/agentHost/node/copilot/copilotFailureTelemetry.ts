@@ -21,7 +21,7 @@ type CopilotStartupFailureResource = 'runtime' | 'cliNative' | 'conpty' | 'sandb
 
 export class CopilotClientStartupConfigChangedError extends Error {
 	constructor() {
-		super('Copilot startup config changed while the client was starting');
+		super('AI startup config changed while the client was starting');
 		this.name = 'CopilotClientStartupConfigChangedError';
 	}
 }
@@ -116,21 +116,21 @@ type CopilotClientOperationFailureEvent = ICopilotFailureCorrelation & {
 };
 
 type CopilotClientOperationFailureClassification = IAgentHostEventClassification & {
-	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by detections and recovery telemetry for one Copilot client failure episode.' };
-	failureKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded category of Copilot client failure that was detected.' };
-	operation: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot provider operation that detected the client failure.' };
+	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by detections and recovery telemetry for one AI client failure episode.' };
+	failureKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded category of AI client failure that was detected.' };
+	operation: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI provider operation that detected the client failure.' };
 	agentSessionId?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host session identifier, when the failing operation targeted a session.' };
 	chatSessionId?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host chat identifier, when the failing operation targeted a chat.' };
 	turnId?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host turn identifier, when available.' };
-	sdkSessionId?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK session identifier, when available.' };
-	activeTurnCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'The number of Copilot chats with an active turn when the client failure was detected.' };
+	sdkSessionId?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK session identifier, when available.' };
+	activeTurnCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'The number of AI chats with an active turn when the client failure was detected.' };
 	recoveryStarted: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether this detection started client recovery instead of joining recovery already in progress.' };
 	errorName: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The name of the client failure exception, when available.' };
 	errorCode: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The client failure exception or protocol error code, when available.' };
-	msg: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The client failure message. VS Code telemetry scrubs file paths and likely secrets before transmission.' };
-	callstack: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The client failure stack. VS Code telemetry scrubs file paths and likely secrets before transmission.' };
+	msg: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The client failure message. Vertex telemetry scrubs file paths and likely secrets before transmission.' };
+	callstack: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The client failure stack. Vertex telemetry scrubs file paths and likely secrets before transmission.' };
 	owner: 'roblourens';
-	comment: 'Tracks failures detected while operating an established Copilot client and whether recovery was started.';
+	comment: 'Tracks failures detected while operating an established AI client and whether recovery was started.';
 };
 
 type CopilotClientStartupEvent = IAgentHostCopilotSkuTelemetry & {
@@ -144,13 +144,13 @@ type CopilotClientStartupEvent = IAgentHostCopilotSkuTelemetry & {
 
 type CopilotClientStartupClassification = IAgentHostCopilotSkuClassification & {
 	outcome: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the startup attempt succeeded, failed, or was cancelled during shutdown.' };
-	durationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Wall-clock duration of the Copilot client startup attempt in milliseconds.' };
-	attemptNumber: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'One-based Copilot client startup attempt number within this Agent Host process.' };
-	startupFailureCause?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded cause of a failed Copilot client startup attempt.' };
-	startupFailureResource?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded Copilot CLI resource involved in a failed startup attempt.' };
-	startupExitCode?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'The Copilot CLI process exit code reported for a failed startup attempt.' };
+	durationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Wall-clock duration of the AI client startup attempt in milliseconds.' };
+	attemptNumber: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'One-based AI client startup attempt number within this Agent Host process.' };
+	startupFailureCause?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded cause of a failed AI client startup attempt.' };
+	startupFailureResource?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded AI CLI resource involved in a failed startup attempt.' };
+	startupExitCode?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'The AI CLI process exit code reported for a failed startup attempt.' };
 	owner: 'roblourens';
-	comment: 'Tracks one terminal outcome for every Copilot client startup attempt.';
+	comment: 'Tracks one terminal outcome for every AI client startup attempt.';
 };
 
 function getCopilotStartupFailureCause(error: Error): CopilotStartupFailureCause | undefined {
@@ -282,13 +282,13 @@ type CopilotClientRecoveryEvent = IAgentHostCopilotSkuTelemetry & {
 };
 
 type CopilotClientRecoveryClassification = IAgentHostCopilotSkuClassification & {
-	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by detections and recovery telemetry for one Copilot client failure episode.' };
-	failureKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded category of Copilot client failure that initiated recovery.' };
-	durationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Time in milliseconds spent recovering the failed Copilot client.' };
+	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by detections and recovery telemetry for one AI client failure episode.' };
+	failureKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded category of AI client failure that initiated recovery.' };
+	durationMs: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Time in milliseconds spent recovering the failed AI client.' };
 	failedTurnCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of active Agent Host turns failed during client recovery.' };
-	stopSucceeded: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether stopping the failed Copilot client completed without throwing.' };
+	stopSucceeded: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether stopping the failed AI client completed without throwing.' };
 	owner: 'roblourens';
-	comment: 'Tracks the outcome of Copilot client recovery.';
+	comment: 'Tracks the outcome of AI client recovery.';
 };
 
 export function reportCopilotClientRecovery(telemetryService: ITelemetryService, event: CopilotClientRecoveryEvent): void {
@@ -300,13 +300,13 @@ type CopilotClientRecoveryTurnEvent = CopilotSessionFailureCorrelation & {
 };
 
 type CopilotClientRecoveryTurnClassification = IAgentHostEventClassification & {
-	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by all telemetry for one Copilot client failure episode.' };
+	clientFailureId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Identifier shared by all telemetry for one AI client failure episode.' };
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host session identifier.' };
 	chatSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host chat identifier.' };
 	turnId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host turn failed during client recovery.' };
-	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK session identifier.' };
+	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK session identifier.' };
 	owner: 'roblourens';
-	comment: 'Correlates each turn failed during Copilot client recovery with its client failure episode.';
+	comment: 'Correlates each turn failed during AI client recovery with its client failure episode.';
 };
 
 export function reportCopilotClientRecoveryTurn(telemetryService: ITelemetryService, clientFailureId: string, correlation: CopilotSessionFailureCorrelation): void {
@@ -334,20 +334,20 @@ type CopilotSdkSessionErrorClassification = IAgentHostEventClassification & {
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host session identifier.' };
 	chatSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host chat identifier.' };
 	turnId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host turn identifier, when available.' };
-	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK session identifier.' };
-	sdkEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK event identifier.' };
-	sdkParentEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The preceding Copilot SDK event identifier, when available.' };
-	sdkAgentId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK subagent identifier, when applicable.' };
-	errorType: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The structured Copilot SDK session error type.' };
+	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK session identifier.' };
+	sdkEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK event identifier.' };
+	sdkParentEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The preceding AI SDK event identifier, when available.' };
+	sdkAgentId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK subagent identifier, when applicable.' };
+	errorType: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The structured AI SDK session error type.' };
 	errorCode: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The upstream provider error code, when available.' };
 	statusCode: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'The upstream HTTP status code, when available.' };
 	providerCallId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The GitHub provider request identifier, when available.' };
-	serviceRequestId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot service request identifier, when available.' };
+	serviceRequestId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI service request identifier, when available.' };
 	eligibleForAutoSwitch: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the error can trigger an Auto model switch.' };
-	msg: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The SDK session error message. VS Code telemetry scrubs file paths and likely secrets before transmission.' };
-	callstack: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The SDK session error stack. VS Code telemetry scrubs file paths and likely secrets before transmission.' };
+	msg: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The SDK session error message. Vertex telemetry scrubs file paths and likely secrets before transmission.' };
+	callstack: { classification: 'CallstackOrException'; purpose: 'PerformanceAndHealth'; comment: 'The SDK session error stack. Vertex telemetry scrubs file paths and likely secrets before transmission.' };
 	owner: 'roblourens';
-	comment: 'Captures Copilot SDK session errors with Agent Host, SDK, and provider correlation identifiers.';
+	comment: 'Captures AI SDK session errors with Agent Host, SDK, and provider correlation identifiers.';
 };
 
 export function reportCopilotSdkSessionError(telemetryService: ITelemetryService, event: SessionEventPayload<'session.error'>, correlation: CopilotSessionFailureCorrelation): void {
@@ -398,10 +398,10 @@ type CopilotModelCallFailureClassification = IAgentHostEventClassification & {
 	agentSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host session identifier.' };
 	chatSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host chat identifier.' };
 	turnId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Agent Host turn identifier, when available.' };
-	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK session identifier.' };
-	sdkEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK event identifier.' };
-	sdkParentEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The preceding Copilot SDK event identifier, when available.' };
-	sdkAgentId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot SDK subagent identifier, when applicable.' };
+	sdkSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK session identifier.' };
+	sdkEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK event identifier.' };
+	sdkParentEventId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The preceding AI SDK event identifier, when available.' };
+	sdkAgentId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI SDK subagent identifier, when applicable.' };
 	failureKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the SDK model call failed at the API or transport boundary.' };
 	source: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the model call came from the top-level agent, a subagent, or MCP sampling.' };
 	transport: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The HTTP or WebSocket transport used by the failed model call.' };
@@ -416,7 +416,7 @@ type CopilotModelCallFailureClassification = IAgentHostEventClassification & {
 	badRequestKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The bounded HTTP 400 response category, when available.' };
 	apiCallId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The model-provider completion identifier, when available.' };
 	providerCallId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The GitHub provider request identifier, when available.' };
-	serviceRequestId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The Copilot service request identifier, when available.' };
+	serviceRequestId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'The AI service request identifier, when available.' };
 	messageCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of messages in the failing request.' };
 	toolCallCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of tool calls in the failing request.' };
 	toolResultMessageCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of tool-result messages in the failing request.' };
@@ -424,7 +424,7 @@ type CopilotModelCallFailureClassification = IAgentHostEventClassification & {
 	imagePartCount: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of image parts in the failing request.' };
 	imagePartsMissingMediaType: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of image parts missing a media type in the failing request.' };
 	owner: 'roblourens';
-	comment: 'Captures structured Copilot SDK model-call failures. Raw model error messages remain restricted to SDK-owned telemetry and are not duplicated here.';
+	comment: 'Captures structured AI SDK model-call failures. Raw model error messages remain restricted to SDK-owned telemetry and are not duplicated here.';
 };
 
 export function reportCopilotModelCallFailure(telemetryService: ITelemetryService, event: SessionEventPayload<'model.call_failure'>, correlation: CopilotSessionFailureCorrelation): void {

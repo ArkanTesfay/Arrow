@@ -1048,7 +1048,7 @@ export function getToolKind(toolName: string, parameters?: Record<string, unknow
 
 /**
  * Extracts subagent metadata (agent name, description) from the parsed
- * arguments of a Copilot SDK subagent tool call. The Copilot `task` tool
+ * arguments of a AI SDK subagent tool call. The AI `task` tool
  * uses `agent_type` (snake_case), which this normalizes into the generic
  * `subagentAgentName` / `subagentDescription` shape used by the rest of the
  * agent host code.

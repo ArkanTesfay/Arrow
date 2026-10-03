@@ -1190,7 +1190,7 @@ export class ChatMLFetcherImpl extends AbstractChatMLFetcher {
 		additionalHeaders['X-Interaction-Type'] = agentInteractionType;
 		additionalHeaders['X-Agent-Task-Id'] = ourRequestId;
 		if (request.messages?.some((m: CAPIChatMessage) => Array.isArray(m.content) ? m.content.some(c => 'image_url' in c) : false) && chatEndpointInfo.supportsVision) {
-			additionalHeaders['Copilot-Vision-Request'] = 'true';
+			additionalHeaders['AI-Vision-Request'] = 'true';
 		}
 		const connection = this._webSocketManager.getOrCreateConnection({ conversationId, modelId: chatEndpointInfo.model, connectionId: webSocketConnectionId }, additionalHeaders, ourRequestId);
 		try {
@@ -1456,8 +1456,8 @@ export class ChatMLFetcherImpl extends AbstractChatMLFetcher {
 
 		// CAPI will return us a Copilot Edits Session Header which is our token to using the speculative decoding endpoint
 		// We should store this in the auth service for easy use later
-		if (response.headers.get('Copilot-Edits-Session')) {
-			this._authenticationService.speculativeDecodingEndpointToken = response.headers.get('Copilot-Edits-Session') ?? undefined;
+		if (response.headers.get('AI-Edits-Session')) {
+			this._authenticationService.speculativeDecodingEndpointToken = response.headers.get('AI-Edits-Session') ?? undefined;
 		}
 
 		this._chatQuotaService.processQuotaHeaders(response.headers);
@@ -1493,7 +1493,7 @@ export class ChatMLFetcherImpl extends AbstractChatMLFetcher {
 			'X-Initiator': userInitiatedRequest ? 'user' : 'agent', // Agent = a system request / not the primary user query.
 		};
 		if (request.messages?.some((m: CAPIChatMessage) => Array.isArray(m.content) ? m.content.some(c => 'image_url' in c) : false) && chatEndpoint.supportsVision) {
-			additionalHeaders['Copilot-Vision-Request'] = 'true';
+			additionalHeaders['AI-Vision-Request'] = 'true';
 		}
 		const telemetryData = TelemetryData.createAndMarkAsIssued({
 			endpoint: 'completions',

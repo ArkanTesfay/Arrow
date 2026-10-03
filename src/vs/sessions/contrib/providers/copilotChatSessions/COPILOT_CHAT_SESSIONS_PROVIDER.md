@@ -1,10 +1,10 @@
-# Copilot Chat sessions provider
+# AI Chat sessions provider
 
 > **Specification change gate:** Do not update this document for provider bug fixes, option details, picker behavior, or timing. Update it only when provider ownership, identity, cache semantics, or request lifecycle changes.
 
 ## Scope
 
-`CopilotChatSessionsProvider` adapts the existing Copilot agent-session infrastructure into `ISessionsProvider`. It supports Copilot Cloud only. Local Copilot CLI sessions contributed by the Copilot extension are not surfaced in the Agents Window; local Copilot sessions are owned by the Agent Host providers.
+`CopilotChatSessionsProvider` adapts the existing AI agent-session infrastructure into `ISessionsProvider`. It supports AI Cloud only. Local AI CLI sessions contributed by the AI extension are not surfaced in the Agents Window; local AI sessions are owned by the Agent Host providers.
 
 ## Registration and identity
 
@@ -13,12 +13,12 @@
 | Property | Contract |
 |----------|----------|
 | Provider ID | `default-copilot` |
-| Label | Copilot Chat |
+| Label | AI Chat |
 | Cloud session type | The only session type advertised |
 
 The provider may expose local-folder and remote-repository browse actions. Repository selection UI is owned by the shared workbench picker, used by both the extension's repository command and browser session creation; each caller supplies repository data and owns any session-option updates. Workspace resolution is shared by the default and sandbox creation modes.
 
-On web, the contribution also registers a sandbox-only instance (`cloud-sandbox-creation`) while cloud sandboxes and remote agent hosts are enabled and AI features are visible. This instance owns repository-backed drafts, not existing Cloud or CLI history. It advertises the Copilot sandbox creation type.
+On web, the contribution also registers a sandbox-only instance (`cloud-sandbox-creation`) while cloud sandboxes and remote agent hosts are enabled and AI features are visible. This instance owns repository-backed drafts, not existing Cloud or CLI history. It advertises the AI sandbox creation type.
 
 ## Drafts
 
@@ -26,7 +26,7 @@ Cloud drafts implement the `ISession` contract and expose provider-declared opti
 
 ## Existing sessions
 
-`AgentSessionAdapter` projects an existing Copilot Cloud `IAgentSession` into a stable `ISession` facade. Agent sessions of any other provider type are ignored. It updates observable state in a transaction and preserves resource identity while metadata changes.
+`AgentSessionAdapter` projects an existing AI Cloud `IAgentSession` into a stable `ISession` facade. Agent sessions of any other provider type are ignored. It updates observable state in a transaction and preserves resource identity while metadata changes.
 
 The provider cache is keyed by resource identity. Refreshing the backing agent session list updates existing adapters and emits added, removed, changed, or replacement catalog notifications as appropriate.
 
@@ -34,7 +34,7 @@ Provider metadata translation, including repository and pull-request metadata, r
 
 The cloud provider reports verified PR-closing issues through `linkedIssues` metadata containing their URLs and titles. The adapter exposes these as session artifacts and, for public GitHub URLs, issue references for the existing issue pill. Enterprise-hosted issues remain openable artifacts without public GitHub polling.
 
-The Task API does not report which client started a task, so the Copilot extension records the tasks VS Code creates or sends a message to. Every other task carries `external: true` metadata, which the adapter exposes as `ISession.isExternal`. The extension lists external tasks according to `chat.agentSessions.showExternal`, and a sent message adopts a task by clearing the flag.
+The Task API does not report which client started a task, so the AI extension records the tasks Vertex creates or sends a message to. Every other task carries `external: true` metadata, which the adapter exposes as `ISession.isExternal`. The extension lists external tasks according to `chat.agentSessions.showExternal`, and a sent message adopts a task by clearing the flag.
 
 ## Request lifecycle
 

@@ -222,9 +222,9 @@ export class RefactorsProvider implements vscode.CodeActionProvider {
 	}
 
 	/**
-	 * Provides code action `Generate using Copilot` or `Modify using Copilot`.
-	 * - `Generate using Copilot` is shown when the selection is empty and the line of the selection contains only white-space characters or tabs.
-	 * - `Modify using Copilot` is shown when the selection is not empty and the selection does not contain only white-space characters or tabs.
+	 * Provides code action `Generate using AI` or `Modify using AI`.
+	 * - `Generate using AI` is shown when the selection is empty and the line of the selection contains only white-space characters or tabs.
+	 * - `Modify using AI` is shown when the selection is not empty and the selection does not contain only white-space characters or tabs.
 	 */
 	private provideGenerateUsingCopilotCodeAction(doc: vscode.TextDocument, range: vscode.Range): vscode.CodeAction[] | undefined {
 

@@ -30,7 +30,7 @@ Wire customizations (skills + plugins) end-to-end for the Claude provider so the
 - A provider-wide `ClaudePluginController` class. Per the session-owned-state intent, each session is responsible for its own customizations, mirroring how `SessionClientToolsDiff` works for client tools.
 - Workbench / customizations editor UI changes.
 - SDK `initializationResult()` as a probe for `available_plugins` — useful diagnostic, not required for correctness; defer.
-- Session-discovered (on-disk) customizations (Copilot's `SessionDiscoveredEntry` pattern). Future phase.
+- Session-discovered (on-disk) customizations (AI's `SessionDiscoveredEntry` pattern). Future phase.
 - Hot-swapping customizations mid-turn. SDK has no mid-turn `reloadPlugins` contract; the yield boundary is the only safe point.
 
 ## Prerequisites
@@ -164,5 +164,5 @@ None.
 - Context: `./CONTEXT.md` §M6 (Customizations cluster), §M11 (hot-swap / defer-and-coalesce / restart-required taxonomy)
 - Prior plan: `./phase10.5-plan.md` (per-session ownership pattern + yield-restart primitive)
 - Reference extension: `extensions/copilot/src/extension/chatSessions/claude/node/claudeCodeAgent.ts` — `_pendingPluginReload`, `_toolsMatch`, `_setCustomizations`, `_loadPlugins`, `_destroyAndRecreateQuery`
-- CopilotAgent for IAgent surface shape only: `src/vs/platform/agentHost/node/copilot/copilotAgent.ts` lines 311, 315, 998, 1026 (note: Copilot uses a provider-wide `PluginController`; Claude deliberately diverges to per-session ownership)
+- CopilotAgent for IAgent surface shape only: `src/vs/platform/agentHost/node/copilot/copilotAgent.ts` lines 311, 315, 998, 1026 (note: AI uses a provider-wide `PluginController`; Claude deliberately diverges to per-session ownership)
 - E2E skills used: `launch`, `code-oss-logs`, `chat-customizations-editor`

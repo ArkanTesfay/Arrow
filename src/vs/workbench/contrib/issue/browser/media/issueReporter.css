@@ -148,11 +148,11 @@
 }
 
 .issue-reporter-body .windows.web:lang(zh-Hans) {
-	font-family: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif;
+	font-family: "Segoe WPC", "Segoe UI", "Vertex YaHei", sans-serif;
 }
 
 .issue-reporter-body .windows.web:lang(zh-Hant) {
-	font-family: "Segoe WPC", "Segoe UI", "Microsoft Jhenghei", sans-serif;
+	font-family: "Segoe WPC", "Segoe UI", "Vertex Jhenghei", sans-serif;
 }
 
 .issue-reporter-body .windows.web:lang(ja) {

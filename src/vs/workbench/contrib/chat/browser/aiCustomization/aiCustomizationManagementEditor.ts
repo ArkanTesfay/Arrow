@@ -2814,7 +2814,7 @@ export class AICustomizationManagementEditor extends EditorPane {
 					id, count,
 					label: localize('migrationChecklistMcp', "MCP Servers"),
 					description: storage === PromptsStorage.user
-						? localize('migrationChecklistUserMcpDescription', "Move eligible user servers to mcp-config.json in Copilot home and review servers that cannot be migrated.")
+						? localize('migrationChecklistUserMcpDescription', "Move eligible user servers to mcp-config.json in AI home and review servers that cannot be migrated.")
 						: localize('migrationChecklistMcpDescription', "Move eligible workspace servers to the root .mcp.json and review servers that cannot be migrated."),
 					countLabel: localize('migrationChecklistMcpSupportCounts', "{0} migratable · {1} not migratable", count, unavailableCount),
 					hasDetails: unavailableCount > 0,
@@ -2939,7 +2939,7 @@ export class AICustomizationManagementEditor extends EditorPane {
 		const sessionResource = this.harnessService.activeSessionResource.get();
 		const destinations = this.getCustomizationMigrationDashboardDestinations(this.getDashboardFileMigrationCandidates().filter(candidate => candidate.storage === storage));
 		if (destinations.length === 0) {
-			this.notificationService.info(localize('migrationNoEditableDestinations', "There are no file migration destinations to configure. Workspace MCP servers migrate to the root .mcp.json; user MCP servers migrate to mcp-config.json in Copilot home."));
+			this.notificationService.info(localize('migrationNoEditableDestinations', "There are no file migration destinations to configure. Workspace MCP servers migrate to the root .mcp.json; user MCP servers migrate to mcp-config.json in AI home."));
 			return;
 		}
 		const selected = await this.quickInputService.pick(destinations.map(destination => ({

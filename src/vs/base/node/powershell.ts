@@ -197,7 +197,7 @@ async function findPSCoreMsix({ findPreview }: { findPreview?: boolean } = {}): 
 	}
 
 	// Find the base directory for MSIX application exe shortcuts
-	const msixAppDir = path.join(process.env.LOCALAPPDATA, 'Microsoft', 'WindowsApps');
+	const msixAppDir = path.join(process.env.LOCALAPPDATA, 'Vertex', 'WindowsApps');
 
 	if (!await pfs.SymlinkSupport.existsDirectory(msixAppDir)) {
 		return null;

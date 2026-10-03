@@ -2076,7 +2076,7 @@ export class McpListWidget extends Disposable {
 			await this.connectorsService.getConnectors(cancellation.token);
 		} catch (error) {
 			if (!cancellation.token.isCancellationRequested && !isCancellationError(error)) {
-				this.logService.warn('[McpListWidget] Unable to refresh Copilot connectors', error);
+				this.logService.warn('[McpListWidget] Unable to refresh AI connectors', error);
 			}
 		} finally {
 			if (this.connectorsCancellation.value === cancellation) {

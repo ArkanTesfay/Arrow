@@ -27,7 +27,7 @@ import { ISolutionHandler, SolutionsStream, UnformattedSolution } from '../panel
 const solutionsLogger = new Logger('solutions');
 
 /**
- * Given an `ISolutionManager` with the context of a specific "Open Copilot" request,
+ * Given an `ISolutionManager` with the context of a specific "Open AI" request,
  * initiate the generation of a stream of solutions for that request.
  */
 export async function launchSolutions(accessor: ServicesAccessor, solutionManager: SolutionManager): Promise<SolutionsStream> {
@@ -82,7 +82,7 @@ export async function launchSolutions(accessor: ServicesAccessor, solutionManage
 
 	const solutions = asyncIterableMapFilter(choices, async (apiChoice: APIChoice) => {
 		let display = apiChoice.completionText;
-		logger.info(`Open Copilot completion: [${apiChoice.completionText}]`);
+		logger.info(`Open AI completion: [${apiChoice.completionText}]`);
 
 		// For completions that can happen in any location in the middle of the code we try to find the existing code
 		// that should be displayed in the OpenCopilot panel so the code is nicely formatted/highlighted.

@@ -36,7 +36,7 @@ export class CopilotSandboxDiagnostics extends Disposable {
 			try {
 				const support = await raceTimeout(this._getHostSupport(), SANDBOX_DIAGNOSTICS_TIMEOUT_MS);
 				if (!support) {
-					this._logService.warn(`[Copilot:${this._session}] Sandbox host support query timed out after ${SANDBOX_DIAGNOSTICS_TIMEOUT_MS}ms`);
+					this._logService.warn(`[AI:${this._session}] Sandbox host support query timed out after ${SANDBOX_DIAGNOSTICS_TIMEOUT_MS}ms`);
 					return;
 				}
 				if (!support.supported) {
@@ -51,7 +51,7 @@ export class CopilotSandboxDiagnostics extends Disposable {
 					)).map(capability => capability.reason || localize('copilot.sandbox.capabilityUnavailable', "The sandbox capability '{0}' is unavailable on this host.", capability.name));
 				}
 			} catch (error) {
-				this._logService.warn(`[Copilot:${this._session}] Failed to query sandbox host support`, error);
+				this._logService.warn(`[AI:${this._session}] Failed to query sandbox host support`, error);
 				return;
 			}
 		}

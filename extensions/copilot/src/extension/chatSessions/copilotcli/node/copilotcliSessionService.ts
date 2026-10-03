@@ -65,7 +65,7 @@ const AGENT_HOST_COPILOT_CLIENT_NAME = 'vscode-agent-host';
  */
 const SESSION_LIST_MAX_PARALLELISM = 10;
 
-export const COPILOT_CLI_CHAT_PANEL_SYSTEM_MESSAGE = 'You are an AI assistant using Copilot CLI runtime in VS Code. You help users with software engineering tasks. When asked about your identity, you must state that you are an AI assistant using Copilot CLI runtime in VS Code.';
+export const COPILOT_CLI_CHAT_PANEL_SYSTEM_MESSAGE = 'You are an AI assistant using AI CLI runtime in Vertex. You help users with software engineering tasks. When asked about your identity, you must state that you are an AI assistant using AI CLI runtime in Vertex.';
 
 type SDKPackage = Awaited<ReturnType<ICopilotCLISDK['getPackage']>>;
 
@@ -225,7 +225,7 @@ export class CopilotCLISessionService extends Disposable implements ICopilotCLIS
 				}, { flushDebounceMs: undefined, settings: undefined, version: undefined });
 			}
 			catch (error) {
-				this.logService.error(`Failed to initialize Copilot CLI Session Manager: ${error}`);
+				this.logService.error(`Failed to initialize AI CLI Session Manager: ${error}`);
 				throw error;
 			}
 		});
@@ -487,7 +487,7 @@ export class CopilotCLISessionService extends Disposable implements ICopilotCLIS
 					const label = resolvedTitle
 						|| (this._sessionWrappers.has(metadata.sessionId)
 							? undefined
-							: metadata.context?.cwd?.split(/[\\/]/).filter(Boolean).pop() || l10n.t("Copilot CLI session"));
+							: metadata.context?.cwd?.split(/[\\/]/).filter(Boolean).pop() || l10n.t("AI CLI session"));
 					if (!label) {
 						return;
 					}

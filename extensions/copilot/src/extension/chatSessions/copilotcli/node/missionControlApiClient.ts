@@ -208,13 +208,13 @@ export class MissionControlApiClient {
 		const copilotToken = await this._authService.getCopilotToken();
 		const baseUrl = copilotToken.endpoints?.api;
 		if (!baseUrl) {
-			throw new Error('Copilot API endpoint is not available');
+			throw new Error('AI API endpoint is not available');
 		}
 
 		const url = `${baseUrl.replace(/\/+$/, '')}${path}`;
 		const headers: Record<string, string> = {
 			'Authorization': `Bearer ${session.accessToken}`,
-			'Copilot-Integration-Id': INTEGRATION_ID,
+			'AI-Integration-Id': INTEGRATION_ID,
 		};
 		return { url, headers };
 	}

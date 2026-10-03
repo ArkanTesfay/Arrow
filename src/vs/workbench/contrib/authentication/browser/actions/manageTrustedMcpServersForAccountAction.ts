@@ -157,7 +157,7 @@ class ManageTrustedMcpServersForAccountActionImpl {
 			items.push(...servers.sort(sortByLastUsed).map(this._toQuickPickItem));
 		}
 
-		items.push({ type: 'separator', label: localize('trustedMcpServers', "Trusted by Microsoft") } satisfies IQuickPickSeparator);
+		items.push({ type: 'separator', label: localize('trustedMcpServers', "Trusted by Vertex") } satisfies IQuickPickSeparator);
 		items.push(...trustedServers.sort(sortByLastUsed).map(this._toQuickPickItem));
 
 		return items;
@@ -171,7 +171,7 @@ class ManageTrustedMcpServersForAccountActionImpl {
 		let tooltip: string | undefined;
 		let disabled: boolean | undefined;
 		if (mcpServer.trusted) {
-			tooltip = localize('trustedMcpServerTooltip', "This MCP server is trusted by Microsoft and\nalways has access to this account");
+			tooltip = localize('trustedMcpServerTooltip', "This MCP server is trusted by Vertex and\nalways has access to this account");
 			disabled = true;
 		}
 		return {

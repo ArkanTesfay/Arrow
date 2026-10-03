@@ -22,5 +22,5 @@ This ensures consistency when implementing AI-powered UI functionality across th
 
 ## Rendering Agent-Provided Markdown
 
-- Determine content provenance before rendering markdown. Content authored by an agent must be treated as untrusted; localized VS Code text, tool implementation messages, extension metadata, and other internally authored content do not automatically require the same restrictions.
+- Determine content provenance before rendering markdown. Content authored by an agent must be treated as untrusted; localized Vertex text, tool implementation messages, extension metadata, and other internally authored content do not automatically require the same restrictions.
 - Render agent-provided markdown with `ChatContentMarkdownRenderer`. When a generic markdown renderer is required, apply `getChatMarkdownRenderOptions()`.

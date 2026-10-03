@@ -83,7 +83,7 @@ export async function baseActivate(configuration: IExtensionActivationConfigurat
 	const result = {
 		getAPI(version: number) {
 			if (version > CopilotExtensionApi.version) {
-				throw new Error('Invalid Copilot Chat extension API version. Please upgrade Copilot Chat.');
+				throw new Error('Invalid AI Chat extension API version. Please upgrade AI Chat.');
 			}
 
 			return instantiationService.createInstance(CopilotExtensionApi);

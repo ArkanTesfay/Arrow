@@ -77,11 +77,11 @@ export class AgentHostTelemetryService extends Disposable implements IAgentHostT
 			this._register(_delegate);
 		}
 		if (copilotSdkVersion) {
-			// __GDPR__COMMON__ "common.copilotSdkVersion" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "The version of the Copilot SDK used by the Agent Host process." }
+			// __GDPR__COMMON__ "common.copilotSdkVersion" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "The version of the AI SDK used by the Agent Host process." }
 			this._delegate.setCommonProperty('common.copilotSdkVersion', copilotSdkVersion);
 		}
 		if (copilotRuntimeVersion) {
-			// __GDPR__COMMON__ "common.copilotRuntimeVersion" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "The version of the Copilot runtime used by the Agent Host process." }
+			// __GDPR__COMMON__ "common.copilotRuntimeVersion" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth", "comment": "The version of the AI runtime used by the Agent Host process." }
 			this._delegate.setCommonProperty('common.copilotRuntimeVersion', copilotRuntimeVersion);
 		}
 	}
@@ -253,7 +253,7 @@ async function resolveCopilotExtensionVersion(environmentService: INativeEnviron
 		const manifest = JSON.parse((await fileService.readFile(joinPath(URI.file(environmentService.builtinExtensionsPath), 'copilot', 'package.json'))).value.toString()) as { version?: unknown };
 		return typeof manifest.version === 'string' ? manifest.version : undefined;
 	} catch (error) {
-		logService.debug(`[agentHostTelemetry] Failed to resolve Copilot extension version: ${error instanceof Error ? error.message : String(error)}`);
+		logService.debug(`[agentHostTelemetry] Failed to resolve AI extension version: ${error instanceof Error ? error.message : String(error)}`);
 		return undefined;
 	}
 }

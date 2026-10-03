@@ -133,7 +133,7 @@ type StartupMarkClassification = {
 	owner: 'benibenj';
 	comment: 'Bounded Agent Host startup markers and workload counts, correlated by a random process-lifetime identifier.';
 	agentHostSessionId: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Random identifier for this Agent Host process lifetime, not a conversation or user identifier.' };
-	hostLaunchKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the Agent Host was launched by VS Code main, CLI, or an unknown launcher.' };
+	hostLaunchKind: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the Agent Host was launched by Vertex main, CLI, or an unknown launcher.' };
 	schemaVersion: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Version of the startup marker schema.' };
 	name: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Allowlisted name of this startup milestone or operation boundary.' };
 	provider: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Built-in provider, host for shared work, or other for an unrecognized provider.' };
@@ -146,10 +146,10 @@ type StartupMarkClassification = {
 	pageCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Number of provider catalog pages successfully read.' };
 	truncated?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether catalog enumeration ended before exhausting the provider cursor.' };
 	registeredSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Host registrations before visibility filtering in the final session-list computation.' };
-	copilotSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Copilot host registrations before visibility filtering, not the provider-wide scan count.' };
+	copilotSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'AI host registrations before visibility filtering, not the provider-wide scan count.' };
 	claudeSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Claude host registrations before visibility filtering, not the provider-wide scan count.' };
 	codexSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Codex host registrations before visibility filtering, not the provider-wide scan count.' };
-	otherSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Host registrations for providers other than Copilot, Claude, and Codex.' };
+	otherSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Host registrations for providers other than AI, Claude, and Codex.' };
 	visibleSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Session rows returned after visibility filtering and live-state overlays.' };
 	hiddenSessionCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Session rows hidden by the external-session visibility mode.' };
 	catalogServedCount?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Rows served from the central catalog in the final session-list computation.' };
@@ -168,7 +168,7 @@ type StartupMarkClassification = {
 	migrationForced?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the migration attempt forces enumeration even when the provider catalog is already backfilled.' };
 	activationState?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Explicit activation gate state at the first provider catalog access check: active, inactive, notRequired, or unknown. Does not indicate authentication or connection readiness.' };
 	sdkAvailability?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; comment: 'Whether the provider SDK is locally available without a download at the first catalog access check, or unknown when no check ran.' };
-	copilotRegistered?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the Copilot provider is registered at this host milestone; not SDK, authentication, or connection readiness.' };
+	copilotRegistered?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the AI provider is registered at this host milestone; not SDK, authentication, or connection readiness.' };
 	claudeRegistered?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the Claude provider is registered at this host milestone; not SDK, authentication, or connection readiness.' };
 	codexRegistered?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether the Codex provider is registered at this host milestone; not SDK, authentication, or connection readiness.' };
 	migrateLegacyEnabled?: { classification: 'SystemMetaData'; purpose: 'PerformanceAndHealth'; isMeasurement: true; comment: 'Whether legacy chat migration is enabled for this host lifetime.' };

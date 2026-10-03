@@ -1007,7 +1007,7 @@ export class CopilotCLISession extends DisposableStore implements ICopilotCLISes
 		}
 		const label = getPromptLabel(input);
 		const promptLabel = truncate(label, 50);
-		const capturingToken = new CapturingToken(`Copilot CLI | ${promptLabel}`, 'worktree', undefined, undefined, this.sessionId);
+		const capturingToken = new CapturingToken(`AI CLI | ${promptLabel}`, 'worktree', undefined, undefined, this.sessionId);
 		const isAlreadyBusyWithAnotherRequest = !!this._status && (this._status === ChatSessionStatus.InProgress || this._status === ChatSessionStatus.NeedsInput);
 		this._toolInvocationToken = request.toolInvocationToken;
 
@@ -2740,7 +2740,7 @@ export class CopilotCLISession extends DisposableStore implements ICopilotCLISes
 		const markdownContent = this._renderRequestToMarkdown(userPrompt, modelId, attachments, startTimeMs);
 		this._requestLogger.addEntry({
 			type: LoggedRequestKind.MarkdownContentRequest,
-			debugName: `Copilot CLI | ${truncate(userPrompt, 30)}`,
+			debugName: `AI CLI | ${truncate(userPrompt, 30)}`,
 			startTimeMs,
 			icon: ThemeIcon.fromId('worktree'),
 			markdownContent,
@@ -2752,7 +2752,7 @@ export class CopilotCLISession extends DisposableStore implements ICopilotCLISes
 		const markdownContent = this._renderConversationToMarkdown(userPrompt, assistantResponse, modelId, attachments, startTimeMs, status, errorMessage);
 		this._requestLogger.addEntry({
 			type: LoggedRequestKind.MarkdownContentRequest,
-			debugName: `Copilot CLI | ${truncate(userPrompt, 30)}`,
+			debugName: `AI CLI | ${truncate(userPrompt, 30)}`,
 			startTimeMs,
 			icon: ThemeIcon.fromId('worktree'),
 			markdownContent,
@@ -2822,7 +2822,7 @@ export class CopilotCLISession extends DisposableStore implements ICopilotCLISes
 
 	private _renderRequestToMarkdown(userPrompt: string, modelId: string, attachments: Attachment[], startTimeMs: number): string {
 		const result: string[] = [];
-		result.push(`# Copilot CLI Session`);
+		result.push(`# AI CLI Session`);
 		result.push(``);
 		result.push(`## Metadata`);
 		result.push(`~~~`);
@@ -2909,7 +2909,7 @@ export class CopilotCLISession extends DisposableStore implements ICopilotCLISes
 
 	private _renderConversationToMarkdown(userPrompt: string, assistantResponse: string, modelId: string, attachments: Attachment[], startTimeMs: number, status: 'Completed' | 'Failed', errorMessage?: string): string {
 		const result: string[] = [];
-		result.push(`# Copilot CLI Session`);
+		result.push(`# AI CLI Session`);
 		result.push(``);
 		result.push(`## Metadata`);
 		result.push(`~~~`);
@@ -3214,7 +3214,7 @@ interface UsageInfoData {
 
 /**
  * Token usage for a single model turn, captured from the SDK `assistant.usage` event. Used to
- * synthesize per-turn `chat` spans for the in-process Copilot CLI chat debug logs view.
+ * synthesize per-turn `chat` spans for the in-process AI CLI chat debug logs view.
  */
 interface IModelTurnUsage {
 	readonly model?: string;

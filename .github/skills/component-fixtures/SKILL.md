@@ -105,7 +105,7 @@ Fixtures share the document and workbench stylesheets (`isolation: 'none'`). The
 
 ### Matching production CSS selectors
 
-Many VS Code components have CSS rules scoped to deep ancestor selectors (e.g., `.interactive-session .interactive-input-part > .widget-container .my-element`). In fixtures, you must recreate the required ancestor DOM structure for these selectors to match:
+Many Vertex components have CSS rules scoped to deep ancestor selectors (e.g., `.interactive-session .interactive-input-part > .widget-container .my-element`). In fixtures, you must recreate the required ancestor DOM structure for these selectors to match:
 
 ```typescript
 function render({ container }: ComponentFixtureContext): void {
