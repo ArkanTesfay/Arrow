@@ -54,7 +54,7 @@
 				"variable.legacy.builtin.python"
 			],
 			"settings": {
-				"foreground": "#E8EAF0"
+				"foreground": "#F5F3EE"
 			}
 		},
 		{
@@ -72,13 +72,13 @@
 		{
 			"scope": "header",
 			"settings": {
-				"foreground": "#F5A623"
+				"foreground": "#F4B942"
 			}
 		},
 		{
 			"scope": "comment",
 			"settings": {
-				"foreground": "#67707C"
+				"foreground": "#6E6A62"
 			}
 		},
 		{
@@ -201,7 +201,7 @@
 		{
 			"scope": "punctuation.definition.quote.begin.markdown",
 			"settings": {
-				"foreground": "#67707C"
+				"foreground": "#6E6A62"
 			}
 		},
 		{
@@ -321,7 +321,7 @@
 				"meta.template.expression"
 			],
 			"settings": {
-				"foreground": "#E8EAF0"
+				"foreground": "#F5F3EE"
 			}
 		},
 		{
@@ -405,7 +405,7 @@
 				"storage.modifier.package.java"
 			],
 			"settings": {
-				"foreground": "#E8EAF0"
+				"foreground": "#F5F3EE"
 			}
 		},
 		{
@@ -439,8 +439,8 @@
 		"number": "#D19A66",
 		"string": "#98C379",
 		"string.escape": "#FFD166",
-		"comment": "#67707C",
+		"comment": "#6E6A62",
 		"regexp": "#61AFEF",
-		"macro": "#F5A623"
+		"macro": "#F4B942"
 	}
 }

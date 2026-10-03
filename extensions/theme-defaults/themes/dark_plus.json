@@ -192,7 +192,7 @@
 		{
 			"scope": "entity.name.label",
 			"settings": {
-				"foreground": "#969DAA"
+				"foreground": "#A8A29E"
 			}
 		}
 	],
@@ -218,9 +218,9 @@
 		"number": "#D19A66",
 		"string": "#98C379",
 		"string.escape": "#FFD166",
-		"comment": "#67707C",
+		"comment": "#6E6A62",
 		"regexp": "#61AFEF",
-		"macro": "#F5A623"
+		"macro": "#F4B942"
 	},
 	"semanticHighlighting": true
 }
