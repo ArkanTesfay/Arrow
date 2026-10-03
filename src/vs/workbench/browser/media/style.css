@@ -526,3 +526,40 @@ body,
 		box-shadow var(--vertex-motion-fast) var(--vertex-motion-ease),
 		color var(--vertex-motion-fast) var(--vertex-motion-ease);
 }
+
+/* ============================================================================
+ * Phase 2.5 — Minimalism: remove ambient chrome so content carries the frame.
+ * Settings handle the big wins (minimap, breadcrumbs, sticky scroll, overview
+ * ruler, layout toggles, tips); CSS below only softens what settings can't.
+ * ============================================================================ */
+
+/* Empty editor group: drop the wordmark + shortcut cheat sheet, keep canvas. */
+.modern-ui.monaco-workbench .part.editor > .content .editor-group-container .editor-group-watermark {
+	display: none;
+}
+
+/* Scrollbars: thin, rounded, and quiet until hovered or dragged.
+   `!important` is required to beat the inline sizes computed by scrollbar JS. */
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar {
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+}
+
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar.vertical,
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar.vertical > .slider {
+	width: 6px !important;
+}
+
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar.horizontal,
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar.horizontal > .slider {
+	height: 6px !important;
+}
+
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider {
+	opacity: 0.4;
+	transition: opacity var(--vertex-motion-fast) var(--vertex-motion-ease);
+}
+
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar:hover > .slider,
+.modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider.active {
+	opacity: 1;
+}

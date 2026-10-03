@@ -90,7 +90,16 @@
       "workbench.experimental.modernUIEditorTabStyle": "pill",
       "workbench.experimental.modernUIUppercaseViewHeaders": true,
       "workbench.tree.indent": 14,
-      "workbench.tree.renderIndentGuides": "none"
+      "workbench.tree.renderIndentGuides": "none",
+      "workbench.layoutControl.type": "menu",
+      "workbench.startupEditor": "none",
+      "workbench.tips.enabled": false,
+      "breadcrumbs.enabled": false,
+      "editor.minimap.enabled": false,
+      "editor.stickyScroll.enabled": false,
+      "editor.overviewRulerLanes": 0,
+      "editor.scrollbar.verticalScrollbarSize": 8,
+      "editor.scrollbar.horizontalScrollbarSize": 8
     }
   },
   "repository": {
