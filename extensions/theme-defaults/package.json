@@ -86,7 +86,11 @@
       "workbench.experimental.modernUI": true,
       "workbench.activityBar.location": "top",
       "window.density.layout": "default",
-      "window.commandCenter": true
+      "window.commandCenter": true,
+      "workbench.experimental.modernUIEditorTabStyle": "pill",
+      "workbench.experimental.modernUIUppercaseViewHeaders": true,
+      "workbench.tree.indent": 14,
+      "workbench.tree.renderIndentGuides": "none"
     }
   },
   "repository": {

@@ -449,3 +449,80 @@ body,
 .modern-ui.monaco-workbench .monaco-editor .monaco-hover {
 	border-radius: var(--vscode-cornerRadius-large, 10px);
 }
+
+/* ============================================================================
+ * Phase 2 — Component system: menus, hovers, badges, toggles, list rows
+ *
+ * Completes the control vocabulary from Phase 1 so every floating surface and
+ * interactive control speaks the same geometry/motion language. All rules stay
+ * gated behind `.modern-ui` so they follow the experiment setting and never
+ * leak into classic layouts.
+ * ============================================================================ */
+
+/* Menus + context views: elevated card with the shared radius ramp. */
+.modern-ui.monaco-workbench .context-view .monaco-menu {
+	border-radius: var(--vscode-cornerRadius-large, 10px);
+	border: 1px solid var(--vscode-menu-border, transparent);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+	overflow: hidden;
+}
+
+/* Menu entries round their hover fill. */
+.modern-ui.monaco-workbench .monaco-menu .monaco-action-bar.vertical .action-item .action-label {
+	border-radius: var(--vscode-cornerRadius-small, 6px);
+}
+
+/* Workbench tooltips follow the editor hover card treatment. */
+.modern-ui.monaco-workbench .monaco-hover {
+	border-radius: var(--vscode-cornerRadius-large, 10px);
+	border: 1px solid var(--vscode-editorHoverWidget-border, var(--vscode-widget-border, transparent));
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+	overflow: hidden;
+}
+
+/* Badges and counters: fully rounded pills. */
+.modern-ui.monaco-workbench .monaco-count-badge,
+.modern-ui.monaco-workbench .badge .badge-content {
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+}
+
+/* Checkboxes and toggles inherit the control radius ramp. */
+.modern-ui.monaco-workbench .monaco-custom-toggle {
+	border-radius: var(--vscode-cornerRadius-xSmall, 4px);
+}
+
+/* List rows in the side bars read as rounded pills on hover/focus. */
+.modern-ui.monaco-workbench .part.sidebar .monaco-list-row,
+.modern-ui.monaco-workbench .part.auxiliarybar .monaco-list-row {
+	border-radius: var(--vscode-cornerRadius-small, 6px);
+}
+
+/*
+ * Pill-mode editor tabs: a quiet gold accent under the active tab. Applied only
+ * when the connected-tab mode is off (`pill` is the Vertex default), so the
+ * connected stroke treatment stays untouched for users who pick it.
+ */
+.modern-ui.monaco-workbench:not(.modern-ui-connected-editor-tabs) .part.editor .editor-group-container > .title .tabs-container > .tab.active::after {
+	content: "";
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	bottom: 3px;
+	height: 2px;
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+	background-color: var(--vscode-focusBorder);
+	opacity: 0.75;
+	pointer-events: none;
+}
+
+/* Motion: extend the shared 140ms curve to the remaining interactive chrome. */
+.modern-ui.monaco-workbench .monaco-hover,
+.modern-ui.monaco-workbench .monaco-count-badge,
+.modern-ui.monaco-workbench .monaco-custom-toggle,
+.modern-ui.monaco-workbench .monaco-menu .monaco-action-bar.vertical .action-item .action-label {
+	transition:
+		background-color var(--vertex-motion-fast) var(--vertex-motion-ease),
+		border-color var(--vertex-motion-fast) var(--vertex-motion-ease),
+		box-shadow var(--vertex-motion-fast) var(--vertex-motion-ease),
+		color var(--vertex-motion-fast) var(--vertex-motion-ease);
+}

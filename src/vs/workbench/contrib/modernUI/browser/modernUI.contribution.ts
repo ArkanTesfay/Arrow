@@ -21,8 +21,8 @@ import { CONNECTED_EDITOR_TABS_CLASS } from '../../../browser/parts/editor/edito
 /** Reduced scrollbar size (px) applied when Modern UI is on. */
 const MODERN_UI_SCROLLBAR_SIZE = 8;
 
-/** Increased pane header size (px) applied when Modern UI is on. */
-const MODERN_UI_PANE_HEADER_SIZE = 28;
+/** Increased pane header size (px) applied when Modern UI is on. Kept in sync with `paneHeaders.css`. */
+const MODERN_UI_PANE_HEADER_SIZE = 32;
 
 // Bundle the CSS for every Modern UI module. Styles remain inert until their
 // corresponding classes are toggled onto the workbench container(s) below.
