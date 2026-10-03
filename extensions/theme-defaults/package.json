@@ -80,7 +80,10 @@
         "label": "%minimalIconThemeLabel%",
         "path": "./fileicons/vs_minimal-icon-theme.json"
       }
-    ]
+    ],
+    "configurationDefaults": {
+      "workbench.colorTheme": "Dark Modern"
+    }
   },
   "repository": {
     "type": "git",

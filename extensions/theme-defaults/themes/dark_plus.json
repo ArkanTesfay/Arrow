@@ -10,10 +10,10 @@
 				"support.function",
 				"support.constant.handlebars",
 				"source.powershell variable.other.member",
-				"entity.name.operator.custom-literal" // See https://en.cppreference.com/w/cpp/language/user_literal
+				"entity.name.operator.custom-literal"
 			],
 			"settings": {
-				"foreground": "#DCDCAA"
+				"foreground": "#61AFEF"
 			}
 		},
 		{
@@ -53,7 +53,7 @@
 				"storage.type.primitive.groovy"
 			],
 			"settings": {
-				"foreground": "#4EC9B0"
+				"foreground": "#E9D8A6"
 			}
 		},
 		{
@@ -68,7 +68,7 @@
 				"punctuation.separator.namespace.ruby"
 			],
 			"settings": {
-				"foreground": "#4EC9B0"
+				"foreground": "#E9D8A6"
 			}
 		},
 		{
@@ -83,7 +83,7 @@
 				"entity.name.operator"
 			],
 			"settings": {
-				"foreground": "#C586C0"
+				"foreground": "#C678DD"
 			}
 		},
 		{
@@ -93,10 +93,10 @@
 				"meta.definition.variable.name",
 				"support.variable",
 				"entity.name.variable",
-				"constant.other.placeholder", // placeholders in strings
+				"constant.other.placeholder"
 			],
 			"settings": {
-				"foreground": "#9CDCFE"
+				"foreground": "#E06C75"
 			}
 		},
 		{
@@ -106,7 +106,7 @@
 				"variable.other.enummember"
 			],
 			"settings": {
-				"foreground": "#4FC1FF",
+				"foreground": "#FFD166"
 			}
 		},
 		{
@@ -115,7 +115,7 @@
 				"meta.object-literal.key"
 			],
 			"settings": {
-				"foreground": "#9CDCFE"
+				"foreground": "#E06C75"
 			}
 		},
 		{
@@ -130,7 +130,7 @@
 				"support.constant.color"
 			],
 			"settings": {
-				"foreground": "#CE9178"
+				"foreground": "#98C379"
 			}
 		},
 		{
@@ -145,7 +145,7 @@
 				"support.other.parenthesis.regexp"
 			],
 			"settings": {
-				"foreground": "#CE9178"
+				"foreground": "#98C379"
 			}
 		},
 		{
@@ -156,7 +156,7 @@
 				"constant.character.set.regexp"
 			],
 			"settings": {
-				"foreground": "#d16969"
+				"foreground": "#E06C75"
 			}
 		},
 		{
@@ -165,13 +165,13 @@
 				"keyword.control.anchor.regexp"
 			],
 			"settings": {
-				"foreground": "#DCDCAA"
+				"foreground": "#61AFEF"
 			}
 		},
 		{
 			"scope": "keyword.operator.quantifier.regexp",
 			"settings": {
-				"foreground": "#d7ba7d"
+				"foreground": "#E9D8A6"
 			}
 		},
 		{
@@ -180,26 +180,47 @@
 				"constant.other.option"
 			],
 			"settings": {
-				"foreground": "#569cd6"
+				"foreground": "#C678DD"
 			}
 		},
 		{
 			"scope": "constant.character.escape",
 			"settings": {
-				"foreground": "#d7ba7d"
+				"foreground": "#E9D8A6"
 			}
 		},
 		{
 			"scope": "entity.name.label",
 			"settings": {
-				"foreground": "#C8C8C8"
+				"foreground": "#969DAA"
 			}
 		}
 	],
 	"semanticTokenColors": {
-		"newOperator":"#C586C0",
-		"stringLiteral":"#ce9178",
-		"customLiteral": "#DCDCAA",
-		"numberLiteral": "#b5cea8",
-	}
+		"newOperator": "#C678DD",
+		"stringLiteral": "#98C379",
+		"customLiteral": "#E9D8A6",
+		"numberLiteral": "#D19A66",
+		"variable": "#E06C75",
+		"parameter": "#E06C75",
+		"property": "#E06C75",
+		"function": "#61AFEF",
+		"method": "#61AFEF",
+		"type": "#E9D8A6",
+		"class": "#E9D8A6",
+		"enum": "#E9D8A6",
+		"interface": "#E9D8A6",
+		"namespace": "#E9D8A6",
+		"struct": "#E9D8A6",
+		"keyword": "#C678DD",
+		"modifier": "#C678DD",
+		"operator": "#61AFEF",
+		"number": "#D19A66",
+		"string": "#98C379",
+		"string.escape": "#FFD166",
+		"comment": "#67707C",
+		"regexp": "#61AFEF",
+		"macro": "#F5A623"
+	},
+	"semanticHighlighting": true
 }
