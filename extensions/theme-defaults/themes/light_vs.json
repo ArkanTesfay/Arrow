@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Light (Visual Studio)",
+	"name": "Light (Classic)",
 	"colors": {
 		"checkbox.border": "#919191",
 		"editor.background": "#FFFFFF",
@@ -448,6 +448,6 @@
 		"newOperator": "#0000ff",
 		"stringLiteral": "#a31515",
 		"customLiteral": "#000000",
-		"numberLiteral": "#098658",
+		"numberLiteral": "#098658"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"$schema": "vscode://schemas/color-theme",
-	"name": "Dark (Visual Studio)",
+	"name": "Dark (Classic)",
 	"colors": {
 		"checkbox.border": "#6B6B6B",
 		"editor.background": "#22221C",

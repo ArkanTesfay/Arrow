@@ -78,11 +78,11 @@ else {
 	if (Object.keys(product).length === 0) {
 		Object.assign(product, {
 			version: '1.104.0-dev',
-			nameShort: 'Vertex Dev',
-			nameLong: 'Vertex Dev',
-			applicationName: 'vertex',
-			dataFolderName: '.vertex',
-			urlProtocol: 'vertex',
+			nameShort: 'Gooq Dev',
+			nameLong: 'Gooq Dev',
+			applicationName: 'gooq',
+			dataFolderName: '.gooq',
+			urlProtocol: 'gooq',
 			reportIssueUrl: 'https://github.com/ArkanTesfay/Arrow/issues/new',
 			licenseName: 'MIT',
 			licenseUrl: 'https://github.com/ArkanTesfay/Arrow/blob/main/LICENSE.txt',

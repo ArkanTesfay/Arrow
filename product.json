@@ -1,40 +1,40 @@
 {
-	"nameShort": "Vertex",
-	"nameLong": "Vertex",
-	"applicationName": "vertex",
-	"dataFolderName": ".vertex",
-	"sharedDataFolderName": ".vertex-shared",
-	"win32MutexName": "vertex",
+	"nameShort": "Gooq",
+	"nameLong": "Gooq",
+	"applicationName": "gooq",
+	"dataFolderName": ".gooq",
+	"sharedDataFolderName": ".gooq-shared",
+	"win32MutexName": "gooq",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/ArkanTesfay/Arrow/blob/main/LICENSE.txt",
 	"serverLicenseUrl": "https://github.com/ArkanTesfay/Arrow/blob/main/LICENSE.txt",
 	"serverGreeting": [],
 	"serverLicense": [],
 	"serverLicensePrompt": "",
-	"serverApplicationName": "vertex-server",
-	"serverDataFolderName": ".vertex-server",
-	"tunnelApplicationName": "vertex-tunnel",
-	"win32DirName": "Vertex",
-	"win32NameVersion": "Vertex",
-	"win32RegValueName": "Vertex",
+	"serverApplicationName": "gooq-server",
+	"serverDataFolderName": ".gooq-server",
+	"tunnelApplicationName": "gooq-tunnel",
+	"win32DirName": "Gooq",
+	"win32NameVersion": "Gooq",
+	"win32RegValueName": "Gooq",
 	"win32x64AppId": "{{81269599-037D-4481-A78B-F8E95D1620B3}",
 	"win32arm64AppId": "{{2E5542C1-61C1-46C5-86CB-FCF4AD0102E9}",
 	"win32x64UserAppId": "{{6CE2CB2C-3C43-426D-A2EE-3D23F5793825}",
 	"win32arm64UserAppId": "{{53310B00-7702-4EFD-A306-C8A514E7DF17}",
-	"win32AppUserModelId": "Vertex.Vertex",
-	"win32ShellNameShort": "&Vertex",
-	"win32TunnelServiceMutex": "vertex-tunnelservice",
-	"win32TunnelMutex": "vertex-tunnel",
-	"darwinBundleIdentifier": "com.vertex.vertex",
+	"win32AppUserModelId": "Gooq.Gooq",
+	"win32ShellNameShort": "&Gooq",
+	"win32TunnelServiceMutex": "gooq-tunnelservice",
+	"win32TunnelMutex": "gooq-tunnel",
+	"darwinBundleIdentifier": "com.gooq.gooq",
 	"darwinProfileUUID": "F20AA3FB-FF31-4EDF-B6BE-E385F7AF4827",
 	"darwinProfilePayloadUUID": "175FC529-51D1-45A6-9C73-8E7F938DA861",
-	"linuxDesktopName": "com.vertex.vertex",
-	"linuxIconName": "vertex",
+	"linuxDesktopName": "com.gooq.gooq",
+	"linuxIconName": "gooq",
 	"licenseFileName": "LICENSE.txt",
 	"reportIssueUrl": "https://github.com/ArkanTesfay/Arrow/issues/new",
 	"nodejsArtifactFeed": "",
 	"electronArtifactFeed": "",
-	"urlProtocol": "vertex",
+	"urlProtocol": "gooq",
 	"agentsTelemetryAppName": "agents",
 	"webviewContentExternalBaseUrlTemplate": "https://{{uuid}}.vscode-cdn.net/insider/ef65ac1ba57f57f2a3961bfe94aa20481caca4c6/out/vs/workbench/contrib/webview/browser/pre/",
 	"builtInExtensions": [
@@ -48,10 +48,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Vertex",
+					"displayName": "Gooq",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Vertex"
+				"publisherDisplayName": "Gooq"
 			}
 		},
 		{
@@ -64,10 +64,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Vertex",
+					"displayName": "Gooq",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Vertex"
+				"publisherDisplayName": "Gooq"
 			}
 		},
 		{
@@ -80,10 +80,10 @@
 				"publisherId": {
 					"publisherId": "5f5636e7-69ed-4afe-b5d6-8d231fb3d3ee",
 					"publisherName": "ms-vscode",
-					"displayName": "Vertex",
+					"displayName": "Gooq",
 					"flags": "verified"
 				},
-				"publisherDisplayName": "Vertex"
+				"publisherDisplayName": "Gooq"
 			}
 		}
 	],
@@ -170,7 +170,7 @@
 	"onboardingKeymaps": [
 		{
 			"id": "vscode",
-			"label": "Vertex",
+			"label": "Gooq",
 			"description": "Default keyboard mapping"
 		},
 		{

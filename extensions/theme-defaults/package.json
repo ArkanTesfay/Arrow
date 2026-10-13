@@ -50,14 +50,14 @@
         "path": "./themes/light_modern.json"
       },
       {
-        "id": "Visual Studio Dark",
-        "label": "%darkColorThemeLabel%",
+        "id": "Dark (Classic)",
+        "label": "%darkClassicThemeLabel%",
         "uiTheme": "vs-dark",
         "path": "./themes/dark_vs.json"
       },
       {
-        "id": "Visual Studio Light",
-        "label": "%lightColorThemeLabel%",
+        "id": "Light (Classic)",
+        "label": "%lightClassicThemeLabel%",
         "uiTheme": "vs",
         "path": "./themes/light_vs.json"
       },
@@ -104,6 +104,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/microsoft/vscode.git"
+    "url": "https://github.com/ArkanTesfay/Arrow.git"
   }
 }

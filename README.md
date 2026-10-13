@@ -1,6 +1,6 @@
-# Vertex
+# Gooq
 
-**Vertex** is an open-source, AI-first code editor, part of the [Arrow](https://github.com/ArkanTesfay/Arrow) project. Our goal is the cleanest, fastest, AI-powered coding experience.
+**Gooq** is an open-source, AI-first code editor, part of the [Arrow](https://github.com/ArkanTesfay/Arrow) project. Our goal is the cleanest, fastest, AI-powered coding experience.
 
 ## Highlights
 
@@ -20,4 +20,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). For issue reports, use the built-in `Rep
 
 ## License
 
-Copyright (c) Vertex contributors. Licensed under the [MIT license](LICENSE.txt). Third-party component notices are in [ThirdPartyNotices.txt](ThirdPartyNotices.txt).
+Copyright (c) Gooq contributors. Licensed under the [MIT license](LICENSE.txt). Third-party component notices are in [ThirdPartyNotices.txt](ThirdPartyNotices.txt).

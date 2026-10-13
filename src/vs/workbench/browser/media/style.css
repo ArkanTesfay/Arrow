@@ -16,8 +16,8 @@
 .monaco-workbench.mac:lang(ko) { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Nanum Gothic", "AppleGothic", sans-serif; }
 
 .monaco-workbench.windows { font-family: "Segoe WPC", "Segoe UI", sans-serif; }
-.monaco-workbench.windows:lang(zh-Hans) { font-family: "Segoe WPC", "Segoe UI", "Vertex YaHei", sans-serif; }
-.monaco-workbench.windows:lang(zh-Hant) { font-family: "Segoe WPC", "Segoe UI", "Vertex Jhenghei", sans-serif; }
+.monaco-workbench.windows:lang(zh-Hans) { font-family: "Segoe WPC", "Segoe UI", "Microsoft YaHei", sans-serif; }
+.monaco-workbench.windows:lang(zh-Hant) { font-family: "Segoe WPC", "Segoe UI", "Microsoft JhengHei", sans-serif; }
 .monaco-workbench.windows:lang(ja) { font-family: "Segoe WPC", "Segoe UI", "Yu Gothic UI", "Meiryo UI", sans-serif; }
 .monaco-workbench.windows:lang(ko) { font-family: "Segoe WPC", "Segoe UI", "Malgun Gothic", "Dotom", sans-serif; }
 
@@ -361,7 +361,7 @@ body {
 }
 
 /* ============================================================================
- * Vertex design system — Phase 1 token layer
+ * Gooq design system — Phase 1 token layer
  *
  * Charcoal + warm gold identity. Colors live in the theme (Dark Modern, see
  * extensions/theme-defaults/themes/dark_modern.json); this layer owns
@@ -369,7 +369,7 @@ body {
  * token registry (src/vs/platform/theme/common/sizes/baseSizes.ts) and the
  * Modern UI modules (src/vs/workbench/contrib/modernUI).
  *
- *   1. Radius tokens  — Vertex geometry spec (controls 4-6px, surfaces 8-12px)
+ *   1. Radius tokens  — Gooq geometry spec (controls 4-6px, surfaces 8-12px)
  *   2. Typography     — UI font stack + hierarchy accents
  *   3. Motion         — 120-180ms transitions on interactive chrome
  *   4. Components     — buttons, inputs, quick input, editor widgets
@@ -386,9 +386,9 @@ body {
 
 /* 2. Typography — distinct UI voice without touching code/terminal fonts. */
 :root {
-	--vertex-font-ui: 'Avenir Next', 'Helvetica Neue', -apple-system, 'Segoe UI', sans-serif;
-	--vertex-motion-fast: 140ms;
-	--vertex-motion-ease: cubic-bezier(0.3, 0, 0.2, 1);
+	--gooq-font-ui: 'Avenir Next', 'Helvetica Neue', -apple-system, 'Segoe UI', sans-serif;
+	--gooq-motion-fast: 140ms;
+	--gooq-motion-ease: cubic-bezier(0.3, 0, 0.2, 1);
 }
 
 body,
@@ -397,7 +397,7 @@ body,
 .monaco-workbench .pane .pane-header,
 .monaco-workbench .monaco-list,
 .monaco-workbench .quick-input-widget {
-	font-family: var(--vertex-font-ui);
+	font-family: var(--gooq-font-ui);
 }
 
 /* Section titles: tracked-out labels for a calmer, deliberate hierarchy. */
@@ -417,21 +417,21 @@ body,
 .modern-ui .monaco-action-bar .action-item .action-label,
 .modern-ui.monaco-workbench .composite .title .tabs-container .tab {
 	transition:
-		background-color var(--vertex-motion-fast) var(--vertex-motion-ease),
-		border-color var(--vertex-motion-fast) var(--vertex-motion-ease),
-		box-shadow var(--vertex-motion-fast) var(--vertex-motion-ease),
-		color var(--vertex-motion-fast) var(--vertex-motion-ease);
+		background-color var(--gooq-motion-fast) var(--gooq-motion-ease),
+		border-color var(--gooq-motion-fast) var(--gooq-motion-ease),
+		box-shadow var(--gooq-motion-fast) var(--gooq-motion-ease),
+		color var(--gooq-motion-fast) var(--gooq-motion-ease);
 }
 
 /* 4. Components — one consistent control system. */
 
-/* Buttons: medium Vertex radius + semibold label. */
+/* Buttons: medium Gooq radius + semibold label. */
 .modern-ui.monaco-workbench .monaco-button {
 	font-weight: var(--vscode-fontWeight-semiBold, 600);
 	border-radius: var(--vscode-cornerRadius-medium, 8px);
 }
 
-/* Inputs and selects: small Vertex radius via the shared token. */
+/* Inputs and selects: small Gooq radius via the shared token. */
 .modern-ui.monaco-workbench .monaco-inputbox,
 .modern-ui.monaco-workbench .monaco-select-box {
 	border-radius: var(--vscode-cornerRadius-small, 6px);
@@ -499,7 +499,7 @@ body,
 
 /*
  * Pill-mode editor tabs: a quiet gold accent under the active tab. Applied only
- * when the connected-tab mode is off (`pill` is the Vertex default), so the
+ * when the connected-tab mode is off (`pill` is the Gooq default), so the
  * connected stroke treatment stays untouched for users who pick it.
  */
 .modern-ui.monaco-workbench:not(.modern-ui-connected-editor-tabs) .part.editor .editor-group-container > .title .tabs-container > .tab.active::after {
@@ -521,10 +521,10 @@ body,
 .modern-ui.monaco-workbench .monaco-custom-toggle,
 .modern-ui.monaco-workbench .monaco-menu .monaco-action-bar.vertical .action-item .action-label {
 	transition:
-		background-color var(--vertex-motion-fast) var(--vertex-motion-ease),
-		border-color var(--vertex-motion-fast) var(--vertex-motion-ease),
-		box-shadow var(--vertex-motion-fast) var(--vertex-motion-ease),
-		color var(--vertex-motion-fast) var(--vertex-motion-ease);
+		background-color var(--gooq-motion-fast) var(--gooq-motion-ease),
+		border-color var(--gooq-motion-fast) var(--gooq-motion-ease),
+		box-shadow var(--gooq-motion-fast) var(--gooq-motion-ease),
+		color var(--gooq-motion-fast) var(--gooq-motion-ease);
 }
 
 /* ============================================================================
@@ -556,7 +556,7 @@ body,
 
 .modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar > .slider {
 	opacity: 0.4;
-	transition: opacity var(--vertex-motion-fast) var(--vertex-motion-ease);
+	transition: opacity var(--gooq-motion-fast) var(--gooq-motion-ease);
 }
 
 .modern-ui.monaco-workbench .monaco-scrollable-element > .scrollbar:hover > .slider,
